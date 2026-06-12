@@ -1,0 +1,14 @@
+node_modules/
+dist/
+frontend/dist/
+
+.env
+.env.*
+!.env.example
+frontend/.env
+frontend/.env.*
+!frontend/.env.example
+
+npm-debug.log*
+*.log
+*.zip

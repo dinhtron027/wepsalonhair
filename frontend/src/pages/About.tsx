@@ -1,0 +1,133 @@
+import SectionTitle from "../components/SectionTitle";
+import AnimatedContainer from "../components/AnimatedContainer";
+
+const About = () => {
+  return (
+    <div className="mx-auto max-w-5xl px-4 pb-20 space-y-16">
+
+      {/* Intro */}
+      <SectionTitle
+        eyebrow="Câu Chuyện Thương Hiệu"
+        title="Salon Dương Chí"
+        description="Hơn cả một điểm đến làm đẹp, Salon Dương Chí là trạm dừng chân tĩnh lặng để bạn được nâng niu và chữa lành. Nơi nghệ thuật tạo mẫu tóc song hành cùng sự tinh tế của người Á Đông."
+        align="left"
+      />
+
+      <AnimatedContainer className="rounded-3xl border border-rose-100 bg-white/80 p-8 shadow-lg shadow-rose-100 backdrop-blur-lg">
+        <p className="text-slate-700 leading-relaxed">
+          Tối giản, thanh lịch nhưng vô cùng ấm áp với ánh sáng dịu nhẹ và hương tinh dầu mộc mạc. Mọi góc nhỏ tại Dương Chí đều được sắp đặt tỉ mỉ để mang đến cho bạn sự khoan khoái như một buổi spa thiền tịnh.
+        </p>
+
+        <p className="text-slate-700 leading-relaxed mt-4">
+          Tại đây, chúng tôi trao gửi sự tận tâm vào từng lọn tóc, không ồn ào vội vã, chỉ có tiếng kéo thanh mảnh và dòng nước gội rửa mọi muộn phiền của bạn.
+        </p>
+      </AnimatedContainer>
+
+
+      {/* Founder */}
+      <div className="space-y-6">
+        <SectionTitle
+          eyebrow="Người Kiến Tạo"
+          title="Chủ Nhân Của Cảm Hứng"
+          description="Người thổi hồn vào từng trải nghiệm tại Dương Chí."
+          align="left"
+        />
+
+        <AnimatedContainer className="rounded-3xl border border-rose-100 bg-white/80 p-8 shadow-lg shadow-rose-100 backdrop-blur-lg">
+          <h3 className="text-xl font-semibold text-slate-900 mb-3">
+            Dương Chí - Nghệ nhân của suối tóc
+          </h3>
+
+          <p className="text-slate-700 leading-relaxed">
+            Mang trong mình tình yêu với cái đẹp thanh tao, Dương Chí luôn theo đuổi triết lý: "Mái tóc là trang sức quý giá nhất của người phụ nữ". Không chạy theo những xu hướng công nghiệp, Chí chọn lối đi riêng với nghệ thuật thiết kế tóc cá nhân hóa.
+          </p>
+
+          <p className="text-slate-700 leading-relaxed mt-4">
+            Từ những đường cắt lơi tự nhiên thấm đẫm spirit Nhật Bản, đến kỹ thuật lên màu tinh tế, mọi tác phẩm đều toát lên khí chất mộc mạc nhưng đầy chiều sâu.
+          </p>
+        </AnimatedContainer>
+      </div>
+
+
+      {/* Team */}
+      <div className="space-y-6">
+        <SectionTitle
+          eyebrow="Đội ngũ"
+          title="Stylist chính tại Salon"
+          description="Những người thợ tóc tận tâm mang đến những kiểu tóc đẹp và hiện đại."
+          align="left"
+        />
+
+        <div className="grid md:grid-cols-3 gap-6">
+
+          <AnimatedContainer className="rounded-2xl border border-rose-100 bg-white/80 p-6 shadow-md">
+            <h4 className="font-semibold text-slate-900">Anh Minh</h4>
+            <p className="text-sm text-rose-500 mb-2">Senior Stylist</p>
+            <p className="text-sm text-slate-700">
+              Chuyên về cắt tóc layer, tạo kiểu tóc nữ hiện đại và thiết kế kiểu tóc
+              phù hợp với gương mặt.
+            </p>
+          </AnimatedContainer>
+
+          <AnimatedContainer className="rounded-2xl border border-rose-100 bg-white/80 p-6 shadow-md">
+            <h4 className="font-semibold text-slate-900">Chị Lan</h4>
+            <p className="text-sm text-rose-500 mb-2">Color Specialist</p>
+            <p className="text-sm text-slate-700">
+              Chuyên gia nhuộm màu thời trang, balayage và các kỹ thuật nhuộm
+              tạo hiệu ứng tự nhiên.
+            </p>
+          </AnimatedContainer>
+
+          <AnimatedContainer className="rounded-2xl border border-rose-100 bg-white/80 p-6 shadow-md">
+            <h4 className="font-semibold text-slate-900">Anh Tuấn</h4>
+            <p className="text-sm text-rose-500 mb-2">Hair Designer</p>
+            <p className="text-sm text-slate-700">
+              Chuyên tạo kiểu tóc uốn, duỗi và phục hồi tóc hư tổn bằng các
+              phương pháp chăm sóc hiện đại.
+            </p>
+          </AnimatedContainer>
+
+        </div>
+      </div>
+
+
+      {/* Philosophy */}
+      <div className="space-y-6">
+        <SectionTitle
+          eyebrow="Triết Lý"
+          title="Triết lý làm đẹp đích thực"
+          description="Một mái tóc đẹp không đến từ sự rập khuôn, mà khởi nguồn từ sự thấu hiểu."
+          align="left"
+        />
+
+        <AnimatedContainer className="rounded-3xl border border-rose-100 bg-white/80 p-8 shadow-lg shadow-rose-100 backdrop-blur-lg">
+          <ul className="space-y-3 text-slate-700">
+            <li>• Lắng nghe chất tóc, ngắm nhìn khuôn mặt và cảm nhận lối sống của bạn</li>
+            <li>• Tìm ra "chữ ký" nhan sắc hoàn hảo nhất cho riêng mỗi người</li>
+            <li>• Nâng niu sức khỏe cốt lõi của nang tóc trước khi tạo kiểu</li>
+            <li>• Trải nghiệm tĩnh lặng, chữa lành và thư thái tuyệt đối</li>
+          </ul>
+        </AnimatedContainer>
+      </div>
+
+
+      {/* Why choose us */}
+      <div className="space-y-6">
+        <SectionTitle
+          eyebrow="Lời Kết"
+          title="Nơi Thanh Xuân Ở Lại Trên Suối Tóc"
+          align="left"
+        />
+
+        <AnimatedContainer className="rounded-3xl border border-rose-100 bg-white/80 p-8 shadow-lg shadow-rose-100 backdrop-blur-lg">
+          <p className="text-slate-700 leading-relaxed text-lg italic text-center">
+            "Hãy để chúng tôi đánh thức phiên bản rạng rỡ nhất của chính bạn, một cách nhẹ nhàng và sâu lắng nhất."
+          </p>
+        </AnimatedContainer>
+      </div>
+
+    </div>
+  );
+};
+
+export default About;

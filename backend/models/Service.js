@@ -72,7 +72,18 @@ const serviceSchema = new mongoose.Schema(
       unique: true,
       trim: true
     },
+    slug: {
+      type: String,
+      required: true,
+      unique: true,
+      trim: true
+    },
     category: {
+      type: String,
+      required: true,
+      trim: true
+    },
+    categorySlug: {
       type: String,
       required: true,
       trim: true
@@ -98,10 +109,27 @@ const serviceSchema = new mongoose.Schema(
       trim: true,
       default: ''
     },
+    duration: {
+      type: Number,
+      required: true,
+      min: 15
+    },
     durationMinutes: {
       type: Number,
       default: 60,
       min: 15
+    },
+    suitableFor: {
+      type: [String],
+      default: []
+    },
+    benefits: {
+      type: [String],
+      default: []
+    },
+    isFeatured: {
+      type: Boolean,
+      default: false
     },
     addons: {
       type: [addonSchema],
@@ -116,5 +144,49 @@ const serviceSchema = new mongoose.Schema(
     timestamps: true
   }
 );
+
+serviceSchema.index({ categorySlug: 1, category: 1, createdAt: -1 });
+
+const slugify = (text) => {
+  if (!text) return '';
+  return text
+    .toString()
+    .toLowerCase()
+    .normalize('NFD')
+    .replace(/[\u0300-\u036f]/g, '')
+    .replace(/[đĐ]/g, 'd')
+    .replace(/[^a-z0-9\s-]/g, '')
+    .trim()
+    .replace(/\s+/g, '-')
+    .replace(/-+/g, '-');
+};
+
+const getCategorySlug = (category) => {
+  const cat = (category || '').toLowerCase().trim();
+  if (cat.includes('cat') || cat.includes('tao kieu') || cat.includes('cắt') || cat.includes('tạo kiểu') || cat.includes('haircut')) return 'haircut';
+  if (cat.includes('uon') || cat.includes('uốn') || cat.includes('perm')) return 'perm';
+  if (cat.includes('duoi') || cat.includes('duỗi') || cat.includes('straight')) return 'straightening';
+  if (cat.includes('nhuom') || cat.includes('nhuộm') || cat.includes('color')) return 'color';
+  if (cat.includes('phuc hoi') || cat.includes('phục hồi') || cat.includes('treatment')) return 'treatment';
+  if (cat.includes('goi') || cat.includes('gội') || cat.includes('shampoo') || cat.includes('duong sinh')) return 'shampoo';
+  if (cat.includes('combo')) return 'combo';
+  return slugify(category) || 'other';
+};
+
+serviceSchema.pre('validate', function (next) {
+  if (this.name && !this.slug) {
+    this.slug = slugify(this.name);
+  }
+  if (this.category && !this.categorySlug) {
+    this.categorySlug = getCategorySlug(this.category);
+  }
+  if (this.duration && !this.durationMinutes) {
+    this.durationMinutes = this.duration;
+  }
+  if (this.durationMinutes && !this.duration) {
+    this.duration = this.durationMinutes;
+  }
+  next();
+});
 
 module.exports = mongoose.model('Service', serviceSchema);

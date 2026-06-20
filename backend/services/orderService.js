@@ -74,6 +74,56 @@ const resolveOrderItems = async (userId, requestedItems = []) => {
   });
 };
 
+const decrementStockForOrder = async (resolvedItems) => {
+  const decrementedItems = [];
+  const updatedProducts = [];
+
+  try {
+    for (const item of resolvedItems) {
+      const updateResult = await Product.updateOne(
+        {
+          _id: item.product._id,
+          isActive: true,
+          stock: {
+            $gte: item.quantity
+          }
+        },
+        {
+          $inc: {
+            stock: -item.quantity
+          }
+        }
+      );
+
+      if (!updateResult.modifiedCount) {
+        throw new ApiError(409, `San pham ${item.product.name} khong du ton kho`);
+      }
+
+      decrementedItems.push(item);
+      const updatedProduct = await Product.findById(item.product._id);
+
+      if (updatedProduct) {
+        updatedProducts.push(updatedProduct);
+      }
+    }
+
+    return updatedProducts;
+  } catch (error) {
+    for (const item of decrementedItems.reverse()) {
+      await Product.updateOne(
+        { _id: item.product._id },
+        {
+          $inc: {
+            stock: item.quantity
+          }
+        }
+      );
+    }
+
+    throw error;
+  }
+};
+
 const createOrder = async (user, payload) => {
   const normalizedPayload = {
     items: [],
@@ -105,29 +155,20 @@ const createOrder = async (user, payload) => {
 
   await order.save();
 
-  const updatedProducts = [];
+  let updatedProducts = [];
 
-  for (const item of resolvedItems) {
-    const updatedProduct = await Product.findByIdAndUpdate(
-      item.product._id,
-      {
-        $inc: {
-          stock: -item.quantity
-        }
-      },
-      { new: true }
-    );
-
-    if (updatedProduct) {
-      updatedProducts.push(updatedProduct);
-    }
+  try {
+    updatedProducts = await decrementStockForOrder(resolvedItems);
+  } catch (error) {
+    await Order.deleteOne({ _id: order._id });
+    throw error;
   }
 
   if (shouldClearCart) {
     await cartService.clearCart(user._id);
   }
 
-  emitRealtimeEvent('order_created', order.toObject());
+  emitRealtimeEvent('order_created', order.toObject(), { room: 'admins' });
   emitRealtimeEvent('product_updated', {
     products: updatedProducts
   });

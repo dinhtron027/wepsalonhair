@@ -3,6 +3,7 @@ const ApiError = require('../utils/ApiError');
 const { generateToken } = require('../utils/security');
 const { OAuth2Client } = require('google-auth-library');
 const axios = require('axios');
+const customerService = require('./customerService');
 
 const googleClient = new OAuth2Client(process.env.GOOGLE_CLIENT_ID);
 
@@ -33,6 +34,12 @@ const registerCustomer = async (payload) => {
     ...payload,
     email: payload.email.toLowerCase(),
     role: 'customer'
+  });
+  await customerService.ensureCustomerProfile({
+    userId: user._id,
+    fullName: user.name,
+    phone: user.phone,
+    email: user.email
   });
 
   const token = generateToken(user);
@@ -102,6 +109,13 @@ const loginWithGoogle = async (idToken) => {
     });
   }
 
+  await customerService.ensureCustomerProfile({
+    userId: user._id,
+    fullName: user.name,
+    phone: user.phone,
+    email: user.email
+  });
+
   return {
     token: generateToken(user),
     user: sanitizeUser(user)
@@ -142,6 +156,13 @@ const loginWithFacebook = async (accessToken) => {
       role: 'customer'
     });
   }
+
+  await customerService.ensureCustomerProfile({
+    userId: user._id,
+    fullName: user.name,
+    phone: user.phone,
+    email: user.email
+  });
 
   return {
     token: generateToken(user),

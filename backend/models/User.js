@@ -56,6 +56,8 @@ const userSchema = new mongoose.Schema(
   }
 );
 
+userSchema.index({ role: 1, createdAt: -1 });
+
 userSchema.pre('save', async function savePassword(next) {
   if (!this.isModified('password') || !this.password) {
     return next();

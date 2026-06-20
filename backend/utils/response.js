@@ -8,8 +8,14 @@ const sendSuccess = (res, { statusCode = 200, message = 'Success', data, meta } 
     payload.data = data;
   }
 
-  if (meta !== undefined) {
-    payload.meta = meta;
+  const requestId = res.locals?.requestId;
+  const responseMeta = {
+    ...(meta || {}),
+    ...(requestId ? { requestId } : {})
+  };
+
+  if (Object.keys(responseMeta).length) {
+    payload.meta = responseMeta;
   }
 
   return res.status(statusCode).json(payload);

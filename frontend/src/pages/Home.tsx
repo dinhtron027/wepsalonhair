@@ -1,56 +1,40 @@
-import { useEffect, useState } from "react";
 import { motion } from "framer-motion";
 import toast from "react-hot-toast";
+import { useQuery } from "@tanstack/react-query";
 import SectionTitle from "../components/SectionTitle";
 import Button from "../components/Button";
 import AnimatedContainer from "../components/AnimatedContainer";
 import ServiceCard, { ServiceCardData } from "../components/ServiceCard";
 import LoadingSpinner from "../components/LoadingSpinner";
-import api, { extractApiData, getApiErrorMessage } from "../services/api";
+import { fetchPublicServices, queryKeys } from "../services/adminApi";
+import { getApiErrorMessage } from "../services/api";
 import useParallax from "../hooks/useParallax";
-
-type ServiceResponse = {
-  _id: string;
-  name: string;
-  category: string;
-  price: number;
-  description: string;
-  image: string;
-  durationMinutes: number;
-};
 
 const Home = () => {
   const { ref: heroRef, y, opacity } = useParallax();
-  const [services, setServices] = useState<ServiceCardData[]>([]);
-  const [isLoadingServices, setIsLoadingServices] = useState(true);
 
-  useEffect(() => {
-    const fetchServices = async () => {
-      setIsLoadingServices(true);
-      try {
-        const response = await api.get("/api/services");
-        const payload = extractApiData<ServiceResponse[]>(response) || [];
-        setServices(
-          payload.map((item) => ({
-            _id: item._id,
-            name: item.name,
-            category: item.category,
-            price: item.price,
-            description: item.description,
-            image: item.image,
-            durationMinutes: item.durationMinutes,
-          }))
-        );
-      } catch (error) {
-        toast.error(getApiErrorMessage(error, "Ái chà, đường truyền vừa chợp mắt. Bạn thử lại nhé."));
-        setServices([]);
-      } finally {
-        setIsLoadingServices(false);
-      }
-    };
+  const {
+    data: rawServices,
+    isLoading: isLoadingServices,
+    error: servicesError,
+  } = useQuery({
+    queryKey: [...queryKeys.publicServices],
+    queryFn: fetchPublicServices,
+  });
 
-    fetchServices();
-  }, []);
+  if (servicesError) {
+    toast.error(getApiErrorMessage(servicesError, "Ái chà, đường truyền vừa chợp mắt. Bạn thử lại nhé."));
+  }
+
+  const services: ServiceCardData[] = (rawServices || []).map((item) => ({
+    _id: item._id,
+    name: item.name,
+    category: item.category,
+    price: item.price,
+    description: item.description,
+    image: item.image || "",
+    durationMinutes: item.durationMinutes,
+  }));
 
   return (
     <div className="space-y-20 pb-20">

@@ -13,7 +13,8 @@ type RealtimeEventName =
   | "booking_created"
   | "booking_updated"
   | "order_created"
-  | "inventory_updated";
+  | "inventory_updated"
+  | "customer_updated";
 
 type RealtimeCallback = (eventName: RealtimeEventName) => void;
 
@@ -37,10 +38,23 @@ const eventToInvalidationKeys: Record<RealtimeEventName, ReadonlyArray<readonly 
     queryKeys.adminStats,
   ],
   product_deleted: [queryKeys.publicProducts, queryKeys.adminProducts, queryKeys.adminStats],
-  booking_created: [queryKeys.adminBookings, queryKeys.adminStats, queryKeys.bookingSlots],
-  booking_updated: [queryKeys.adminBookings, queryKeys.adminStats, queryKeys.bookingSlots],
+  booking_created: [
+    queryKeys.adminBookings,
+    queryKeys.adminStats,
+    queryKeys.bookingSlots,
+    queryKeys.adminCustomers,
+    queryKeys.adminCustomerDetails,
+  ],
+  booking_updated: [
+    queryKeys.adminBookings,
+    queryKeys.adminStats,
+    queryKeys.bookingSlots,
+    queryKeys.adminCustomers,
+    queryKeys.adminCustomerDetails,
+  ],
   order_created: [queryKeys.adminOrders, queryKeys.adminStats, queryKeys.adminInventory],
   inventory_updated: [queryKeys.adminInventory, queryKeys.adminProducts, queryKeys.publicProducts],
+  customer_updated: [queryKeys.adminCustomers, queryKeys.adminCustomerDetails],
 };
 
 export const connectSocket = (token: string | null) => {

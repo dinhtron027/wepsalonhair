@@ -1,8 +1,10 @@
 const cors = require('cors');
+const compression = require('compression');
 const express = require('express');
 const helmet = require('helmet');
 const env = require('./config/env');
 const { errorHandler, notFoundHandler } = require('./middleware/errorHandler');
+const { apiRateLimiter, authRateLimiter } = require('./middleware/rateLimiters');
 const requestLogger = require('./middleware/requestLogger');
 const adminRoutes = require('./routes/adminRoutes');
 const authRoutes = require('./routes/authRoutes');
@@ -13,6 +15,10 @@ const productRoutes = require('./routes/productRoutes');
 const serviceRoutes = require('./routes/serviceRoutes');
 
 const app = express();
+
+if (env.NODE_ENV === 'production') {
+  app.set('trust proxy', 1);
+}
 
 const normalizeOrigin = (origin) => origin.trim().replace(/\/$/, '');
 const allowedOrigins = env.FRONTEND_URL.split(',')
@@ -49,9 +55,11 @@ app.use(
   })
 );
 app.use(helmet());
+app.use(compression());
 app.use(express.json({ limit: '1mb' }));
 app.use(express.urlencoded({ extended: true }));
 app.use(requestLogger);
+app.use('/api', apiRateLimiter);
 
 app.get('/api/health', (req, res) => {
   res.json({
@@ -60,7 +68,7 @@ app.get('/api/health', (req, res) => {
   });
 });
 
-app.use('/api/auth', authRoutes);
+app.use('/api/auth', authRateLimiter, authRoutes);
 app.use('/api/services', serviceRoutes);
 app.use('/api/products', productRoutes);
 app.use('/api/bookings', bookingRoutes);

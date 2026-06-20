@@ -2,11 +2,14 @@ const adminService = require('../services/adminService');
 const bookingService = require('../services/bookingService');
 const productService = require('../services/productService');
 const serviceService = require('../services/serviceService');
+const customerService = require('../services/customerService');
+const Customer = require('../models/Customer');
 const {
   broadcastSystemNotification,
   emitRealtimeEvent
 } = require('../socket/io');
 const asyncHandler = require('../utils/asyncHandler');
+const ApiError = require('../utils/ApiError');
 const { sendSuccess } = require('../utils/response');
 
 const getAdminBookings = asyncHandler(async (req, res) => {
@@ -127,11 +130,53 @@ const getAdminOrders = asyncHandler(async (req, res) => {
 });
 
 const getAdminCustomers = asyncHandler(async (req, res) => {
-  const customers = await adminService.getAdminCustomers();
+  const customers = await adminService.getAdminCustomers(req.query);
 
   return sendSuccess(res, {
     message: 'Lay danh sach khach hang thanh cong',
     data: customers
+  });
+});
+
+const getAdminCustomerDetail = asyncHandler(async (req, res) => {
+  const detail = await adminService.getAdminCustomerDetail(req.params.id);
+
+  return sendSuccess(res, {
+    message: 'Lay chi tiet khach hang thanh cong',
+    data: detail
+  });
+});
+
+const addAdminCustomerNote = asyncHandler(async (req, res) => {
+  const note = await adminService.addAdminCustomerNote(req.params.id, req.body, req.user);
+  emitRealtimeEvent('customer_updated', { customerId: req.params.id }, { room: 'admins' });
+
+  return sendSuccess(res, {
+    statusCode: 201,
+    message: 'Them ghi chu CRM thanh cong',
+    data: note
+  });
+});
+
+const addAdminCustomerHairFormula = asyncHandler(async (req, res) => {
+  const formula = await adminService.addAdminCustomerHairFormula(req.params.id, req.body, req.user);
+  emitRealtimeEvent('customer_updated', { customerId: req.params.id }, { room: 'admins' });
+
+  return sendSuccess(res, {
+    statusCode: 201,
+    message: 'Them cong thuc mau thanh cong',
+    data: formula
+  });
+});
+
+const rebookAdminCustomer = asyncHandler(async (req, res) => {
+  const booking = await adminService.rebookAdminCustomer(req.params.id, req.body);
+  emitRealtimeEvent('customer_updated', { customerId: req.params.id }, { room: 'admins' });
+
+  return sendSuccess(res, {
+    statusCode: 201,
+    message: 'Dat lai lich hen thanh cong',
+    data: booking
   });
 });
 
@@ -146,7 +191,7 @@ const getInventoryOverview = asyncHandler(async (req, res) => {
 
 const adjustInventory = asyncHandler(async (req, res) => {
   const result = await adminService.adjustInventory(req.body, req.user);
-  emitRealtimeEvent('inventory_updated', result);
+  emitRealtimeEvent('inventory_updated', result, { room: 'admins' });
   emitRealtimeEvent('product_updated', result.product.toObject());
 
   if (result.lowStock) {
@@ -183,6 +228,10 @@ module.exports = {
   deleteAdminProduct,
   getAdminOrders,
   getAdminCustomers,
+  getAdminCustomerDetail,
+  addAdminCustomerNote,
+  addAdminCustomerHairFormula,
+  rebookAdminCustomer,
   getInventoryOverview,
   adjustInventory,
   getRevenueStatistics

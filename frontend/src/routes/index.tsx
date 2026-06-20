@@ -11,11 +11,17 @@ import ProductDetailPage from "../pages/ProductDetailPage";
 import CartPage from "../pages/CartPage";
 import BookingPage from "../pages/BookingPage";
 import LoginPage from "../pages/LoginPage";
+import ExperiencePage from "../pages/ExperiencePage";
+import CarePage from "../pages/CarePage";
+import ServiceCategoryPage from "../pages/ServiceCategoryPage";
 
 export const publicRoutes = [
   { path: "/", element: <Home />, name: "Trang chu" },
   { path: "/about", element: <About />, name: "Gioi thieu" },
   { path: "/services", element: <ServicesPage />, name: "Dich vu" },
+  { path: "/services/experience", element: <ExperiencePage />, name: "Trai nghiem" },
+  { path: "/services/care", element: <CarePage />, name: "Cham duong" },
+  { path: "/services/category/:categorySlug", element: <ServiceCategoryPage />, name: "Danh muc dich vu" },
   { path: "/services/:slug", element: <ServiceDetailPage />, name: "Chi tiet dich vu" },
   { path: "/pricing", element: <Pricing />, name: "Bang gia dich vu" },
   { path: "/products", element: <ProductsPage />, name: "San pham" },
@@ -29,5 +35,8 @@ export const publicRoutes = [
 ];
 
 export const menuLinks = publicRoutes.filter(
-  (route) => !route.path.includes(":") && !["/cart", "/login", "/admin"].includes(route.path)
+  (route) =>
+    !route.path.includes(":") &&
+    !route.path.startsWith("/services/") &&
+    !["/cart", "/login", "/admin"].includes(route.path)
 );

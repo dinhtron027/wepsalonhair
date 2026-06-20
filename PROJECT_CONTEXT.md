@@ -6,7 +6,7 @@
 # Current Status
 - Development stage: MVP/full-stack application with public site and admin dashboard.
 - Progress: Core public pages, auth, booking, product, cart, order, admin management, inventory, and realtime sync are implemented.
-- Overall state: Locally runnable. Latest local checks passed: lint, TypeScript check, production build, backend syntax check, backend app load, root/frontend npm audit.
+- Overall state: Locally runnable. Latest local checks should include lint, TypeScript check, backend tests, production build, backend syntax check, backend app load, and root/frontend npm audit.
 
 # Tech Stack
 ## Frontend
@@ -50,7 +50,9 @@
 - MongoDB connection through `MONGODB_URI`
 
 ## CI/CD
-- Unknown
+- GitHub Actions workflow exists at `.github/workflows/ci.yml`.
+- CI runs on `windows-latest` with PowerShell and Node `22.13.0`.
+- CI commands: install root/frontend dependencies, `npm run test:ci`, `npm run audit:ci`.
 
 ## Cloud
 - Unknown
@@ -62,7 +64,7 @@
 - SMTP email via Nodemailer
 - Zalo webhook integration variables exist
 - Payment provider config for `cash`, `momo`, `vnpay`
-- Current payment implementation creates mock checkout metadata/URLs
+- Cash payment is local; Momo/VNPay checkout metadata is mock-only unless real integration is added.
 
 # Architecture
 
@@ -444,6 +446,14 @@ project/
 * Realtime Socket.IO events and React Query invalidation.
 * Seed script for services, products, admin, staff, and customer.
 * Vite vendor chunk splitting.
+* Admin route lazy loading.
+* API and auth-specific rate limiting.
+* Request ID response metadata and structured production request logs.
+* Payment fail-closed behavior for non-cash mock providers in production.
+* Atomic stock decrement for orders and guarded inventory adjustment.
+* Backend production-hardening tests with `node:test`.
+* GitHub Actions CI.
+* Dockerfile, frontend Nginx Dockerfile, Docker Compose, and `.dockerignore`.
 * Dependency security audit currently clean.
 
 # Features In Progress
@@ -456,31 +466,31 @@ project/
 
 # Pending Tasks
 
-* Add automated tests.
-* Add CI/CD configuration.
-* Add deployment configuration if deployment target is chosen.
 * Rotate/remove any exposed OAuth secrets from frontend env files.
 * Review `react-facebook-login` compatibility before React upgrades.
-* Remove or refresh stale diagnostic file `frontend/lint_output.txt`.
-* Document production deployment steps once finalized.
+* Add broader MongoDB-backed integration tests for order/cart/booking/admin APIs.
+* Configure real production payment gateway callbacks before enabling non-cash payments without mock mode.
+* Configure production domain/SSL and deployment secrets in the chosen platform.
 
 # Deployment
 
 ## Docker
 
-* Unknown
+* Backend Dockerfile exists at `Dockerfile`.
+* Frontend Dockerfile exists at `frontend/Dockerfile`.
 
 ## Docker Compose
 
-* Unknown
+* `docker-compose.yml` runs MongoDB, API, and frontend Nginx.
+* Requires a real root `.env` with production-safe `JWT_SECRET`.
 
 ## GitHub Actions
 
-* Unknown
+* `.github/workflows/ci.yml` runs install, lint, typecheck, backend tests, build, and audit.
 
 ## Nginx
 
-* Unknown
+* `frontend/nginx.conf` serves the Vite SPA and adds basic static caching/security headers.
 
 ## Domain
 
@@ -521,7 +531,7 @@ project/
 * Use typed frontend API helpers in `frontend/src/services`.
 * Use React Query for server state, not duplicated local state.
 * Keep secrets out of frontend env unless variable starts with `VITE_` and is safe to expose.
-* Run lint, TypeScript check, build, and audit after dependency or architecture changes.
+* Run lint, TypeScript check, backend tests, build, and audit after dependency or architecture changes.
 
 # Important Decisions
 
@@ -533,14 +543,17 @@ project/
 * Socket.IO supports guest sockets but joins role rooms when JWT is valid.
 * Realtime events invalidate React Query cache keys instead of manually mutating all UI state.
 * Vite `manualChunks` is used to prevent oversized production JS chunks.
-* Payment providers are currently mocked by backend metadata/checkout URLs.
+* Payment providers are mocked only for local/non-production flows by default; non-cash mock checkout fails closed in production unless `PAYMENT_MOCK_ENABLED=true`.
+* JWT signing and verification explicitly use `HS256`.
+* Booking/order/inventory Socket.IO events that contain operational/customer data are emitted to the `admins` room.
+* Order stock decrement uses atomic conditional updates and rollback of prior decrements on failure.
+* Inventory export uses conditional atomic update to prevent negative stock.
 
 # Known Issues
 
-* No automated test suite is configured.
 * `react-facebook-login@4.1.1` has old React peer expectations; installs require `--legacy-peer-deps`.
 * Local env files include sensitive OAuth values; secrets should be rotated and removed from client-visible env.
-* `frontend/lint_output.txt` appears stale and does not represent current lint status.
+* Backend tests are currently focused smoke/unit tests; full API integration coverage is still missing.
 * PowerShell may display Vietnamese UTF-8 text as mojibake; avoid rewriting copy-only text unless needed.
 * Git repository may be rooted above `salon`; use path-scoped git commands to avoid unrelated files.
 
@@ -548,15 +561,18 @@ project/
 
 * Secrets location: root `.env`, `frontend/.env`, deployment environment variables.
 * Environment files: `.env.example` is safe template; `.env` and `frontend/.env` must not be committed with real secrets.
-* Authentication: JWT signed with `JWT_SECRET`; local passwords hashed with bcryptjs; Google/Facebook OAuth supported.
+* Authentication: JWT signed with `JWT_SECRET` using `HS256`; local passwords hashed with bcryptjs; Google/Facebook OAuth supported.
 * Authorization: role middleware supports `admin`, `staff`, `customer`; admin API requires `admin`.
 * CORS: allowed origins from `FRONTEND_URL`, loopback origins allowed.
 * Socket auth: accepts token via handshake auth, Authorization header, or query token; invalid/missing token becomes guest.
+* Rate limiting: `RATE_LIMIT_WINDOW_MS`, `RATE_LIMIT_MAX`, and `AUTH_RATE_LIMIT_MAX`.
+* Production env validation rejects default/short `JWT_SECRET`.
+* Non-cash payment mock URLs are disabled in production unless explicitly enabled.
 * Audits: root and frontend `npm audit --audit-level=moderate` passed with 0 vulnerabilities after dependency updates.
 
 # Dependencies
 
-* Root/backend runtime: express, mongoose, socket.io, joi, jsonwebtoken, bcryptjs, cors, helmet, dotenv, nodemailer, google-auth-library, axios, zustand, react-hot-toast, react-big-calendar.
+* Root/backend runtime: express, mongoose, socket.io, joi, jsonwebtoken, bcryptjs, cors, helmet, compression, express-rate-limit, dotenv, nodemailer, google-auth-library, axios, zustand, react-hot-toast, react-big-calendar.
 * Root dev: concurrently.
 * Frontend runtime: react, react-dom, react-router-dom, @tanstack/react-query, axios, zustand, socket.io-client, framer-motion, lucide-react, swiper, date-fns, react-big-calendar, react-hot-toast, @react-oauth/google, react-facebook-login.
 * Frontend dev: vite, @vitejs/plugin-react, typescript, eslint, @typescript-eslint/parser, @typescript-eslint/eslint-plugin, tailwindcss, postcss, autoprefixer.
@@ -581,22 +597,24 @@ npm run build
 
 ```bash
 npm run lint
-cd frontend && npx tsc --noEmit
+npm run typecheck
+npm test
+npm run test:ci
 npm audit --audit-level=moderate
 npm audit --prefix frontend --audit-level=moderate
 ```
 
 ## Deploy
 
-```bash
-Unknown
+```powershell
+docker compose up --build
 ```
 
 # Next Steps
 
 1. Rotate/remove exposed OAuth secrets and keep real secrets only in server/deployment env.
-2. Add automated tests and CI checks for lint, typecheck, build, audit, and backend smoke load.
-3. Define production deployment target and document Docker/Nginx/domain/SSL or provider-specific setup.
+2. Add MongoDB-backed API integration tests for order/cart/booking/admin flows.
+3. Configure real payment gateway integration and callbacks before production non-cash payments.
 
 # AI Notes
 
@@ -609,4 +627,4 @@ Những điều AI tương lai cần biết:
 * Before changing UI routes, check `frontend/src/App.tsx` and `frontend/src/routes/index.tsx`.
 * Before changing admin API types, check `frontend/src/services/adminApi.ts`.
 * Before changing realtime behavior, update both `backend/socket/io.js` and `frontend/src/services/socket.ts`.
-* For local verification, run lint, typecheck, build, backend syntax check, backend app load, and npm audit.
+* For local verification, run lint, typecheck, backend tests, build, backend syntax check, backend app load, and npm audit.

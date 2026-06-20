@@ -1,10 +1,11 @@
 import { useState } from "react";
 import toast from "react-hot-toast";
-import { Link } from "react-router-dom";
 import { Eye, EyeOff } from "lucide-react";
 import { GoogleOAuthProvider, GoogleLogin, CredentialResponse } from "@react-oauth/google";
-import FacebookLogin from "react-facebook-login/dist/facebook-login-render-props";
+import * as _FacebookLoginModule from "react-facebook-login/dist/facebook-login-render-props";
 import { ReactFacebookLoginInfo } from "react-facebook-login";
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+const FacebookLogin: any = (_FacebookLoginModule as any).default?.default ?? (_FacebookLoginModule as any).default ?? _FacebookLoginModule;
 import LoadingSpinner from "../../../../components/LoadingSpinner";
 import { useAuthController } from "../../control/hooks/useAuthController";
 import SectionTitle from "../../../../components/SectionTitle";
@@ -18,9 +19,9 @@ const LoginPage = () => {
   const [identifier, setIdentifier] = useState("");
   const [password, setPassword] = useState("");
   const [showPassword, setShowPassword] = useState(false);
-  const [rememberMe, setRememberMe] = useState(false);
   
   const { isLoading, submitLogin, submitGoogleLogin, submitFacebookLogin } = useAuthController();
+
 
   const handleSubmit = async (event: React.FormEvent) => {
     event.preventDefault();
@@ -105,20 +106,6 @@ const LoginPage = () => {
               </div>
             </div>
 
-            <div className="flex items-center justify-between text-sm">
-              <label className="flex items-center gap-2 cursor-pointer text-slate-600 hover:text-rose-500 transition-colors">
-                <input
-                  type="checkbox"
-                  checked={rememberMe}
-                  onChange={(e) => setRememberMe(e.target.checked)}
-                  className="rounded border-rose-200 text-rose-500 focus:ring-rose-200 accent-rose-500"
-                />
-                Duy trì đăng nhập
-              </label>
-              <Link to="/forgot-password" className="font-medium text-rose-500 hover:text-rose-600 transition-colors">
-                Quên mật khẩu?
-              </Link>
-            </div>
 
             <button
               type="submit"
@@ -169,10 +156,8 @@ const LoginPage = () => {
             </div>
             
             <p className="text-center text-sm text-slate-600 mt-6">
-              Bạn chưa có tài khoản?{" "}
-              <Link to="/register" className="font-semibold text-rose-500 hover:text-rose-600">
-                Đăng ký ngay
-              </Link>
+              Chưa có tài khoản?{" "}
+              <span className="font-semibold text-rose-500">Liên hệ salon để được hỗ trợ đăng ký.</span>
             </p>
           </form>
         </AnimatedContainer>

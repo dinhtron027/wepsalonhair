@@ -1,18 +1,21 @@
+import { lazy, Suspense } from "react";
 import { Navigate, Route, Routes, useLocation } from "react-router-dom";
 import { AnimatePresence, motion } from "framer-motion";
 import MainLayout from "./layouts/MainLayout";
 import AdminLayout from "./layouts/AdminLayout";
 import ProtectedRoute from "./components/ProtectedRoute";
-import DashboardPage from "./pages/admin/Dashboard";
-import BookingsPage from "./pages/admin/Bookings";
-import ServicesAdminPage from "./pages/admin/Services";
-import ProductsAdminPage from "./pages/admin/Products";
-import OrdersPage from "./pages/admin/Orders";
-import CustomersPage from "./pages/admin/Customers";
-import InventoryPage from "./pages/admin/Inventory";
+import LoadingSpinner from "./components/LoadingSpinner";
 import { publicRoutes } from "./routes";
 import { useRealtimeSync } from "./hooks/useRealtimeSync";
 import "./App.css";
+
+const DashboardPage = lazy(() => import("./pages/admin/Dashboard"));
+const BookingsPage = lazy(() => import("./pages/admin/Bookings"));
+const ServicesAdminPage = lazy(() => import("./pages/admin/Services"));
+const ProductsAdminPage = lazy(() => import("./pages/admin/Products"));
+const OrdersPage = lazy(() => import("./pages/admin/Orders"));
+const CustomersPage = lazy(() => import("./pages/admin/Customers"));
+const InventoryPage = lazy(() => import("./pages/admin/Inventory"));
 
 const pageVariants = {
   initial: { opacity: 0, y: 16 },
@@ -51,7 +54,9 @@ function App() {
           path="/admin"
           element={
             <ProtectedRoute allowRoles={["admin"]}>
-              <AdminLayout />
+              <Suspense fallback={<LoadingSpinner label="Dang tai trang quan tri..." />}>
+                <AdminLayout />
+              </Suspense>
             </ProtectedRoute>
           }
         >

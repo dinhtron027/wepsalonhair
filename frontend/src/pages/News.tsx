@@ -8,21 +8,21 @@ const articles = [
     date: "01/03/2026",
     tag: "Xu hướng tóc",
     desc: "Gam màu trà sữa beige – mocha đang trở thành xu hướng nổi bật trong năm 2026. Sự kết hợp giữa sắc nâu nhẹ và ánh beige tạo hiệu ứng tóc bóng mượt, phù hợp với làn da châu Á và dễ dàng phối hợp với nhiều phong cách thời trang.",
-    image: "/images/news/hair-trend.jpg",
+    image: "https://images.unsplash.com/photo-1620824625810-4e8b72a5dd9f?auto=format&fit=crop&w=800&q=80",
   },
   {
     title: "Kỹ thuật uốn S-wave ẩm mượt",
     date: "20/02/2026",
     tag: "Kỹ thuật làm tóc",
     desc: "Uốn S-wave mang đến những lọn tóc mềm mại và tự nhiên. Nhờ kỹ thuật kiểm soát nhiệt hiện đại và dưỡng chất phục hồi, mái tóc giữ được độ bóng khỏe, hạn chế khô xơ và giữ nếp lâu hơn.",
-    image: "/images/news/perm-style.jpg",
+    image: "https://images.unsplash.com/photo-1522337360788-8b13dee7a37e?auto=format&fit=crop&w=800&q=80",
   },
   {
     title: "Chăm sóc tóc mùa nóng",
     date: "10/02/2026",
     tag: "Chăm sóc tóc",
     desc: "Thời tiết nóng có thể khiến tóc khô, dễ gãy và nhanh phai màu. Một số bước đơn giản như chống UV cho tóc, dưỡng ẩm thường xuyên và chọn dầu gội phù hợp sẽ giúp mái tóc luôn mềm mượt.",
-    image: "/images/news/hair-care.jpg",
+    image: "https://images.unsplash.com/photo-1519699047748-de8e457a634e?auto=format&fit=crop&w=800&q=80",
   },
 ];
 

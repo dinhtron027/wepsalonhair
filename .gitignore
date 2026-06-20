@@ -1,7 +1,7 @@
 node_modules/
 dist/
 frontend/dist/
-
+.env.production
 .env
 .env.*
 !.env.example

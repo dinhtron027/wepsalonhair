@@ -1,7 +1,8 @@
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import toast from "react-hot-toast";
-import api, { getApiErrorMessage } from "../services/api";
+import { getApiErrorMessage } from "../services/api";
+import { createOrder } from "../services/adminApi";
 import useCartStore from "../store/useCartStore";
 import LoadingSpinner from "../components/LoadingSpinner";
 
@@ -17,21 +18,21 @@ const CartPage = () => {
     if (items.length === 0) return;
     setIsSubmitting(true);
     try {
-      const orderData = {
-        items: items.map(item => ({
+      await createOrder({
+        products: items.map((item) => ({
           productId: item.product._id,
+          name: item.product.name,
+          price: item.product.price,
           quantity: item.quantity,
-          price: item.product.price
         })),
-        totalAmount: getTotalAmount()
-      };
-      
-      await api.post("/api/orders", orderData);
+        totalPrice: getTotalAmount(),
+        payment: { provider: "cash" },
+      });
       toast.success("Tạo đơn hàng thành công!");
       clearCart();
       navigate("/");
     } catch (error) {
-      toast.error(getApiErrorMessage(error, "Đặt hàng thất bại"));
+      toast.error(getApiErrorMessage(error, "Đặt hàng thất bại, vui lòng thử lại."));
     } finally {
       setIsSubmitting(false);
     }

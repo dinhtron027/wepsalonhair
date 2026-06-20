@@ -2,7 +2,16 @@ const Booking = require('../models/Booking');
 const Service = require('../models/Service');
 const ApiError = require('../utils/ApiError');
 
-const listServices = async () => Service.find().sort({ category: 1, name: 1 });
+const listServices = async (filter = {}) => {
+  const query = {};
+  if (filter.category) {
+    query.$or = [
+      { categorySlug: filter.category },
+      { category: filter.category }
+    ];
+  }
+  return Service.find(query).sort({ categorySlug: 1, name: 1 });
+};
 
 const getServiceById = async (serviceId) => {
   const service = await Service.findById(serviceId);

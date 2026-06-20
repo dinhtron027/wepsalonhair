@@ -3,7 +3,7 @@ const asyncHandler = require('../utils/asyncHandler');
 const { sendSuccess } = require('../utils/response');
 
 const getServices = asyncHandler(async (req, res) => {
-  const services = await serviceService.listServices();
+  const services = await serviceService.listServices(req.query);
 
   return sendSuccess(res, {
     message: 'Lay danh sach dich vu thanh cong',

@@ -28,6 +28,11 @@ const bookingSchema = new mongoose.Schema(
       ref: 'User',
       default: null
     },
+    customerId: {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: 'Customer',
+      default: null
+    },
     customerName: {
       type: String,
       required: true,
@@ -108,6 +113,10 @@ const bookingSchema = new mongoose.Schema(
       type: String,
       trim: true,
       default: ''
+    },
+    seedKey: {
+      type: String,
+      default: undefined
     }
   },
   {
@@ -124,6 +133,16 @@ bookingSchema.index(
         $in: ['pending', 'confirmed', 'in_service']
       }
     }
+  }
+);
+bookingSchema.index({ status: 1, date: 1, time: 1 });
+bookingSchema.index({ userId: 1, createdAt: -1 });
+bookingSchema.index({ customerId: 1, date: -1, time: -1 });
+bookingSchema.index(
+  { seedKey: 1 },
+  {
+    unique: true,
+    sparse: true
   }
 );
 

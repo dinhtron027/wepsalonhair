@@ -9,6 +9,10 @@
     "build": "npm run build --prefix frontend",
     "preview": "npm run preview --prefix frontend",
     "lint": "npm run lint --prefix frontend",
+    "typecheck": "npm run typecheck --prefix frontend",
+    "test": "node --test \"backend/tests/**/*.test.js\"",
+    "test:ci": "npm run lint && npm run typecheck && npm test && npm run build",
+    "audit:ci": "npm audit --audit-level=moderate && npm audit --prefix frontend --audit-level=moderate",
     "dev:backend": "node --watch backend/server.js",
     "start": "node backend/server.js",
     "seed": "node backend/utils/seed.js"
@@ -16,9 +20,11 @@
   "dependencies": {
     "axios": "^1.17.0",
     "bcryptjs": "^3.0.2",
+    "compression": "^1.8.1",
     "cors": "^2.8.5",
     "dotenv": "^16.6.1",
     "express": "^5.1.0",
+    "express-rate-limit": "^8.5.2",
     "google-auth-library": "^10.6.2",
     "helmet": "^8.1.0",
     "joi": "^18.2.1",

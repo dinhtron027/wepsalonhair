@@ -1,185 +1,260 @@
-import { useEffect, useState } from "react";
-import { Link, NavLink, useLocation, useNavigate } from "react-router-dom";
-import { Menu, ShoppingBag, X } from "lucide-react";
-import Button from "./Button";
-import CartDrawer from "./CartDrawer";
+import React, { useState, useEffect } from "react";
+import { useNavigate, useLocation } from "react-router-dom";
+import { ShoppingBag, LogOut, LayoutDashboard } from "lucide-react";
 import useCartStore from "../store/useCartStore";
 import { useAuth } from "../hooks/useAuth";
+import { useClickOutside } from "../hooks/useClickOutside";
+import CartDrawer from "./CartDrawer";
 
-const navItems = [
-  { label: "Trang Chủ", to: "/" },
-  { label: "Câu Chuyện", to: "/about" },
-  { label: "Trải Nghiệm", to: "/services" },
-  { label: "Bảng Giá", to: "/pricing" },
-  { label: "Chăm Dưỡng", to: "/products" },
-  { label: "Cảm Hứng", to: "/gallery" },
-  { label: "Hẹn Gặp", to: "/booking" },
-  { label: "Tin Tức", to: "/news" },
-  { label: "Kết Nối", to: "/contact" },
-];
+// Import navigation-specific assets/modules
+import { menuManager } from "./navigation/menuData";
+import type { OpenMenuId, MenuItem } from "./navigation/types";
+import Dropdown from "./navigation/Dropdown";
+import MobileMenu from "./navigation/MobileMenu";
+import {
+  NavbarWrapper,
+  NavbarInner,
+  LogoLink,
+  DesktopNav,
+  NavItemWrapper,
+  NavLinkBase,
+  NavActions,
+  CTAButton,
+  CartButton,
+  CartBadge,
+  MobileActions,
+  HamburgerButton,
+} from "./navigation/styled";
 
-const Navbar = () => {
+/**
+ * Navigation Bar Component
+ * Áp dụng thiết kế UI/UX hiện đại, kết hợp OOP MenuManager và quản lý trạng thái đồng bộ.
+ */
+const Navbar: React.FC = () => {
   const navigate = useNavigate();
   const location = useLocation();
-  const [mobileOpen, setMobileOpen] = useState(false);
-  const [cartOpen, setCartOpen] = useState(false);
+
+  // Navigation UI states
   const [scrolled, setScrolled] = useState(false);
+  const [openDropdownId, setOpenDropdownId] = useState<OpenMenuId>(null);
+  const [clickedDropdownId, setClickedDropdownId] = useState<OpenMenuId>(null);
+  const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
+  const [cartOpen, setCartOpen] = useState(false);
+
+  // Cart Store State
   const { items } = useCartStore();
+  const itemCount = items.reduce((sum, item) => sum + item.quantity, 0);
 
+  // Auth Store State
   const token = useAuth((state) => state.token);
-  const getCurrentUser = useAuth((state) => state.getCurrentUser);
-  const logout = useAuth((state) => state.logout);
   const isAdmin = useAuth((state) => state.isAdmin);
-  const user = getCurrentUser();
+  const logout = useAuth((state) => state.logout);
 
+  // Close menus when route changes
   useEffect(() => {
-    setMobileOpen(false);
+    setOpenDropdownId(null);
+    setClickedDropdownId(null);
+    setMobileMenuOpen(false);
     setCartOpen(false);
   }, [location.pathname]);
 
+  // Track window scroll to change background opacity/blur
   useEffect(() => {
-    const onScroll = () => setScrolled(window.scrollY > 24);
-    window.addEventListener("scroll", onScroll);
-    return () => window.removeEventListener("scroll", onScroll);
+    const handleScroll = () => {
+      setScrolled(window.scrollY > 20);
+    };
+    window.addEventListener("scroll", handleScroll);
+    return () => window.removeEventListener("scroll", handleScroll);
   }, []);
 
-  const itemCount = items.reduce((sum, item) => sum + item.quantity, 0);
+  // Xử lý click outside để đóng bất kỳ dropdown nào đang mở trên desktop
+  const navRef = useClickOutside<HTMLDivElement>(() => {
+    setOpenDropdownId(null);
+    setClickedDropdownId(null);
+  }, openDropdownId !== null || clickedDropdownId !== null);
 
   const handleLogout = () => {
     logout();
     navigate("/login");
   };
 
+  const handleNavItemClick = (item: MenuItem, event: React.MouseEvent) => {
+    if (menuManager.hasDropdown(item)) {
+      event.preventDefault(); // Ngăn điều hướng lập tức trên cả Desktop để giữ dropdown mở rộng
+      const isTouch = window.matchMedia("(hover: none)").matches;
+      if (isTouch) {
+        setOpenDropdownId((prev) => (prev === item.id ? null : item.id));
+      } else {
+        // Trên Desktop: click sẽ chuyển đổi trạng thái click-lock giữ menu mở cố định
+        if (clickedDropdownId === item.id) {
+          setClickedDropdownId(null);
+          setOpenDropdownId(null);
+        } else {
+          setClickedDropdownId(item.id);
+          setOpenDropdownId(item.id);
+        }
+      }
+    } else {
+      navigate(item.path);
+      setOpenDropdownId(null);
+      setClickedDropdownId(null);
+    }
+  };
+
+  const menuItems = menuManager.getAll();
+
   return (
     <>
-      <header
-        className={`fixed inset-x-0 top-0 z-50 transition-all ${
-          scrolled ? "bg-white/80 backdrop-blur-lg shadow-lg" : "bg-transparent text-slate-900"
-        }`}
-      >
-        <div className="mx-auto flex max-w-6xl items-center justify-between px-4 py-4">
-          <Link to="/" className="flex items-center gap-2 font-semibold tracking-wide">
-            <span className="text-2xl text-rose-500">Salon Dương Chí</span>
-          </Link>
+      <NavbarWrapper $scrolled={scrolled} ref={navRef}>
+        <NavbarInner>
+          {/* Logo (Trang Chủ - Chỉ cần Logo/Text click để về Home) */}
+          <LogoLink href="/">
+            <span>Salon Dương Chí</span>
+          </LogoLink>
 
-          <nav className="hidden items-center gap-4 text-xs font-semibold uppercase tracking-tight lg:flex">
-            {navItems.map((item) => (
-              <NavLink
-                key={item.to}
-                to={item.to}
-                className={({ isActive }) =>
-                  `transition-all hover:text-rose-500 ${isActive ? "text-rose-500" : "text-slate-700"}`
-                }
-              >
-                {item.label}
-              </NavLink>
-            ))}
+          {/* Desktop Navigation Links */}
+          <DesktopNav>
+            {menuItems.map((item) => {
+              const hasDropdown = menuManager.hasDropdown(item);
+              const isDropdownOpen = openDropdownId === item.id;
+              const isActive =
+                location.pathname === item.path ||
+                (hasDropdown &&
+                  item.children?.some((child) => location.pathname === child.path));
 
+              return (
+                <NavItemWrapper
+                  key={item.id}
+                  onMouseEnter={() => {
+                    const isTouch = window.matchMedia("(hover: none)").matches;
+                    if (!isTouch && hasDropdown) {
+                      setOpenDropdownId(item.id);
+                    }
+                  }}
+                  onMouseLeave={() => {
+                    const isTouch = window.matchMedia("(hover: none)").matches;
+                    if (!isTouch && hasDropdown) {
+                      // Chỉ đóng menu khi di chuột ra ngoài nếu nó không ở trạng thái click giữ cố định
+                      if (clickedDropdownId !== item.id) {
+                        setOpenDropdownId(null);
+                      }
+                    }
+                  }}
+                >
+                  <NavLinkBase
+                    $active={isActive}
+                    onClick={(e) => handleNavItemClick(item, e)}
+                    data-has-dropdown={hasDropdown}
+                    data-dropdown-open={isDropdownOpen}
+                    aria-expanded={isDropdownOpen}
+                    aria-haspopup={hasDropdown ? "true" : "false"}
+                  >
+                    {item.title}
+                  </NavLinkBase>
+
+                  {hasDropdown && item.children && (
+                    <Dropdown items={item.children} isOpen={isDropdownOpen} />
+                  )}
+                </NavItemWrapper>
+              );
+            })}
+          </DesktopNav>
+
+          {/* Desktop Action Items */}
+          <NavActions>
+            {/* Giỏ Hàng */}
+            <CartButton
+              onClick={() => setCartOpen(true)}
+              aria-label="Xem giỏ hàng"
+            >
+              <ShoppingBag size={18} />
+              {itemCount > 0 && <CartBadge>{itemCount}</CartBadge>}
+            </CartButton>
+
+            {/* Auth / Admin */}
             {token ? (
               <>
-                {isAdmin() ? (
-                  <Button to="/admin" variant="ghost">
-                    Quản Trị
-                  </Button>
-                ) : null}
+                {isAdmin() && (
+                  <NavLinkBase
+                    onClick={() => navigate("/admin")}
+                    style={{ display: "inline-flex", gap: "0.25rem" }}
+                  >
+                    <LayoutDashboard size={16} />
+                    <span>Quản trị</span>
+                  </NavLinkBase>
+                )}
                 <button
                   onClick={handleLogout}
-                  className="rounded-full border border-rose-100 bg-white/80 px-4 py-2 text-xs font-semibold text-slate-700 shadow-sm hover:text-rose-600"
+                  style={{
+                    display: "inline-flex",
+                    alignItems: "center",
+                    gap: "0.25rem",
+                    padding: "0.5rem 0.875rem",
+                    borderRadius: "12px",
+                    fontSize: "0.875rem",
+                    fontWeight: 600,
+                    color: "#ef4444",
+                    border: "1px solid rgba(239, 68, 68, 0.2)",
+                    background: "rgba(239, 68, 68, 0.05)",
+                    cursor: "pointer",
+                    transition: "all 0.2s",
+                  }}
+                  onMouseOver={(e) => {
+                    e.currentTarget.style.background = "rgba(239, 68, 68, 0.1)";
+                  }}
+                  onMouseOut={(e) => {
+                    e.currentTarget.style.background = "rgba(239, 68, 68, 0.05)";
+                  }}
                 >
-                  Đăng xuất
+                  <LogOut size={15} />
+                  <span>Đăng xuất</span>
                 </button>
               </>
             ) : (
-              <Button to="/login" variant="ghost">
-                Trải nghiệm ngay
-              </Button>
+              <NavLinkBase onClick={() => navigate("/login")}>
+                Đăng Nhập
+              </NavLinkBase>
             )}
 
-            <button
+            {/* CTA ĐẶT LỊCH NGAY (Nổi bật nhất) */}
+            <CTAButton onClick={() => navigate("/booking")}>
+              ĐẶT LỊCH NGAY
+            </CTAButton>
+          </NavActions>
+
+          {/* Mobile Actions: Cart & Hamburger */}
+          <MobileActions>
+            <CartButton
               onClick={() => setCartOpen(true)}
-              className="relative rounded-full border border-rose-100 bg-white/80 p-2 text-slate-700 shadow-md shadow-rose-100 transition hover:border-rose-200 hover:text-rose-600"
-              aria-label="Mo gio hang"
+              aria-label="Xem giỏ hàng"
             >
               <ShoppingBag size={18} />
-              {itemCount > 0 ? (
-                <span className="absolute -right-2 -top-2 rounded-full bg-rose-500 px-2 text-xs font-semibold text-white shadow-lg shadow-rose-200">
-                  {itemCount}
-                </span>
-              ) : null}
-            </button>
-          </nav>
+              {itemCount > 0 && <CartBadge>{itemCount}</CartBadge>}
+            </CartButton>
 
-          <div className="flex items-center gap-3 lg:hidden">
-            <button
-              onClick={() => setCartOpen(true)}
-              className="relative rounded-full border border-rose-100 bg-white/80 p-2 text-slate-700 shadow-md shadow-rose-100"
-              aria-label="Mo gio hang"
+            <HamburgerButton
+              $isOpen={mobileMenuOpen}
+              onClick={() => setMobileMenuOpen((prev) => !prev)}
+              aria-label={mobileMenuOpen ? "Đóng menu" : "Mở menu"}
+              aria-expanded={mobileMenuOpen}
             >
-              <ShoppingBag size={18} />
-              {itemCount > 0 ? (
-                <span className="absolute -right-2 -top-2 rounded-full bg-rose-500 px-2 text-xs font-semibold text-white shadow-lg shadow-rose-200">
-                  {itemCount}
-                </span>
-              ) : null}
-            </button>
+              <span />
+              <span />
+              <span />
+            </HamburgerButton>
+          </MobileActions>
+        </NavbarInner>
+      </NavbarWrapper>
 
-            <button
-              className="rounded-full border border-white/70 bg-white/70 p-2 shadow-lg"
-              onClick={() => setMobileOpen((prev) => !prev)}
-              aria-label="Mo menu"
-            >
-              {mobileOpen ? <X size={20} /> : <Menu size={20} />}
-            </button>
-          </div>
-        </div>
+      {/* Mobile Drawer Navigation Menu */}
+      <MobileMenu
+        items={menuItems}
+        isOpen={mobileMenuOpen}
+        cartCount={itemCount}
+        onClose={() => setMobileMenuOpen(false)}
+      />
 
-        {mobileOpen ? (
-          <div className="border-t border-rose-100 bg-white/90 px-4 py-4 backdrop-blur-xl shadow-inner lg:hidden">
-            <div className="mx-auto flex max-w-6xl flex-col gap-3">
-              {navItems.map((item) => (
-                <NavLink
-                  key={item.to}
-                  to={item.to}
-                  className={({ isActive }) =>
-                    `block rounded-lg px-3 py-2 text-sm ${
-                      isActive ? "bg-rose-50 text-rose-500 font-semibold" : "text-slate-700"
-                    }`
-                  }
-                >
-                  {item.label}
-                </NavLink>
-              ))}
-
-              <div className="grid grid-cols-2 gap-3">
-                {token ? (
-                  <>
-                    {isAdmin() ? (
-                      <Button to="/admin" variant="ghost" fullWidth>
-                        Quản trị
-                      </Button>
-                    ) : null}
-                    <button
-                      onClick={handleLogout}
-                      className="inline-flex w-full items-center justify-center rounded-full border border-rose-100 bg-white/70 px-5 py-2 text-sm font-semibold text-rose-500 transition hover:bg-rose-50"
-                    >
-                      Đăng xuất
-                    </button>
-                  </>
-                ) : (
-                  <Button to="/login" variant="ghost" fullWidth>
-                    Đăng nhập
-                  </Button>
-                )}
-                <Button to="/cart" variant="primary" fullWidth>
-                  Giỏ hàng
-                </Button>
-              </div>
-              {user?.name ? <p className="text-xs text-slate-500">Xin chào, {user.name}</p> : null}
-            </div>
-          </div>
-        ) : null}
-      </header>
-
+      {/* Shopping Cart Drawer */}
       <CartDrawer open={cartOpen} onClose={() => setCartOpen(false)} />
     </>
   );

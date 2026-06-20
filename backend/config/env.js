@@ -33,6 +33,9 @@ const envSchema = Joi.object({
   MONGODB_URI: Joi.string().default('mongodb://127.0.0.1:27017/salon-duong-chi'),
   JWT_SECRET: Joi.string().min(16).default('salon-duong-chi-super-secret-key'),
   JWT_EXPIRES_IN: Joi.string().default('7d'),
+  RATE_LIMIT_WINDOW_MS: Joi.number().integer().min(1000).default(15 * 60 * 1000),
+  RATE_LIMIT_MAX: Joi.number().integer().min(1).default(300),
+  AUTH_RATE_LIMIT_MAX: Joi.number().integer().min(1).default(20),
   FRONTEND_URL: Joi.string()
     .custom(validateOriginList, 'frontend origin list')
     .default('http://localhost:5173'),
@@ -44,6 +47,12 @@ const envSchema = Joi.object({
   ZALO_WEBHOOK_URL: Joi.string().uri().allow('').optional(),
   ZALO_ACCESS_TOKEN: Joi.string().allow('').optional(),
   PAYMENT_PROVIDER: Joi.string().valid('cash', 'momo', 'vnpay').default('cash'),
+  PAYMENT_MOCK_ENABLED: Joi.boolean()
+    .truthy('true')
+    .truthy('1')
+    .falsy('false')
+    .falsy('0')
+    .default(false),
   VNPAY_TMN_CODE: Joi.string().allow('').optional(),
   VNPAY_HASH_SECRET: Joi.string().allow('').optional(),
   MOMO_PARTNER_CODE: Joi.string().allow('').optional(),
@@ -67,6 +76,16 @@ const { error, value } = envSchema.validate(process.env);
 
 if (error) {
   throw new Error(`Environment validation error: ${error.message}`);
+}
+
+if (value.NODE_ENV === 'production') {
+  const defaultJwtSecret = 'salon-duong-chi-super-secret-key';
+
+  if (value.JWT_SECRET === defaultJwtSecret || value.JWT_SECRET.length < 32) {
+    throw new Error(
+      'Environment validation error: JWT_SECRET must be changed and at least 32 characters in production'
+    );
+  }
 }
 
 module.exports = value;

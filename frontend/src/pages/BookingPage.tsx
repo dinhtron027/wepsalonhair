@@ -1,9 +1,10 @@
 import { useEffect, useState } from "react";
+import { useSearchParams } from "react-router-dom";
 import { useMutation, useQuery } from "@tanstack/react-query";
 import toast from "react-hot-toast";
 import LoadingSpinner from "../components/LoadingSpinner";
 import {
-  createBookingFromAdmin,
+  createPublicBooking,
   fetchBookedSlots,
   fetchPublicServices,
   queryKeys,
@@ -44,6 +45,7 @@ const buildTimeSlots = () => {
 const timeSlots = buildTimeSlots();
 
 const BookingPage = () => {
+  const [searchParams] = useSearchParams();
   const [bookingData, setBookingData] = useState<BookingFormData>(defaultFormState);
 
   const {
@@ -62,7 +64,7 @@ const BookingPage = () => {
   });
 
   const createBookingMutation = useMutation({
-    mutationFn: createBookingFromAdmin,
+    mutationFn: createPublicBooking,
     onSuccess: () => {
       toast.success("Hoàn hảo rùi! Lịch hẹn đã được giữ thành công.");
       setBookingData({
@@ -88,11 +90,20 @@ const BookingPage = () => {
       return;
     }
 
+    const serviceParam = searchParams.get("service");
+    let matchedServiceId = "";
+    if (serviceParam) {
+      const matched = services.find((s) => s.slug === serviceParam || s._id === serviceParam);
+      if (matched) {
+        matchedServiceId = matched._id;
+      }
+    }
+
     setBookingData((prev) => ({
       ...prev,
-      serviceId: prev.serviceId || services[0]._id,
+      serviceId: prev.serviceId || matchedServiceId || services[0]._id,
     }));
-  }, [services]);
+  }, [services, searchParams]);
 
   useEffect(() => {
     if (!bookingData.time || !bookedSlots?.includes(bookingData.time)) {

@@ -1,0 +1,38 @@
+name: Deploy to Production
+
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  deploy:
+    name: SSH Deploy to EC2
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout Code (Optional check-out to verify commit details)
+        uses: actions/checkout@v4
+
+      - name: Deploy via SSH
+        uses: appleboy/ssh-action@v1.0.3
+        with:
+          host: ${{ secrets.VPS_HOST }}
+          username: ${{ secrets.VPS_USER }}
+          key: ${{ secrets.VPS_SSH_KEY }}
+          port: 22
+          script: |
+            # Di chuyển vào thư mục dự án trên EC2
+            cd /home/ubuntu/salon-root
+            
+            # Kéo mã nguồn mới nhất từ Github
+            git pull origin main
+            
+            # Dừng và xóa các container cũ
+            docker compose down
+            
+            # Xây dựng và khởi chạy lại các container ở dạng background
+            docker compose up -d --build
+            
+            # Dọn dẹp các Docker image rác/không dùng để giải phóng đĩa cứng
+            docker system prune -f

@@ -6,6 +6,7 @@ const validateRequest = require('../middleware/validateRequest');
 const {
   bookingSchemas,
   adminSchemas,
+  customerSchemas,
   paramSchemas,
   productSchemas,
   serviceSchemas
@@ -52,7 +53,30 @@ router.delete(
 );
 
 router.get('/orders', adminController.getAdminOrders);
-router.get('/customers', adminController.getAdminCustomers);
+router.get(
+  '/customers',
+  validateRequest(customerSchemas.query, 'query'),
+  adminController.getAdminCustomers
+);
+router.get(
+  '/customers/:id',
+  adminController.getAdminCustomerDetail
+);
+router.post(
+  '/customers/:id/notes',
+  validateRequest(customerSchemas.note),
+  adminController.addAdminCustomerNote
+);
+router.post(
+  '/customers/:id/hair-formulas',
+  validateRequest(customerSchemas.hairFormula),
+  adminController.addAdminCustomerHairFormula
+);
+router.post(
+  '/customers/:id/rebook',
+  validateRequest(customerSchemas.rebook),
+  adminController.rebookAdminCustomer
+);
 router.get('/inventory', adminController.getInventoryOverview);
 router.post(
   '/inventory/adjust',

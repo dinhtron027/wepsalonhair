@@ -4,12 +4,16 @@ const Order = require('../models/Order');
 const Product = require('../models/Product');
 const Service = require('../models/Service');
 const User = require('../models/User');
+const CustomerNote = require('../models/CustomerNote');
+const HairFormula = require('../models/HairFormula');
 const ApiError = require('../utils/ApiError');
+const customerService = require('./customerService');
 
 const getAdminBookings = async () =>
   Booking.find()
     .populate('serviceId', 'name category price durationMinutes')
     .populate('userId', 'name phone email role')
+    .populate('customerId', 'fullName phone email customerSegment segments')
     .sort({ date: 1, time: 1, createdAt: -1 });
 
 const getAdminServices = async () => Service.find().sort({ createdAt: -1 });
@@ -21,105 +25,42 @@ const getAdminOrders = async () =>
     .populate('userId', 'name email phone role')
     .sort({ createdAt: -1 });
 
-const toVisitTimestamp = (date, time = '00:00') => {
-  const datePart = new Date(date).toISOString().slice(0, 10);
-  return new Date(`${datePart}T${time}:00.000Z`).toISOString();
+const getAdminCustomers = async (query = {}) => customerService.getAdminCustomers(query);
+
+const getAdminCustomerDetail = async (customerId) => {
+  return customerService.getCustomerDetail(customerId);
 };
 
-const mapCustomerHistory = (booking) => ({
-  bookingId: booking._id.toString(),
-  date: booking.date,
-  time: booking.time,
-  status: booking.status,
-  serviceName: booking.serviceName,
-  stylist: booking.stylist || '',
-  hairColorUsed: booking.hairColorUsed || '',
-  totalPrice: booking.totalPrice,
-  note: booking.note || ''
-});
+const addAdminCustomerNote = async (customerId, payload, adminUser) => {
+  return customerService.addCustomerNote(customerId, payload, adminUser);
+};
 
-const getAdminCustomers = async () => {
-  const [customers, bookings] = await Promise.all([
-    User.find({ role: 'customer' }).select('_id name phone email createdAt').lean(),
-    Booking.find()
-      .select(
-        '_id userId customerName phone email date time status serviceName stylist hairColorUsed totalPrice note'
-      )
-      .sort({ date: -1, time: -1, createdAt: -1 })
-      .lean()
-  ]);
+const addAdminCustomerHairFormula = async (customerId, payload, adminUser) => {
+  return customerService.addHairFormula(customerId, payload, adminUser);
+};
 
-  const customerMap = new Map();
+const rebookAdminCustomer = async (customerId, payload) => {
+  const Customer = require('../models/Customer');
+  const customer = await Customer.findById(customerId);
+  if (!customer) {
+    throw new ApiError(404, 'Không tìm thấy khách hàng');
+  }
 
-  customers.forEach((customer) => {
-    customerMap.set(customer._id.toString(), {
-      id: customer._id.toString(),
-      name: customer.name,
-      phone: customer.phone,
-      email: customer.email,
-      totalBookings: 0,
-      totalSpent: 0,
-      lastVisit: null,
-      stylists: [],
-      hairColors: [],
-      history: []
-    });
+  const bookingService = require('./bookingService');
+  const booking = await bookingService.createBooking({
+    userId: customer.userId || null,
+    customerName: customer.fullName,
+    phone: customer.phone,
+    email: customer.email || '',
+    serviceId: payload.serviceId,
+    date: payload.date,
+    time: payload.time,
+    stylist: payload.stylist || '',
+    note: payload.note || 'Đặt lại lịch nhanh từ CRM admin'
   });
 
-  bookings.forEach((booking) => {
-    const userId = booking.userId?.toString();
-    const fallbackKey = booking.phone || booking.email || booking._id.toString();
-    const customerKey = userId || fallbackKey;
-    const previous = customerMap.get(customerKey) || {
-      id: customerKey,
-      name: booking.customerName || 'Khach le',
-      phone: booking.phone || '',
-      email: booking.email || '',
-      totalBookings: 0,
-      totalSpent: 0,
-      lastVisit: null,
-      stylists: [],
-      hairColors: [],
-      history: []
-    };
-
-    const historyItem = mapCustomerHistory(booking);
-    const visitTimestamp = toVisitTimestamp(booking.date, booking.time);
-
-    if (historyItem.stylist && !previous.stylists.includes(historyItem.stylist)) {
-      previous.stylists.push(historyItem.stylist);
-    }
-
-    if (
-      historyItem.hairColorUsed &&
-      !previous.hairColors.includes(historyItem.hairColorUsed)
-    ) {
-      previous.hairColors.push(historyItem.hairColorUsed);
-    }
-
-    previous.totalBookings += 1;
-    previous.totalSpent += historyItem.totalPrice || 0;
-    previous.history.push(historyItem);
-
-    if (!previous.lastVisit || visitTimestamp > previous.lastVisit) {
-      previous.lastVisit = visitTimestamp;
-    }
-
-    customerMap.set(customerKey, previous);
-  });
-
-  return Array.from(customerMap.values()).sort((a, b) => {
-    if (!a.lastVisit && !b.lastVisit) {
-      return 0;
-    }
-    if (!a.lastVisit) {
-      return 1;
-    }
-    if (!b.lastVisit) {
-      return -1;
-    }
-    return b.lastVisit.localeCompare(a.lastVisit);
-  });
+  await customerService.refreshCustomerStats(customerId);
+  return booking;
 };
 
 const getInventoryOverview = async () => {
@@ -146,27 +87,46 @@ const getInventoryOverview = async () => {
 };
 
 const adjustInventory = async (payload, performedBy) => {
-  const product = await Product.findById(payload.productId);
-
-  if (!product) {
-    throw new ApiError(404, 'Khong tim thay san pham');
-  }
-
   const quantity = Number(payload.quantity || 0);
   if (quantity <= 0) {
     throw new ApiError(400, 'So luong phai lon hon 0');
   }
 
-  const previousStock = product.stock;
   const delta = payload.type === 'import' ? quantity : -quantity;
-  const newStock = previousStock + delta;
+  const updateQuery = {
+    _id: payload.productId
+  };
 
-  if (newStock < 0) {
-    throw new ApiError(400, 'Khong du ton kho de xuat');
+  if (payload.type === 'export') {
+    updateQuery.stock = {
+      $gte: quantity
+    };
   }
 
-  product.stock = newStock;
-  await product.save();
+  const previousProduct = await Product.findOneAndUpdate(
+    updateQuery,
+    {
+      $inc: {
+        stock: delta
+      }
+    },
+    {
+      new: false,
+      runValidators: true
+    }
+  );
+
+  if (!previousProduct) {
+    const productExists = await Product.exists({ _id: payload.productId });
+    throw new ApiError(
+      productExists ? 400 : 404,
+      productExists ? 'Khong du ton kho de xuat' : 'Khong tim thay san pham'
+    );
+  }
+
+  const previousStock = previousProduct.stock;
+  const newStock = previousStock + delta;
+  const product = await Product.findById(payload.productId);
 
   const transaction = await InventoryTransaction.create({
     productId: product._id,
@@ -284,6 +244,10 @@ module.exports = {
   getAdminBookings,
   getAdminOrders,
   getAdminCustomers,
+  getAdminCustomerDetail,
+  addAdminCustomerNote,
+  addAdminCustomerHairFormula,
+  rebookAdminCustomer,
   getAdminProducts,
   getAdminServices,
   getInventoryOverview,

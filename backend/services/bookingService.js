@@ -1,4 +1,5 @@
 const Booking = require('../models/Booking');
+const Customer = require('../models/Customer');
 const Service = require('../models/Service');
 const ApiError = require('../utils/ApiError');
 const { normalizeDateOnly } = require('../utils/date');
@@ -7,6 +8,7 @@ const {
   emitRealtimeEvent
 } = require('../socket/io');
 const notificationService = require('./notificationService');
+const customerService = require('./customerService');
 
 const ACTIVE_BOOKING_STATUSES = ['pending', 'confirmed', 'in_service'];
 
@@ -151,12 +153,29 @@ const createBooking = async (payload) => {
     date: normalizedDate,
     time: payload.time
   });
+  let customer = null;
+
+  if (payload.customerId) {
+    customer = await Customer.findById(payload.customerId);
+
+    if (!customer) {
+      throw new ApiError(404, 'Khong tim thay khach hang');
+    }
+  } else {
+    customer = await customerService.ensureCustomerProfile({
+      userId: payload.userId || null,
+      fullName: payload.customerName || payload.name,
+      phone: payload.phone,
+      email: payload.email || ''
+    });
+  }
 
   const booking = await Booking.create({
-    userId: payload.userId || null,
-    customerName: payload.customerName || payload.name,
-    phone: payload.phone,
-    email: payload.email || '',
+    userId: payload.userId || customer.userId || null,
+    customerId: customer._id,
+    customerName: payload.customerName || payload.name || customer.fullName,
+    phone: payload.phone || customer.phone,
+    email: payload.email || customer.email || '',
     serviceId: service._id,
     serviceName: service.name,
     stylist: payload.stylist || '',
@@ -170,8 +189,9 @@ const createBooking = async (payload) => {
     note: payload.note || ''
   });
 
+  await customerService.refreshCustomerStats(customer._id);
   await notificationService.notifyBookingCreated(booking);
-  emitRealtimeEvent('booking_created', booking.toObject());
+  emitRealtimeEvent('booking_created', booking.toObject(), { room: 'admins' });
   broadcastSystemNotification('Lich vua duoc dat', 'booking');
 
   return booking;
@@ -234,7 +254,10 @@ const updateBookingStatus = async (bookingId, payload) => {
   booking.note = payload.note ?? booking.note;
 
   await booking.save();
-  emitRealtimeEvent('booking_updated', booking.toObject());
+  if (booking.customerId) {
+    await customerService.refreshCustomerStats(booking.customerId);
+  }
+  emitRealtimeEvent('booking_updated', booking.toObject(), { room: 'admins' });
   broadcastSystemNotification('Co cap nhat lich hen moi', 'booking');
 
   return booking;
@@ -256,7 +279,10 @@ const cancelBooking = async (bookingId, user) => {
 
   booking.status = 'cancelled';
   await booking.save();
-  emitRealtimeEvent('booking_updated', booking.toObject());
+  if (booking.customerId) {
+    await customerService.refreshCustomerStats(booking.customerId);
+  }
+  emitRealtimeEvent('booking_updated', booking.toObject(), { room: 'admins' });
   broadcastSystemNotification('Lich hen vua bi huy', 'booking');
 
   return booking;

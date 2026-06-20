@@ -26,11 +26,11 @@ const authSchemas = {
     name: Joi.string().trim().min(2).max(120).required(),
     phone: Joi.string().trim().min(8).max(20).required(),
     email: Joi.string().trim().email().required(),
-    password: Joi.string().min(6).max(128).required()
+    password: Joi.string().min(8).max(128).required()
   }),
   login: Joi.object({
     identifier: Joi.string().trim().required(),
-    password: Joi.string().min(6).max(128).required()
+    password: Joi.string().min(1).max(128).required()
   })
 };
 
@@ -73,7 +73,13 @@ const serviceSchemas = {
     discount: Joi.number().min(0).max(100).default(0),
     description: Joi.string().trim().allow('').default(''),
     image: Joi.string().trim().uri().allow('').default(''),
+    duration: Joi.number().integer().min(15).max(480),
     durationMinutes: Joi.number().integer().min(15).max(480).default(60),
+    slug: Joi.string().trim().allow(''),
+    categorySlug: Joi.string().trim().allow(''),
+    suitableFor: Joi.array().items(Joi.string().trim()).default([]),
+    benefits: Joi.array().items(Joi.string().trim()).default([]),
+    isFeatured: Joi.boolean().default(false),
     addons: Joi.array().items(addOnSchema).default([]),
     pricingRules: Joi.array().items(pricingRuleSchema).default([])
   }),
@@ -84,7 +90,13 @@ const serviceSchemas = {
     discount: Joi.number().min(0).max(100),
     description: Joi.string().trim().allow(''),
     image: Joi.string().trim().uri().allow(''),
+    duration: Joi.number().integer().min(15).max(480),
     durationMinutes: Joi.number().integer().min(15).max(480),
+    slug: Joi.string().trim().allow(''),
+    categorySlug: Joi.string().trim().allow(''),
+    suitableFor: Joi.array().items(Joi.string().trim()),
+    benefits: Joi.array().items(Joi.string().trim()),
+    isFeatured: Joi.boolean(),
     addons: Joi.array().items(addOnSchema),
     pricingRules: Joi.array().items(pricingRuleSchema)
   }).min(1)
@@ -151,6 +163,57 @@ const adminSchemas = {
   })
 };
 
+const customerSchemas = {
+  query: Joi.object({
+    search: Joi.string().trim().allow(''),
+    segment: Joi.string().valid(
+      'new',
+      'regular',
+      'vip',
+      'inactive',
+      'high_value',
+      'color_customer',
+      'treatment_needed'
+    ).allow('', null),
+    serviceCategory: Joi.string().trim().allow('', null),
+    staffId: Joi.string().trim().allow('', null),
+    status: Joi.string().valid('pending', 'confirmed', 'in_service', 'completed', 'cancelled').allow('', null),
+    dateFrom: Joi.date().iso().allow('', null),
+    dateTo: Joi.date().iso().allow('', null),
+    sortBy: Joi.string()
+      .valid('lastVisitAt', 'totalSpent', 'totalAppointments', 'fullName')
+      .default('lastVisitAt'),
+    sortOrder: Joi.string().valid('asc', 'desc').default('desc'),
+    page: Joi.number().integer().min(1).default(1),
+    limit: Joi.number().integer().min(1).max(100).default(10)
+  }),
+  note: Joi.object({
+    note: Joi.string().trim().min(2).max(3000).required(),
+    type: Joi.string()
+      .valid('consultation', 'service', 'complaint', 'follow_up', 'internal')
+      .required()
+  }),
+  hairFormula: Joi.object({
+    appointmentId: objectId.allow('', null),
+    serviceName: Joi.string().trim().max(150).allow('', null),
+    colorName: Joi.string().trim().min(2).max(150).required(),
+    formula: Joi.string().trim().min(2).max(1000).required(),
+    oxidant: Joi.string().trim().max(150).allow('', null),
+    hairBaseLevel: Joi.string().trim().max(150).allow('', null),
+    hairConditionBefore: Joi.string().trim().max(1000).allow('', null),
+    hairConditionAfter: Joi.string().trim().max(1000).allow('', null),
+    aftercareAdvice: Joi.string().trim().max(2000).allow('', null)
+  }),
+  rebook: Joi.object({
+    serviceId: objectId.required(),
+    date: Joi.date().iso().required(),
+    time: Joi.string().pattern(timePattern).required(),
+    stylist: Joi.string().trim().max(120).allow('', null),
+    note: Joi.string().trim().max(1000).allow('', null),
+    status: Joi.string().valid('pending', 'confirmed').default('pending')
+  })
+};
+
 const paramSchemas = {
   mongoId: Joi.object({
     id: objectId.required()
@@ -168,5 +231,6 @@ module.exports = {
   productSchemas,
   cartSchemas,
   orderSchemas,
-  paramSchemas
+  paramSchemas,
+  customerSchemas
 };

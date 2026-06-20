@@ -1,6 +1,40 @@
 const env = require('../config/env');
+const ApiError = require('../utils/ApiError');
+
+const ensureConfiguredProvider = (provider) => {
+  if (provider === 'cash') {
+    return;
+  }
+
+  if (env.NODE_ENV === 'production' && !env.PAYMENT_MOCK_ENABLED) {
+    throw new ApiError(
+      501,
+      'Nha cung cap thanh toan chua duoc cau hinh production'
+    );
+  }
+
+  if (provider === 'vnpay') {
+    const hasVnpayConfig = Boolean(env.VNPAY_TMN_CODE && env.VNPAY_HASH_SECRET);
+
+    if (env.NODE_ENV === 'production' && !hasVnpayConfig) {
+      throw new ApiError(503, 'Cau hinh VNPay production chua day du');
+    }
+  }
+
+  if (provider === 'momo') {
+    const hasMomoConfig = Boolean(
+      env.MOMO_PARTNER_CODE && env.MOMO_ACCESS_KEY && env.MOMO_SECRET_KEY
+    );
+
+    if (env.NODE_ENV === 'production' && !hasMomoConfig) {
+      throw new ApiError(503, 'Cau hinh Momo production chua day du');
+    }
+  }
+};
 
 const createMockPayment = ({ orderId, amount, provider = env.PAYMENT_PROVIDER }) => {
+  ensureConfiguredProvider(provider);
+
   if (provider === 'cash') {
     return {
       provider: 'cash',
@@ -39,5 +73,6 @@ const createMockPayment = ({ orderId, amount, provider = env.PAYMENT_PROVIDER })
 };
 
 module.exports = {
-  createMockPayment
+  createMockPayment,
+  ensureConfiguredProvider
 };

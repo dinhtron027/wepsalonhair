@@ -21,12 +21,18 @@ export type ServicePricingRule = {
 export type ServiceEntity = {
   _id: string;
   name: string;
+  slug?: string;
   description: string;
   category: string;
+  categorySlug?: string;
+  duration?: number;
   durationMinutes: number;
   price: number;
   discount?: number;
   image?: string;
+  suitableFor?: string[];
+  benefits?: string[];
+  isFeatured?: boolean;
   addons?: Array<{
     _id?: string;
     name: string;
@@ -111,29 +117,185 @@ export type OrderEntity = {
   note?: string;
 };
 
-export type CustomerHistory = {
+export type CustomerSegment =
+  | "new"
+  | "regular"
+  | "vip"
+  | "inactive"
+  | "high_value"
+  | "color_customer"
+  | "treatment_needed";
+
+export type CustomerNoteType =
+  | "consultation"
+  | "service"
+  | "complaint"
+  | "follow_up"
+  | "internal";
+
+export type CustomerNote = {
+  _id: string;
+  customerId: string;
+  note: string;
+  type: CustomerNoteType;
+  createdBy?: {
+    _id: string;
+    name: string;
+    role: UserRole;
+  } | null;
+  createdAt: string;
+  updatedAt: string;
+};
+
+export type HairFormula = {
+  _id: string;
+  customerId: string;
+  appointmentId?:
+    | string
+    | {
+        _id: string;
+        date: string;
+        time: string;
+        serviceName: string;
+        stylist: string;
+        status: BookingStatus;
+        totalPrice: number;
+      }
+    | null;
+  serviceName: string;
+  colorName: string;
+  formula: string;
+  oxidant: string;
+  hairBaseLevel: string;
+  hairConditionBefore: string;
+  hairConditionAfter: string;
+  aftercareAdvice: string;
+  createdBy?: {
+    _id: string;
+    name: string;
+    role: UserRole;
+  } | null;
+  createdAt: string;
+  updatedAt: string;
+};
+
+export type CustomerHistoryItem = {
   bookingId: string;
   date: string;
   time: string;
   status: BookingStatus;
+  serviceId: string | null;
   serviceName: string;
+  serviceCategory: string;
   stylist: string;
   hairColorUsed: string;
+  formula: string;
+  oxidant: string;
+  hairBaseLevel: string;
+  hairConditionBefore: string;
+  hairConditionAfter: string;
+  aftercareAdvice: string;
   totalPrice: number;
   note: string;
 };
 
 export type CustomerEntity = {
   id: string;
-  name: string;
+  userId: string | null;
+  fullName: string;
   phone: string;
   email: string;
-  totalBookings: number;
+  totalAppointments: number;
   totalSpent: number;
-  lastVisit: string | null;
-  stylists: string[];
-  hairColors: string[];
-  history: CustomerHistory[];
+  lastVisitAt: string | null;
+  customerSegment: CustomerSegment;
+  segments: CustomerSegment[];
+  inactiveForDays: number | null;
+  preferredStaff: string;
+  preferredServices: string[];
+  hairColorHistory: string[];
+  noteCount: number;
+  lastNote: string;
+  latestNote: CustomerNote | null;
+  latestHairFormula: HairFormula | null;
+  latestService: {
+    bookingId: string;
+    serviceId: string | null;
+    serviceName: string;
+    serviceCategory: string;
+    date: string;
+    time: string;
+    stylist: string;
+  } | null;
+  careSuggestions: string[];
+  createdAt: string;
+  updatedAt: string;
+};
+
+export type PurchasedProduct = {
+  orderId: string;
+  productId: string;
+  name: string;
+  quantity: number;
+  price: number;
+  orderStatus: string;
+  purchasedAt: string;
+};
+
+export type CustomerDetail = CustomerEntity & {
+  history: CustomerHistoryItem[];
+  notes: CustomerNote[];
+  hairFormulas: HairFormula[];
+  orders: OrderEntity[];
+  purchasedProducts: PurchasedProduct[];
+  filterOptions: CustomerFilterOptions;
+};
+
+export type CustomerFilterParams = {
+  search?: string;
+  segment?: CustomerSegment | "";
+  serviceCategory?: string;
+  staffId?: string;
+  status?: BookingStatus | "";
+  dateFrom?: string;
+  dateTo?: string;
+  sortBy?: "lastVisitAt" | "totalSpent" | "totalAppointments" | "fullName";
+  sortOrder?: "asc" | "desc";
+  page?: number;
+  limit?: number;
+};
+
+export type CustomerSummary = {
+  totalCustomers: number;
+  newCustomers: number;
+  vipCustomers: number;
+  inactiveCustomers: number;
+  totalRevenue: number;
+  followUpCustomers: number;
+};
+
+export type CustomerFilterOptions = {
+  services: ServiceEntity[];
+  serviceCategories: Array<{
+    value: string;
+    label: string;
+  }>;
+  staff: Array<{
+    id: string;
+    name: string;
+  }>;
+};
+
+export type CustomerListResponse = {
+  items: CustomerEntity[];
+  pagination: {
+    page: number;
+    limit: number;
+    total: number;
+    totalPages: number;
+  };
+  summary: CustomerSummary;
+  filterOptions: CustomerFilterOptions;
 };
 
 export type InventoryTransactionEntity = {
@@ -192,6 +354,7 @@ export const queryKeys = {
   adminProducts: ["admin", "products"] as const,
   adminOrders: ["admin", "orders"] as const,
   adminCustomers: ["admin", "customers"] as const,
+  adminCustomerDetails: ["admin", "customers", "detail"] as const,
   adminInventory: ["admin", "inventory"] as const,
   adminStats: ["admin", "stats"] as const,
 };
@@ -226,7 +389,7 @@ export const fetchBookedSlots = async (date: string) => {
   );
 };
 
-export const createBookingFromAdmin = async (payload: {
+export type CreateBookingPayload = {
   customerName: string;
   phone: string;
   email?: string;
@@ -234,9 +397,33 @@ export const createBookingFromAdmin = async (payload: {
   date: string;
   time: string;
   note?: string;
-}) => {
+};
+
+export const createBookingFromAdmin = async (payload: CreateBookingPayload) => {
   const response = await api.post("/api/bookings", payload);
   return extractApiData<BookingEntity>(response);
+};
+
+/** Alias rõ nghĩa hơn để dùng từ trang public */
+export const createPublicBooking = createBookingFromAdmin;
+
+export type CreateOrderPayload = {
+  products: Array<{
+    productId: string;
+    name: string;
+    price: number;
+    quantity: number;
+  }>;
+  totalPrice: number;
+  note?: string;
+  payment?: {
+    provider: "cash" | "momo" | "vnpay";
+  };
+};
+
+export const createOrder = async (payload: CreateOrderPayload) => {
+  const response = await api.post("/api/orders", payload);
+  return extractApiData<OrderEntity>(response);
 };
 
 export const updateAdminBooking = async (
@@ -303,9 +490,61 @@ export const fetchAdminOrders = async () => {
   return asArray<OrderEntity>(extractApiData<unknown>(response));
 };
 
-export const fetchAdminCustomers = async () => {
-  const response = await api.get("/api/admin/customers");
-  return asArray<CustomerEntity>(extractApiData<unknown>(response));
+export const fetchAdminCustomers = async (params: CustomerFilterParams = {}) => {
+  const response = await api.get("/api/admin/customers", { params });
+  return extractApiData<CustomerListResponse>(response);
+};
+
+export const fetchAdminCustomerDetail = async (customerId: string) => {
+  const response = await api.get(`/api/admin/customers/${customerId}`);
+  return extractApiData<CustomerDetail>(response);
+};
+
+export const addCustomerNote = async (
+  customerId: string,
+  payload: {
+    note: string;
+    type: CustomerNoteType;
+  }
+) => {
+  const response = await api.post(`/api/admin/customers/${customerId}/notes`, payload);
+  return extractApiData<CustomerNote>(response);
+};
+
+export const addCustomerHairFormula = async (
+  customerId: string,
+  payload: {
+    appointmentId?: string;
+    serviceName?: string;
+    colorName: string;
+    formula: string;
+    oxidant?: string;
+    hairBaseLevel?: string;
+    hairConditionBefore?: string;
+    hairConditionAfter?: string;
+    aftercareAdvice?: string;
+  }
+) => {
+  const response = await api.post(
+    `/api/admin/customers/${customerId}/hair-formulas`,
+    payload
+  );
+  return extractApiData<HairFormula>(response);
+};
+
+export const rebookCustomer = async (
+  customerId: string,
+  payload: {
+    serviceId: string;
+    date: string;
+    time: string;
+    stylist?: string;
+    note?: string;
+    status?: "pending" | "confirmed";
+  }
+) => {
+  const response = await api.post(`/api/admin/customers/${customerId}/rebook`, payload);
+  return extractApiData<BookingEntity>(response);
 };
 
 export const fetchInventoryOverview = async () => {

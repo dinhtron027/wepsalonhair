@@ -3,6 +3,12 @@ import react from "@vitejs/plugin-react";
 
 export default defineConfig({
   plugins: [react()],
+  optimizeDeps: {
+    include: [
+      "react-facebook-login/dist/facebook-login-render-props",
+      "react-facebook-login",
+    ],
+  },
   build: {
     rollupOptions: {
       output: {

@@ -76,10 +76,24 @@ const orderSchema = new mongoose.Schema(
         type: Object,
         default: {}
       }
+    },
+    seedKey: {
+      type: String,
+      default: undefined
     }
   },
   {
     timestamps: true
+  }
+);
+
+orderSchema.index({ userId: 1, createdAt: -1 });
+orderSchema.index({ status: 1, createdAt: -1 });
+orderSchema.index(
+  { seedKey: 1 },
+  {
+    unique: true,
+    sparse: true
   }
 );
 

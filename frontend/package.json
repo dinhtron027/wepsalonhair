@@ -7,11 +7,13 @@
     "dev": "vite",
     "build": "vite build",
     "preview": "vite preview",
+    "typecheck": "tsc --noEmit",
     "lint": "eslint . --ext ts,tsx --report-unused-disable-directives --max-warnings 0"
   },
   "dependencies": {
     "@react-oauth/google": "^0.13.4",
     "@tanstack/react-query": "^5.91.0",
+    "@types/styled-components": "^5.1.36",
     "axios": "^1.17.0",
     "date-fns": "^4.1.0",
     "framer-motion": "^10.18.0",
@@ -23,6 +25,7 @@
     "react-hot-toast": "^2.6.0",
     "react-router-dom": "^6.30.4",
     "socket.io-client": "^4.8.3",
+    "styled-components": "^6.4.2",
     "swiper": "^12.2.0",
     "zustand": "^4.5.2"
   },

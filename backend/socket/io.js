@@ -57,7 +57,9 @@ const socketAuthMiddleware = async (socket, next) => {
       return next();
     }
 
-    const decoded = jwt.verify(token, env.JWT_SECRET);
+    const decoded = jwt.verify(token, env.JWT_SECRET, {
+      algorithms: ['HS256']
+    });
     const user = await User.findById(decoded.sub).select('_id name role');
 
     if (!user) {

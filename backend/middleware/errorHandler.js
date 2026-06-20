@@ -38,7 +38,10 @@ const errorHandler = (error, req, res, next) => {
   const statusCode = normalizedError.statusCode || 500;
   const payload = {
     success: false,
-    message: normalizedError.message || 'Internal server error'
+    message: normalizedError.message || 'Internal server error',
+    meta: {
+      requestId: res.locals?.requestId || req.id || null
+    }
   };
 
   if (normalizedError.details && process.env.NODE_ENV !== 'production') {

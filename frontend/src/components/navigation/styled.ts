@@ -416,6 +416,8 @@ export const MobilePanel = styled.nav<{ $isOpen: boolean }>`
   transform: ${({ $isOpen }) =>
     $isOpen ? "translateY(0)" : "translateY(-100%)"};
   opacity: ${({ $isOpen }) => ($isOpen ? 1 : 0)};
+  pointer-events: ${({ $isOpen }) => ($isOpen ? "auto" : "none")};
+  visibility: ${({ $isOpen }) => ($isOpen ? "visible" : "hidden")};
   transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1),
     opacity 0.25s ease;
 

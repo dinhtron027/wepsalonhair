@@ -187,7 +187,7 @@ const MobileMenu: React.FC<MobileMenuProps> = ({
           </>
         ) : (
           <MobileNavItem as={Link} to="/login" onClick={onClose}>
-            Đăng Nhập / Trải Nghiệm
+            Đăng Nhập 
           </MobileNavItem>
         )}
 

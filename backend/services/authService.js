@@ -19,12 +19,23 @@ const sanitizeUser = (user) => ({
 });
 
 const ensureUniqueIdentity = async (email, phone) => {
+  const query = [{ email: email.toLowerCase() }];
+  if (phone) {
+    query.push({ phone });
+  }
+
   const existingUser = await User.findOne({
-    $or: [{ email: email.toLowerCase() }, { phone }]
+    $or: query
   });
 
   if (existingUser) {
-    throw new ApiError(409, 'Email hoac so dien thoai da duoc su dung');
+    if (existingUser.email === email.toLowerCase()) {
+      throw new ApiError(409, 'Email đã được sử dụng');
+    }
+    if (phone && existingUser.phone === phone) {
+      throw new ApiError(409, 'Số điện thoại đã được sử dụng');
+    }
+    throw new ApiError(409, 'Email hoặc số điện thoại đã được sử dụng');
   }
 };
 

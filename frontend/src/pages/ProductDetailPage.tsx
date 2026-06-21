@@ -1,9 +1,8 @@
 import { useEffect, useState } from "react";
 import { Link, useParams } from "react-router-dom";
 import { motion } from "framer-motion";
-import { ArrowLeft, ShoppingBag } from "lucide-react";
+import { ArrowLeft, ShoppingBag, Package, Star } from "lucide-react";
 import toast from "react-hot-toast";
-import Button from "../components/Button";
 import LoadingSpinner from "../components/LoadingSpinner";
 import useCartStore, { ProductEntity } from "../store/useCartStore";
 import api, { extractApiData, getApiErrorMessage } from "../services/api";
@@ -17,6 +16,7 @@ type ProductResponse = {
   image: string;
   category: string;
   isActive: boolean;
+  lowStockThreshold?: number;
 };
 
 const formatCurrency = (value: number) =>
@@ -25,6 +25,15 @@ const formatCurrency = (value: number) =>
     currency: "VND",
     maximumFractionDigits: 0,
   }).format(value);
+
+const CATEGORY_LABELS: Record<string, string> = {
+  "dau-goi": "Dầu gội",
+  "dau-xa": "Dầu xả",
+  "phuc-hoi": "Phục hồi tóc",
+  "keo-sap": "Keo & Sáp",
+  "nhuom": "Nhuộm tóc",
+  "duong-am": "Dưỡng ẩm",
+};
 
 const mapApiProduct = (item: ProductResponse): ProductEntity => ({
   _id: item._id,
@@ -40,14 +49,16 @@ const mapApiProduct = (item: ProductResponse): ProductEntity => ({
 });
 
 const ProductDetailPage = () => {
-  const { slug } = useParams<{ slug: string }>();
+  // Route dùng param `:id` là MongoDB ObjectId
+  const { slug: id } = useParams<{ slug: string }>();
   const { addToCart } = useCartStore();
   const [product, setProduct] = useState<ProductEntity | null>(null);
   const [isLoading, setIsLoading] = useState(true);
+  const [quantity, setQuantity] = useState(1);
 
   useEffect(() => {
     const loadDetail = async () => {
-      if (!slug) {
+      if (!id) {
         setProduct(null);
         setIsLoading(false);
         return;
@@ -55,11 +66,11 @@ const ProductDetailPage = () => {
 
       setIsLoading(true);
       try {
-        const response = await api.get(`/api/products/${slug}`);
+        const response = await api.get(`/api/products/${id}`);
         const payload = extractApiData<ProductResponse>(response);
         setProduct(mapApiProduct(payload));
       } catch (error) {
-        toast.error(getApiErrorMessage(error, "Khong the tai chi tiet san pham"));
+        toast.error(getApiErrorMessage(error, "Không thể tải chi tiết sản phẩm"));
         setProduct(null);
       } finally {
         setIsLoading(false);
@@ -67,92 +78,181 @@ const ProductDetailPage = () => {
     };
 
     loadDetail();
-  }, [slug]);
+  }, [id]);
 
   if (isLoading) {
     return (
-      <div className="mx-auto max-w-4xl px-4 py-20">
-        <LoadingSpinner size="lg" label="Dang tai chi tiet san pham..." />
+      <div className="mx-auto max-w-4xl px-4 py-20 text-center">
+        <LoadingSpinner size="lg" label="Đang tải sản phẩm..." />
       </div>
     );
   }
 
   if (!product) {
     return (
-      <div className="mx-auto max-w-4xl px-4 py-20 text-center">
-        <p className="text-sm uppercase tracking-[0.3em] text-rose-400">Khong tim thay</p>
-        <h1 className="mt-2 text-3xl font-semibold text-slate-900">San pham khong ton tai</h1>
-        <div className="mt-6 flex justify-center gap-3">
-          <Button to="/products" variant="primary">
-            Quay lai danh sach
-          </Button>
-        </div>
+      <div className="mx-auto max-w-4xl px-4 py-24 text-center">
+        <Package className="mx-auto mb-4 text-rose-200" size={64} />
+        <p className="text-sm uppercase tracking-[0.3em] text-rose-400">Không tìm thấy</p>
+        <h1 className="mt-2 text-3xl font-semibold text-slate-900">Sản phẩm không tồn tại</h1>
+        <p className="mt-2 text-slate-500">Sản phẩm có thể đã bị xóa hoặc đường dẫn không đúng.</p>
+        <Link
+          to="/products"
+          className="mt-6 inline-flex items-center gap-2 rounded-2xl bg-rose-500 px-6 py-3 font-semibold text-white transition hover:bg-rose-600"
+        >
+          <ArrowLeft size={16} /> Quay lại danh sách
+        </Link>
       </div>
     );
   }
 
   const isOutOfStock = typeof product.stock === "number" && product.stock <= 0;
 
+  const handleAddToCart = () => {
+    if (isOutOfStock) {
+      toast.error("Sản phẩm đã hết hàng");
+      return;
+    }
+    addToCart(product, quantity);
+    toast.success(`Đã thêm ${quantity} "${product.name}" vào giỏ hàng`);
+  };
+
   return (
-    <div className="space-y-14 pb-20">
+    <div className="min-h-screen bg-gradient-to-br from-rose-50/40 via-white to-amber-50/30 pb-20">
+      {/* Hero */}
       <section className="relative overflow-hidden bg-gradient-to-br from-rose-50 via-white to-amber-50">
-        <div className="absolute inset-0">
+        <div className="absolute inset-0 pointer-events-none">
           <div className="absolute -left-24 top-10 h-72 w-72 rounded-full bg-rose-100 blur-3xl" />
-          <div className="absolute right-10 top-10 h-72 w-72 rounded-full bg-amber-100 blur-3xl" />
+          <div className="absolute right-10 bottom-0 h-72 w-72 rounded-full bg-amber-100 blur-3xl" />
         </div>
-        <div className="relative mx-auto grid max-w-6xl grid-cols-1 gap-10 px-4 py-16 md:grid-cols-2 md:py-20">
-          <div className="space-y-4">
-            <Link to="/products" className="inline-flex items-center gap-2 text-sm text-rose-500 hover:text-rose-600">
-              <ArrowLeft size={16} /> Quay lai danh sach
+
+        <div className="relative mx-auto grid max-w-6xl grid-cols-1 gap-10 px-4 py-14 md:grid-cols-2 md:py-20">
+          {/* Left: Info */}
+          <div className="flex flex-col justify-center space-y-5">
+            <Link
+              to="/products"
+              className="inline-flex w-fit items-center gap-2 rounded-full border border-rose-100 bg-white px-4 py-1.5 text-sm font-medium text-rose-500 shadow-sm transition hover:bg-rose-50"
+            >
+              <ArrowLeft size={14} /> Quay lại sản phẩm
             </Link>
-            <p className="text-xs uppercase tracking-[0.3em] text-rose-400">{product.category || "San pham"}</p>
-            <h1 className="text-3xl font-semibold text-slate-900 md:text-4xl">{product.name}</h1>
-            <p className="text-slate-600">{product.description || "Khong co mo ta."}</p>
-            <div className="flex items-center gap-6">
+
+            <div>
+              <p className="text-xs font-semibold uppercase tracking-[0.3em] text-rose-400">
+                {(CATEGORY_LABELS[product.category ?? ""] ?? product.category) || "Sản phẩm"}
+              </p>
+              <h1 className="mt-2 text-3xl font-bold text-slate-900 md:text-4xl leading-tight">
+                {product.name}
+              </h1>
+            </div>
+
+            {product.description && (
+              <p className="text-slate-600 leading-relaxed">{product.description}</p>
+            )}
+
+            {/* Price & Stock */}
+            <div className="flex items-center gap-6 rounded-2xl border border-rose-100 bg-white/70 px-5 py-4 backdrop-blur-sm">
               <div>
-                <p className="text-xs uppercase tracking-[0.2em] text-rose-400">Gia</p>
-                <p className="text-3xl font-semibold text-rose-600">{formatCurrency(product.price)}</p>
+                <p className="text-xs uppercase tracking-wider text-rose-400">Giá bán</p>
+                <p className="text-3xl font-bold text-rose-600">{formatCurrency(product.price)}</p>
               </div>
               <div className="h-12 w-px bg-rose-100" />
               <div>
-                <p className="text-xs uppercase tracking-[0.2em] text-rose-400">Ton kho</p>
-                <p className={`text-base font-semibold ${isOutOfStock ? "text-red-500" : "text-slate-800"}`}>
-                  {isOutOfStock ? "Het hang" : product.stock ?? "Dang cap nhat"}
+                <p className="text-xs uppercase tracking-wider text-rose-400">Tồn kho</p>
+                <p
+                  className={`text-base font-bold ${
+                    isOutOfStock ? "text-red-500" : "text-emerald-600"
+                  }`}
+                >
+                  {isOutOfStock
+                    ? "Hết hàng"
+                    : typeof product.stock === "number"
+                    ? `${product.stock} sản phẩm`
+                    : "Đang cập nhật"}
                 </p>
               </div>
             </div>
-            <div className="flex flex-wrap gap-3">
-              <Button
-                variant="primary"
-                onClick={() => {
-                  if (isOutOfStock) {
-                    toast.error("San pham het hang");
-                    return;
-                  }
-                  addToCart(product);
-                  toast.success("Da them vao gio hang");
-                }}
-                className="gap-2"
+
+            {/* Rating placeholder */}
+            <div className="flex items-center gap-1.5">
+              {[1, 2, 3, 4, 5].map((star) => (
+                <Star key={star} size={16} className="fill-amber-400 text-amber-400" />
+              ))}
+              <span className="ml-1 text-sm text-slate-500">(Sản phẩm chính hãng)</span>
+            </div>
+
+            {/* Quantity & Add to Cart */}
+            <div className="flex flex-wrap items-center gap-3">
+              {!isOutOfStock && (
+                <div className="flex items-center gap-1 rounded-xl border border-rose-100 bg-white px-1 py-1">
+                  <button
+                    onClick={() => setQuantity((q) => Math.max(1, q - 1))}
+                    className="flex h-8 w-8 items-center justify-center rounded-lg text-slate-600 hover:bg-rose-50 hover:text-rose-600"
+                  >
+                    −
+                  </button>
+                  <span className="w-10 text-center font-semibold text-slate-800">{quantity}</span>
+                  <button
+                    onClick={() =>
+                      setQuantity((q) =>
+                        typeof product.stock === "number" ? Math.min(product.stock, q + 1) : q + 1
+                      )
+                    }
+                    className="flex h-8 w-8 items-center justify-center rounded-lg text-slate-600 hover:bg-rose-50 hover:text-rose-600"
+                  >
+                    +
+                  </button>
+                </div>
+              )}
+
+              <button
+                onClick={handleAddToCart}
+                disabled={isOutOfStock}
+                className={`flex items-center gap-2 rounded-xl px-6 py-3 font-semibold transition-all ${
+                  isOutOfStock
+                    ? "cursor-not-allowed bg-slate-100 text-slate-400"
+                    : "bg-rose-500 text-white shadow-lg shadow-rose-200 hover:bg-rose-600 active:scale-95"
+                }`}
               >
-                <ShoppingBag size={16} /> Them vao gio hang
-              </Button>
-              <Button to="/cart" variant="ghost">
-                Xem gio hang
-              </Button>
+                <ShoppingBag size={18} />
+                {isOutOfStock ? "Hết hàng" : "Thêm vào giỏ hàng"}
+              </button>
+
+              <Link
+                to="/cart"
+                className="rounded-xl border border-rose-200 px-6 py-3 font-semibold text-rose-600 transition hover:bg-rose-50"
+              >
+                Xem giỏ hàng
+              </Link>
             </div>
           </div>
 
+          {/* Right: Image */}
           <motion.div
-            className="relative overflow-hidden rounded-3xl border border-rose-100 bg-white/80 shadow-xl shadow-rose-100 backdrop-blur-xl"
-            initial={{ opacity: 0, scale: 0.98 }}
+            className="relative flex items-center justify-center"
+            initial={{ opacity: 0, scale: 0.96 }}
             animate={{ opacity: 1, scale: 1 }}
-            transition={{ duration: 0.4 }}
+            transition={{ duration: 0.45 }}
           >
-            <img src={product.image || "https://placehold.co/900x700?text=San+pham"} alt={product.name} className="h-full w-full object-cover" />
-            <div className="absolute inset-0 bg-gradient-to-t from-slate-900/30 via-transparent to-transparent" />
+            <div className="relative h-full w-full overflow-hidden rounded-3xl border border-rose-100 bg-white/80 shadow-2xl shadow-rose-100 backdrop-blur-xl">
+              <img
+                src={product.image || "https://placehold.co/900x700?text=Sản+phẩm"}
+                alt={product.name}
+                className="h-full w-full object-cover"
+              />
+              <div className="absolute inset-0 bg-gradient-to-t from-slate-900/20 via-transparent to-transparent" />
+            </div>
           </motion.div>
         </div>
       </section>
+
+      {/* Back CTA */}
+      <div className="mx-auto mt-10 max-w-6xl px-4">
+        <Link
+          to="/products"
+          className="inline-flex items-center gap-2 text-sm font-medium text-slate-500 hover:text-rose-500 transition"
+        >
+          <ArrowLeft size={15} /> Tiếp tục mua sắm
+        </Link>
+      </div>
     </div>
   );
 };

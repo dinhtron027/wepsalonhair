@@ -67,7 +67,9 @@ const envSchema = Joi.object({
   DEFAULT_STAFF_PASSWORD: Joi.string().min(6).default('Staff@123456'),
   DEFAULT_CUSTOMER_EMAIL: Joi.string().email().default('customer@salonduongchi.vn'),
   DEFAULT_CUSTOMER_PHONE: Joi.string().default('0900000002'),
-  DEFAULT_CUSTOMER_PASSWORD: Joi.string().min(6).default('Customer@123456')
+  DEFAULT_CUSTOMER_PASSWORD: Joi.string().min(6).default('Customer@123456'),
+  GOOGLE_CLIENT_ID: Joi.string().allow('').optional(),
+  GOOGLE_CLIENT_SECRET: Joi.string().allow('').optional()
 })
   .unknown()
   .prefs({ abortEarly: false });
@@ -86,6 +88,16 @@ if (value.NODE_ENV === 'production') {
       'Environment validation error: JWT_SECRET must be changed and at least 32 characters in production'
     );
   }
+}
+
+// Startup config check — chỉ log trạng thái, không log secret
+const googleConfigReady = !!(value.GOOGLE_CLIENT_ID && value.GOOGLE_CLIENT_SECRET);
+if (!googleConfigReady) {
+  console.warn(
+    '[Auth] Google OAuth config: hasGoogleClientId=%s, hasGoogleClientSecret=%s. Dang nhap Google se bi vo hieu.',
+    !!value.GOOGLE_CLIENT_ID,
+    !!value.GOOGLE_CLIENT_SECRET
+  );
 }
 
 module.exports = value;

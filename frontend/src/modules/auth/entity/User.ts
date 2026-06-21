@@ -6,6 +6,7 @@ export type UserDTO = {
   email: string;
   phone?: string;
   role: UserRole;
+  avatar?: string;
 };
 
 export class User {
@@ -14,6 +15,7 @@ export class User {
   private readonly _email: string;
   private readonly _phone: string;
   private readonly _role: UserRole;
+  private readonly _avatar: string;
 
   private constructor(dto: UserDTO) {
     this._id = dto.id;
@@ -21,6 +23,7 @@ export class User {
     this._email = dto.email;
     this._phone = dto.phone || "";
     this._role = dto.role;
+    this._avatar = dto.avatar || "";
   }
 
   public static fromDTO(dto: UserDTO): User {
@@ -47,6 +50,10 @@ export class User {
     return this._role;
   }
 
+  public get avatar(): string {
+    return this._avatar;
+  }
+
   public isAdmin(): boolean {
     return this._role === "admin";
   }
@@ -62,6 +69,7 @@ export class User {
       email: this._email,
       phone: this._phone || undefined,
       role: this._role,
+      avatar: this._avatar || undefined,
     };
   }
 }

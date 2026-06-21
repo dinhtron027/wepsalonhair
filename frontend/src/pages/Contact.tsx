@@ -1,6 +1,23 @@
 import { Mail, MapPin, Phone, Instagram, Facebook } from "lucide-react";
 import SectionTitle from "../components/SectionTitle";
 import Button from "../components/Button";
+import { toast } from "react-hot-toast";
+
+
+const Tiktok = ({ size = 20 }: { size?: number }) => (
+  <svg
+    width={size}
+    height={size}
+    viewBox="0 0 24 24"
+    fill="none"
+    stroke="currentColor"
+    strokeWidth="2"
+    strokeLinecap="round"
+    strokeLinejoin="round"
+  >
+    <path d="M9 12a4 4 0 1 0 4 4V4a5 5 0 0 0 5 5" />
+  </svg>
+);
 
 const Contact = () => {
   return (
@@ -21,18 +38,30 @@ const Contact = () => {
             </p>
             <p className="flex items-start gap-3 text-sm text-slate-700">
               <Phone className="text-rose-500" size={18} />
-              0862391239
+              <a href="tel:0988046664" className="hover:text-rose-500 transition">098 804 66 64</a>
             </p>
             <p className="flex items-start gap-3 text-sm text-slate-700">
               <Mail className="text-rose-500" size={18} />
-              admin@salonduongchi.com
+              <button
+                type="button"
+                onClick={() => {
+                  navigator.clipboard.writeText("phuongchihbl96@gmail.com");
+                  toast.success("Đã sao chép email: phuongchihbl96@gmail.com");
+                }}
+                className="hover:text-rose-500 transition text-left"
+              >
+                phuongchihbl96@gmail.com
+              </button>
             </p>
             <div className="mt-4 flex gap-3 text-rose-500">
-              <a href="#" aria-label="Instagram" className="hover:text-rose-600">
+              <a href="https://instagram.com" target="_blank" rel="noopener noreferrer" aria-label="Instagram" className="hover:text-rose-600 transition">
                 <Instagram size={18} />
               </a>
-              <a href="#" aria-label="Facebook" className="hover:text-rose-600">
+              <a href="https://www.facebook.com/share/1GNmbu1i79/?mibextid=wwXIfr" target="_blank" rel="noopener noreferrer" aria-label="Facebook" className="hover:text-rose-600 transition">
                 <Facebook size={18} />
+              </a>
+              <a href="https://www.tiktok.com/@salonduongchi?is_from_webapp=1&sender_device=pc" target="_blank" rel="noopener noreferrer" aria-label="TikTok" className="hover:text-rose-600 transition">
+                <Tiktok size={18} />
               </a>
             </div>
           </div>

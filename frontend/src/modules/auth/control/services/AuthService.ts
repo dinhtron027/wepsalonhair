@@ -3,7 +3,7 @@ import { BaseApiService } from "../../../../shared/control/api/BaseApiService";
 import type { IStoragePort } from "../../../../shared/control/storage/IStoragePort";
 import { AuthSession } from "../../entity/AuthSession";
 import { User, type UserDTO } from "../../entity/User";
-import type { IAuthService, LoginCredentials } from "../ports/IAuthService";
+import type { IAuthService, LoginCredentials, RegisterPayload } from "../ports/IAuthService";
 
 type LoginResponse = {
   token: string;
@@ -22,6 +22,18 @@ export class AuthService extends BaseApiService implements IAuthService {
 
   constructor(http: AxiosInstance, private readonly storage: IStoragePort) {
     super(http);
+  }
+
+  public async register(payload: RegisterPayload): Promise<AuthSession> {
+    const response = await this.post<LoginResponse, RegisterPayload>(
+      "/api/auth/register",
+      payload
+    );
+
+    const user = User.fromDTO(response.user);
+    const session = new AuthSession(response.token, user);
+    this.persistSession(session);
+    return session;
   }
 
   public async login(credentials: LoginCredentials): Promise<AuthSession> {

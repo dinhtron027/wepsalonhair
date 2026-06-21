@@ -24,9 +24,11 @@ const pricingRuleSchema = Joi.object({
 const authSchemas = {
   register: Joi.object({
     name: Joi.string().trim().min(2).max(120).required(),
-    phone: Joi.string().trim().min(8).max(20).required(),
+    phone: Joi.string().trim().min(8).max(20).allow('', null).optional(),
     email: Joi.string().trim().email().required(),
-    password: Joi.string().min(8).max(128).required()
+    password: Joi.string().min(6).max(128).required(),
+    confirmPassword: Joi.any().valid(Joi.ref('password')).required()
+      .messages({ 'any.only': 'Mat khau xac nhan khong khop' })
   }),
   login: Joi.object({
     identifier: Joi.string().trim().required(),

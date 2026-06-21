@@ -4,8 +4,10 @@ const { generateToken } = require('../utils/security');
 const { OAuth2Client } = require('google-auth-library');
 const axios = require('axios');
 const customerService = require('./customerService');
+const env = require('../config/env');
 
-const googleClient = new OAuth2Client(process.env.GOOGLE_CLIENT_ID);
+// Khởi tạo client với GOOGLE_CLIENT_ID đã được validate từ env module
+const googleClient = env.GOOGLE_CLIENT_ID ? new OAuth2Client(env.GOOGLE_CLIENT_ID) : null;
 
 const sanitizeUser = (user) => ({
   id: user._id,
@@ -13,8 +15,7 @@ const sanitizeUser = (user) => ({
   phone: user.phone,
   email: user.email,
   role: user.role,
-  createdAt: user.createdAt,
-  updatedAt: user.updatedAt
+  avatar: user.avatar || ''
 });
 
 const ensureUniqueIdentity = async (email, phone) => {
@@ -74,13 +75,18 @@ const login = async ({ identifier, password }) => {
 };
 
 const loginWithGoogle = async (idToken) => {
+  if (!googleClient) {
+    throw new ApiError(503, 'Chức năng đăng nhập Google chưa được cấu hình trên máy chủ');
+  }
+
   let ticket;
   try {
     ticket = await googleClient.verifyIdToken({
       idToken,
+      audience: env.GOOGLE_CLIENT_ID
     });
   } catch (error) {
-    throw new ApiError(401, 'Token Google không hợp lệ');
+    throw new ApiError(401, 'Token Google không hợp lệ hoặc đã hết hạn');
   }
   
   const payload = ticket.getPayload();

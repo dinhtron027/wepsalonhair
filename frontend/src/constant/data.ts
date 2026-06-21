@@ -55,14 +55,14 @@ export const testimonials = [
       "https://images.unsplash.com/photo-1524504388940-b1c1722653e1?auto=format&fit=crop&w=200&q=80",
   },
   {
-    quote: "Mình từng rất e ngại việc nhuộm vì sợ khô tóc, nhưng Dương Chí đã chứng minh điều ngược lại. Tóc mềm xỉu, màu lên trong veo cực kỳ tôn da.",
+    quote: "Mình từng rất e ngại việc nhuộm vì sợ khô tóc, nhưng Dương Chi đã chứng minh điều ngược lại. Tóc mềm xỉu, màu lên trong veo cực kỳ tôn da.",
     name: "Thu Hà",
     role: "Fashion Buyer",
     avatar:
       "https://images.unsplash.com/photo-1524504388940-b1c1722653e1?auto=format&fit=crop&w=200&q=80",
   },
   {
-    quote: "Chưa bao giờ đi làm tóc mà mình thấy nhẹ nhõm như ở Dương Chí. Stylist bắt được ngay suy nghĩ của mình, tóc về nhà tự gội vẫn vào nếp cực mê!",
+    quote: "Chưa bao giờ đi làm tóc mà mình thấy nhẹ nhõm như ở Dương Chi. Stylist bắt được ngay suy nghĩ của mình, tóc về nhà tự gội vẫn vào nếp cực mê!",
     name: "Trâm Anh",
     role: "Art Director",
     avatar:
@@ -135,7 +135,7 @@ export const beforeAfter = [
 export const promotions = [
   {
     title: "Glow Week",
-    description: "Tặng liệu trình Tái tạo sinh khí da đầu khi làm màu tại Salon Dương Chí.",
+    description: "Tặng liệu trình Tái tạo sinh khí da đầu khi làm màu tại Salon Dương Chi.",
     code: "GLOWLED",
   },
   {

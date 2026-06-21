@@ -1,188 +1,241 @@
-# Salon Dương Chí - Hệ thống Website Quản Lý & Đặt Lịch Salon Tóc
+# Salon Dương Chi - Hệ thống Website Quản Lý & Đặt Lịch Salon Tóc
 
-Hệ thống quản lý và đặt lịch cho Salon tóc nữ cao cấp Dương Chí, bao gồm giao diện khách hàng (Public Website) và bảng điều khiển của quản trị viên (Admin Dashboard).
-
----
-
-## 🚀 Chức Năng Mới & Các Phần Đã Nâng Cấp (Dịch Vụ Nữ)
-
-Hệ thống đã được nâng cấp toàn diện phần **Dịch Vụ** hướng tới trải nghiệm chuyên nghiệp, đầy đủ và tối ưu hóa thương mại cho Salon tóc nữ:
-
-### 1. Thanh Điều Hướng Dropdown 10 Mục
-* **Dropdown Menu Lưới 2 Cột (Desktop)**: Giao diện Dropdown dịch vụ được mở rộng sang dạng lưới 2 cột tinh tế (`min-width: 460px`), hiển thị đầy đủ 10 dịch vụ/chức năng chính.
-* **Hamburger Menu (Mobile)**: Hỗ trợ phân cấp cây thư mục dịch vụ động rõ ràng trên các thiết bị di động.
-* **10 Liên Kết Điều Hướng**:
-  * **Trải Nghiệm** (`/services/experience`) - Quy trình phục vụ khách hàng tiêu chuẩn 5 sao.
-  * **Chăm Dưỡng** (`/services/care`) - Bí quyết chăm sóc tóc và liệu trình khuyên dùng.
-  * **Bảng Giá** (`/pricing`) - Tổng hợp bảng giá dịch vụ trực quan.
-  * **7 Danh Mục Dịch Vụ Nữ**:
-    1. Cắt & Tạo Kiểu Nữ (`/services/category/haircut`)
-    2. Uốn Tóc Nữ (`/services/category/perm`)
-    3. Duỗi Tóc Nữ (`/services/category/straightening`)
-    4. Nhuộm Tóc Nữ (`/services/category/color`)
-    5. Phục Hồi Tóc (`/services/category/treatment`)
-    6. Gội Đầu Dưỡng Sinh (`/services/category/shampoo`)
-    7. Combo Làm Đẹp (`/services/category/combo`)
-
-### 2. Quản Lý Dữ Liệu Dịch Vụ Hệ Thống (Backend Schema & Idempotent Seed)
-* **Unified Schema**: Tệp [Service.js](file:///c:/Users/DINH%20TRONG/OneDrive/MicrosoftFileShare/salon/backend/models/Service.js) định nghĩa cấu trúc dữ liệu dịch vụ chuẩn hóa gồm: `name`, `slug`, `category`, `categorySlug`, `description`, `price`, `duration`, `durationMinutes`, `suitableFor` (mảng đối tượng phù hợp), `benefits` (mảng lợi ích), `isFeatured` (dịch vụ nổi bật).
-* **Mongoose Middleware**: Tích hợp hook `pre('validate')` tự động chuyển đổi tên thành `slug`, ánh xạ danh mục tiếng Việt sang `categorySlug` chuẩn tiếng Anh, và đồng bộ tự động giữa `duration` và `durationMinutes` để tương thích ngược với Admin Dashboard cũ.
-* **Idempotent Seeding**: Lệnh `npm run seed` tự động nạp **30 dịch vụ** cao cấp dành cho nữ vào cơ sở dữ liệu. Lệnh này chạy idempotent (không tạo bản ghi trùng lặp khi chạy nhiều lần nhờ cơ chế tìm và cập nhật theo `slug` hoặc chèn mới nếu chưa tồn tại).
-
-### 3. Các Trang Giao Diện Mới (Frontend Pages)
-* **Trang Trải Nghiệm** (`/services/experience`): Sử dụng hiệu ứng dòng thời gian (`framer-motion`) mô phỏng quy trình 6 bước phục vụ khách hàng chu đáo và sang trọng.
-* **Trang Chăm Dưỡng** (`/services/care`): Cung cấp các thông tin hữu ích về chăm sóc tóc hư tổn, dưỡng màu và các liệu trình chuyên sâu tại salon.
-* **Trang Chi Tiết Danh Mục** (`/services/category/:categorySlug`): Tự động tải danh sách dịch vụ thuộc danh mục tương ứng từ backend, hiển thị dưới dạng card dịch vụ hiện đại có hiển thị đối tượng phù hợp, lợi ích dịch vụ, và nút "Đặt lịch ngay".
-* **Trang Bảng Giá** (`/pricing`): Phân nhóm động các dịch vụ theo danh mục, hiển thị rõ ràng thông tin giá cả đi kèm cảnh báo: *Giá dịch vụ trên mang tính chất tham khảo, chi phí thực tế sẽ điều chỉnh linh hoạt tùy thuộc vào độ dài, độ dày và tình trạng sức khỏe thực tế của tóc.*
-* **Hỗ Trợ Pre-select Dịch Vụ Khi Đặt Lịch** (`/booking?service=<slug>`): Trang đặt lịch tự động chọn trước dịch vụ khách hàng mong muốn dựa trên tham số query từ đường dẫn.
-
-### 4. Salon Customer CRM (Hệ thống Quản lý Khách hàng Chuyên nghiệp)
-Hệ thống nâng cấp trang quản trị **Khách hàng** (`/admin/customers`) từ danh sách cơ bản thành cổng CRM đầy đủ:
-* **Hồ sơ CRM tổng hợp**: Hiển thị thẻ chỉ số (Summary CRM Cards) gồm Tổng số khách, Khách mới, Khách VIP, Khách cần chăm sóc, Doanh thu và Khách lâu chưa quay lại.
-* **Bộ lọc nâng cao & Phân khúc tự động (CRM Segmentation)**:
-  * Lọc theo tên, số điện thoại, email, stylist, trạng thái lịch hẹn, khoảng ngày đặt lịch.
-  * Phân khúc khách hàng tự động và gắn thẻ tag: `new` (Mới), `regular` (Thường xuyên), `vip` (VIP - từ 10 cuộc hẹn hoặc chi tiêu >= 5M), `inactive` (Lâu chưa quay lại - quá 60 ngày), `high_value` (Chi tiêu cao - trên 3M), `color_customer` (Từng nhuộm), `treatment_needed` (Cần phục hồi).
-* **Quản lý ghi chú chăm sóc (Customer Note)**: Hỗ trợ thêm ghi chú nội bộ, tư vấn, hoặc khiếu nại với dòng thời gian (Timeline) rõ ràng.
-* **Lưu trữ công thức nhuộm (Hair Formula)**: Ghi lại chi tiết thuốc nhuộm, oxy, mức độ nền tóc trước/sau dịch vụ để đảm bảo kết quả đồng đều cho những lần làm tóc tiếp theo.
-* **Thống kê sản phẩm đã mua**: Quét tự động lịch sử đơn hàng để gợi ý các sản phẩm dưỡng tóc khách hàng đã từng sử dụng.
-* **Đăt lịch lại nhanh (Quick Rebook)**: Tạo lịch hẹn trực tiếp cho khách hàng ngay trong hồ sơ chi tiết mà không cần tải lại trang. Hỗ trợ khách lẻ vãng lai dựa trên số điện thoại/email mà không bắt buộc có mã tài khoản (User Object ID) trên hệ thống.
+Hệ thống quản lý và đặt lịch cho Salon tóc nữ cao cấp Dương Chi, bao gồm giao diện khách hàng (Public Website) và bảng điều khiển của quản trị viên (Admin Dashboard).
 
 ---
 
-## 📂 Cấu Trúc Thư Mục Chỉnh Sửa & Thêm Mới
+## 🛠️ Công Nghệ Sử Dụng (Tech Stack)
 
-Các tệp được thêm mới và cải tiến trong đợt nâng cấp hệ thống (Dịch vụ & CRM):
+### Frontend
+- **Framework:** React 18, TypeScript, Vite
+- **Styling:** Tailwind CSS, PostCSS
+- **State Management:** Zustand (Client State), TanStack React Query (Server State)
+- **Routing:** React Router DOM 6
+- **Realtime:** Socket.IO Client
+- **Hiệu ứng & UI:** Framer Motion, Lucide React, Swiper, React Big Calendar, React Hot Toast
+
+### Backend
+- **Framework:** Node.js, Express 5
+- **Realtime:** Socket.IO
+- **Xác thực & Bảo mật:** JWT (HS256), bcryptjs, Helmet, CORS, Express Rate Limit
+- **Xác thực dữ liệu:** Joi
+- **Gửi Email:** Nodemailer (SMTP)
+
+### Database
+- **Database:** MongoDB
+- **Thư viện kết nối:** Mongoose ODM
+
+### Infrastructure & CI/CD
+- **Containerization:** Docker, Docker Compose
+- **Web Server:** Nginx (Reverse Proxy & static serving)
+- **SSL:** Let's Encrypt (Certbot)
+- **CI/CD Workflow:** GitHub Actions (tự động hóa kiểm thử và deploy qua SSH)
+
+---
+
+## 📂 Cấu Trúc Thư Mục Tổng Thể (Directory Structure)
+
+Dưới đây là sơ đồ cấu trúc thư mục chính của dự án để lập trình viên dễ dàng định vị các module:
 
 ```text
 salon/
-├── backend/
-│   ├── models/
-│   │   ├── Service.js               # [MODIFY] Nâng cấp Mongoose Schema & pre-validate hook dịch vụ
-│   │   ├── CustomerNote.js          # [NEW] Model ghi chú chăm sóc khách hàng CRM
-│   │   └── HairFormula.js           # [NEW] Model lưu trữ công thức nhuộm màu & tình trạng tóc
-│   ├── utils/
-│   │   ├── validationSchemas.js     # [MODIFY] Cập nhật Joi schema xác thực Service & CRM (note, formula, rebook)
-│   │   └── seed.js                  # [MODIFY] Nạp 30 dịch vụ nữ và 10 khách hàng CRM mẫu đa dạng phân khúc
-│   ├── services/
-│   │   ├── serviceService.js        # [MODIFY] Hỗ trợ filter dịch vụ theo category/categorySlug
-│   │   └── adminService.js          # [MODIFY] Nghiệp vụ CRM khách hàng, thống kê, phân khúc tự động
-│   └── controllers/
-│   │   ├── serviceController.js     # [MODIFY] Cấp API endpoint nhận query params filter dịch vụ
-│   │   └── adminController.js       # [MODIFY] API handlers quản lý khách hàng, ghi chú, công thức và rebook
-│   └── routes/
-│       └── adminRoutes.js           # [MODIFY] Đăng ký các route CRM mới dành cho quản trị viên
-│
-└── frontend/src/
-    ├── services/
-    │   └── adminApi.ts              # [MODIFY] Định nghĩa TypeScript interfaces CRM & các API endpoints tương ứng
-    ├── components/
-    │   ├── navigation/
-    │   │   ├── menuData.ts          # [MODIFY] Mở rộng danh sách menu 10 mục dịch vụ
-    │   │   └── styled.ts            # [MODIFY] Cập nhật Dropdown dạng lưới 2 cột
-    │   └── admin/
-    │       └── customers/
-    │           ├── CustomerCard.tsx         # [MODIFY] Thẻ khách hàng CRM hiển thị segment badges và thao tác nhanh
-    │           ├── CustomerDetailModal.tsx   # [NEW] Modal chi tiết hồ sơ dạng Tabs (Lịch sử, Ghi chú, Công thức, Sản phẩm)
-    │           ├── CustomerFilters.tsx      # [NEW] Component lọc khách hàng theo phân khúc, dịch vụ, thợ làm
-    │           ├── CustomerHistoryTable.tsx # [NEW] Bảng hiển thị lịch sử đặt lịch chi tiết của khách hàng
-    │           ├── CustomerNotes.tsx        # [NEW] Timeline ghi chú CRM & Form tạo ghi chú mới
-    │           ├── CustomerSegmentBadge.tsx # [NEW] Huy hiệu phân khúc màu pastel
-    │           ├── CustomerSummaryCards.tsx # [NEW] Các thẻ thống kê nhanh lượng khách hàng ở đầu trang
-    │           ├── HairFormulaForm.tsx      # [NEW] Form tạo & cập nhật công thức tóc
-    │           ├── RebookModal.tsx          # [NEW] Modal đặt lại lịch hẹn nhanh từ trang khách hàng
-    │           └── customerFormatters.ts    # [NEW] Tiện ích định dạng tiền tệ, ngày tháng
-    ├── pages/
-    │   ├── ExperiencePage.tsx       # [NEW] Trang quy trình trải nghiệm 6 bước
-    │   ├── CarePage.tsx             # [NEW] Trang kiến thức và liệu trình chăm dưỡng tóc
-    │   ├── ServiceCategoryPage.tsx  # [NEW] Trang danh mục dịch vụ động theo categorySlug
-    │   ├── Pricing.tsx              # [MODIFY] Phân nhóm bảng giá theo categorySlug + lưu ý giá tham khảo
-    │   ├── BookingPage.tsx          # [MODIFY] Auto-select dịch vụ từ URL query parameter
-    │   └── admin/
-    │       └── Customers.tsx        # [MODIFY] Tái cấu trúc giao diện danh sách CRM Khách hàng
-    └── routes/
-        └── index.tsx                # [MODIFY] Đăng ký các route trang dịch vụ mới
+├── backend/                  # Mã nguồn phía Server (Express/Node.js)
+│   ├── config/               # Cấu hình Database & Biến môi trường
+│   ├── controllers/          # Xử lý Logic Requests & Responses (API Handlers)
+│   ├── middleware/           # Các hàm trung gian (Xác thực JWT, Phân quyền, Giới hạn tần suất)
+│   ├── models/               # Định nghĩa Mongoose Schemas (User, Service, Product, Booking, etc.)
+│   ├── routes/               # Khai báo đường dẫn API Endpoints
+│   ├── services/             # Lớp trung gian thực hiện Nghiệp vụ (Business Logic)
+│   ├── shared/               # Định nghĩa lỗi dùng chung (Custom Errors)
+│   ├── socket/               # Quản lý kết nối & Sự kiện Realtime Socket.IO
+│   ├── tests/                # Bộ kiểm thử Unit Test cho Backend
+│   ├── utils/                # Các hàm tiện ích bổ trợ (Validation, Seeding, Date, Logger)
+│   ├── app.js                # Khởi tạo ứng dụng Express & Middleware chính
+│   └── server.js             # Entrypoint khởi tạo server HTTP & Socket.IO
+├── frontend/                 # Mã nguồn phía Client (React/Vite SPA)
+│   ├── public/               # Tài nguyên tĩnh công khai (logo, ảnh, icon)
+│   └── src/                  # Mã nguồn ứng dụng React
+│       ├── components/       # Các components dùng chung (Navigation, Admin, Buttons...)
+│       ├── hooks/            # Custom React Hooks
+│       ├── layouts/          # Giao diện khung (AdminLayout, MainLayout)
+│       ├── pages/            # Các trang giao diện (Home, Products, Booking, admin/...)
+│       ├── routes/           # Định tuyến ứng dụng React Router DOM
+│       ├── services/         # Client API services (Axios instance, queries, mutations)
+│       ├── store/            # Quản lý Client State bằng Zustand
+│       ├── App.tsx           # Component gốc cấu hình Routes & Providers
+│       └── main.tsx          # Điểm khởi chạy React app
+├── docker-compose.yml        # Cấu hình container chạy local/production
+├── Dockerfile                # Dockerfile đóng gói Backend
+└── package.json              # Khai báo script và thư viện phía root (Backend dev)
 ```
 
 ---
 
-## 🛠️ Yêu Cầu & Cài Đặt Hệ Thống
+## 🛠️ Yêu Cầu Môi Trường & Cài Đặt
 
 ### 1. Yêu cầu môi trường
-* **Node.js**: Phiên bản 18+ (Đã thử nghiệm thành công trên Node v23)
-* **MongoDB**: Phiên bản Community Server chạy cục bộ (Local) hoặc MongoDB Atlas Cloud
+- **Node.js:** Phiên bản 18+ (Khuyên dùng v22 hoặc v23)
+- **MongoDB:** Phiên bản Community Server chạy local hoặc tài khoản MongoDB Atlas Cloud
 
 ### 2. Cài đặt các gói phụ thuộc
-Cài đặt dependencies tại thư mục gốc (Root) và frontend:
+Cần cài đặt thư viện tại thư mục gốc (Root) của Backend và thư mục `frontend/` của Client:
 
 ```bash
-# Cài đặt tại thư mục gốc (Root) để cài dependencies cho backend
+# Cài đặt dependencies tại thư mục gốc (cho backend)
 npm install
 
-# Cài đặt dependencies cho frontend (sử dụng --legacy-peer-deps vì các thư viện React cũ)
+# Di chuyên vào thư mục frontend và cài đặt dependencies
 cd frontend
 npm install --legacy-peer-deps
+```
+
+> [!IMPORTANT]
+> Khi cài đặt dependencies cho frontend, bạn **bắt buộc** phải sử dụng flag `--legacy-peer-deps`. Điều này là do thư viện đăng nhập bằng Facebook (`react-facebook-login`) sử dụng phiên bản React cũ hơn, gây ra xung đột phiên bản khi npm phân tích cây phụ thuộc.
+
+### 3. Hướng dẫn chạy nhanh MongoDB local (Lựa chọn tiện lợi)
+Nếu máy bạn chưa cài đặt sẵn MongoDB, cách nhanh nhất là khởi chạy cơ sở dữ liệu qua Docker:
+
+```bash
+# Tạo và chạy một container MongoDB local trên cổng mặc định 27017
+docker run -d --name mongo-salon -p 27017:27017 mongo:latest
 ```
 
 ---
 
 ## ⚙️ Biến Môi Trường (.env)
 
-Vui lòng tạo file `.env` tại thư mục gốc của project (sử dụng cấu trúc tương tự `.env.example` đã có sẵn):
+Tạo các tệp cấu hình `.env` dựa theo các tệp mẫu có sẵn trong dự án:
 
-```env
-NODE_ENV=development
-PORT=5000
-MONGODB_URI=mongodb://127.0.0.1:27017/wepsalonhair
-JWT_SECRET=supersecretkey_min16chars
-JWT_EXPIRES_IN=7d
-FRONTEND_URL=http://localhost:5173
+### 1. Backend (Tạo tệp `.env` tại thư mục gốc `salon/`)
+Sao chép cấu trúc từ tệp [.env.example](file:///home/dinh_trong/salon/.env.example) và cấu hình các giá trị sau:
 
-# Cấu hình Admin Seed dữ liệu mặc định
-DEFAULT_ADMIN_NAME=Admin Duong Chi
-DEFAULT_ADMIN_EMAIL=admin@duongchi.com
-DEFAULT_ADMIN_PHONE=0900000000
-DEFAULT_ADMIN_PASSWORD=adminpassword123
-```
+| Tên biến | Kiểu dữ liệu | Mô tả / Giá trị mặc định |
+| :--- | :--- | :--- |
+| `NODE_ENV` | String | Chế độ chạy ứng dụng (`development` \| `production` \| `test`) |
+| `PORT` | Number | Cổng chạy backend API (Mặc định: `5000`) |
+| `MONGODB_URI` | String | Đường dẫn kết nối MongoDB (Mặc định: `mongodb://127.0.0.1:27017/salon-duong-chi`) |
+| `JWT_SECRET` | String | Khóa bí mật dùng để mã hóa mã JWT Token (Tối thiểu 16 ký tự) |
+| `JWT_EXPIRES_IN` | String | Thời gian hiệu lực của JWT token (Mặc định: `7d`) |
+| `RATE_LIMIT_WINDOW_MS`| Number | Khoảng thời gian giới hạn API Rate Limit (ms) (Ví dụ: `900000` = 15 phút) |
+| `RATE_LIMIT_MAX` | Number | Số request tối đa được gửi trong window đối với API thông thường (Ví dụ: `300`) |
+| `AUTH_RATE_LIMIT_MAX` | Number | Số request tối đa được gửi đối với API xác thực như Login/Register (Ví dụ: `20`) |
+| `FRONTEND_URL` | String | Danh sách URL Frontend được CORS cho phép (Ví dụ: `http://localhost:5173`) |
+| `SMTP_HOST` | String | Host máy xuất phát gửi email SMTP (Ví dụ: `smtp.gmail.com`) |
+| `SMTP_PORT` | Number | Port máy chủ gửi email (Thường là `587` cho TLS) |
+| `SMTP_USER` | String | Tài khoản gửi email của hệ thống |
+| `SMTP_PASS` | String | Mật khẩu ứng dụng gửi email (App Password) |
+| `EMAIL_FROM` | String | Nhãn và địa chỉ email gửi đi (Ví dụ: `Salon Duong Chi <no-reply@salon.local>`) |
+| `ZALO_WEBHOOK_URL` | String | URL Webhook liên kết với hệ thống Zalo |
+| `ZALO_ACCESS_TOKEN` | String | Access Token của Zalo Official Account |
+| `PAYMENT_PROVIDER` | String | Cổng thanh toán hoạt động (`cash` \| `momo` \| `vnpay`) |
+| `PAYMENT_MOCK_ENABLED`| Boolean | Cho phép giả lập kết quả thanh toán khi thử nghiệm (`true` \| `false`) |
+| `VNPAY_TMN_CODE` | String | Mã Terminal của đối tác VNPay |
+| `VNPAY_HASH_SECRET` | String | Khóa bảo mật băm dữ liệu của VNPay |
+| `MOMO_PARTNER_CODE` | String | Mã Partner của ứng dụng MoMo |
+| `MOMO_ACCESS_KEY` | String | Access Key được MoMo cấp |
+| `MOMO_SECRET_KEY` | String | Secret Key kết nối API của MoMo |
+| `DEFAULT_ADMIN_NAME` | String | Tên Admin mặc định khởi tạo khi seed dữ liệu |
+| `DEFAULT_ADMIN_EMAIL`| String | Email Admin dùng đăng nhập (Mặc định: `admin@duongchi.com`) |
+| `DEFAULT_ADMIN_PHONE`| String | Số điện thoại Admin dùng đăng nhập (Mặc định: `0900000000`) |
+| `DEFAULT_ADMIN_PASSWORD`| String| Mật khẩu của tài khoản Admin mặc định |
+| `DEFAULT_STAFF_...` | Mix | Thông tin tài khoản Nhân viên mẫu |
+| `DEFAULT_CUSTOMER_...`| Mix | Thông tin tài khoản Khách hàng chạy thử |
+| `GOOGLE_CLIENT_ID` | String | Google OAuth Client ID dùng để xác thực tại Backend |
 
-Tại thư mục `frontend/` bạn có thể cấu hình file `.env` hoặc `.env.production` nếu cần thiết:
-* `VITE_API_URL=http://localhost:5000`
+### 2. Frontend (Tạo tệp `.env` tại thư mục `frontend/`)
+Sao chép cấu trúc từ tệp [frontend/.env.example](file:///home/dinh_trong/salon/frontend/.env.example) và cấu hình các giá trị sau:
+
+| Tên biến | Kiểu dữ liệu | Mô tả |
+| :--- | :--- | :--- |
+| `VITE_API_URL` | String | URL của Backend API (Local: `http://localhost:5000`, Production: `https://api.salonduongchi.website`) |
+| `VITE_GOOGLE_CLIENT_ID`| String | Google OAuth Client ID để hiển thị nút Đăng nhập bằng Google |
 
 ---
 
-## 🏃 Chạy Trực Tiếp Ở Môi Trường Local (Development)
+## 🏃 Hướng Dẫn Chạy Dự Án Ở Môi Trường Local (Development)
 
-Để phát triển dự án hoặc chạy thử nghiệm trực tiếp, hãy khởi chạy backend và frontend song song:
+Để phát triển dự án hoặc chạy thử nghiệm trực tiếp, hãy khởi chạy backend và frontend theo các bước sau:
 
-### Bước 1: Khởi chạy MongoDB Local
-Hãy đảm bảo dịch vụ MongoDB đang chạy cục bộ tại máy của bạn.
+### Bước 1: Khởi chạy MongoDB
+Đảm bảo dịch vụ cơ sở dữ liệu MongoDB đang hoạt động tại máy của bạn (hoặc container Docker đang chạy).
 
-### Bước 2: Nạp dữ liệu Seed dịch vụ (Dành cho lần chạy đầu tiên)
-Tại thư mục gốc `salon/`, chạy lệnh sau để nạp 30 dịch vụ nữ:
+### Bước 2: Nạp dữ liệu Seed ban đầu (Chỉ chạy ở lần khởi động đầu tiên)
+Tại thư mục gốc `salon/`, chạy lệnh sau để nạp dữ liệu mặc định (gồm 30 dịch vụ nữ, tài khoản admin, staff, và khách hàng mẫu):
 ```bash
 npm run seed
 ```
 
-### Bước 3: Chạy đồng thời Backend & Frontend
+### Bước 3: Chạy ứng dụng
+
+#### Cách 1: Chạy song song cả Frontend & Backend (Khuyên dùng)
 Tại thư mục gốc `salon/`, chạy lệnh:
 ```bash
 npm run dev
 ```
-Hệ thống sử dụng `concurrently` để chạy song song:
-* **Backend API**: Khởi động tại `http://localhost:5000`
-* **Frontend Web**: Khởi động tại `http://localhost:5173` (hoặc `http://localhost:5174` nếu port 5173 bị chiếm dụng)
+Hệ thống sử dụng thư viện `concurrently` để tự động khởi chạy song song cả hai phía:
+- **Backend API:** Khởi động tại `http://localhost:5000`
+- **Frontend Web:** Khởi động tại `http://localhost:5173` (hoặc `http://localhost:5174` nếu cổng 5173 bị chiếm dụng)
+
+#### Cách 2: Chạy độc lập trong các Terminal riêng biệt (Thuận tiện khi debug)
+- **Chạy Backend:** Mở một Terminal tại thư mục gốc `salon/` và chạy:
+  ```bash
+  # Chạy backend ở chế độ nodemon tự động reload khi code thay đổi
+  npm run start:dev
+  ```
+- **Chạy Frontend:** Mở một Terminal khác, di chuyển vào thư mục `frontend/` và chạy:
+  ```bash
+  npm run dev
+  ```
 
 ---
 
-## 🐳 Khởi Chạy Với Docker / Docker Compose (Local & Production)
+## 🐳 Khởi Chạy Với Docker / Docker Compose
 
-Hệ thống hỗ trợ đóng gói Docker toàn phần. Trong môi trường production, cơ sở dữ liệu được chuyển hướng sang MongoDB Atlas để đảm bảo an toàn dữ liệu và tối ưu hiệu suất, thay vì phụ thuộc vào MongoDB container chạy local.
+Dự án hỗ trợ đóng gói Docker toàn phần giúp bạn triển khai đồng bộ ở local hoặc production chỉ với một câu lệnh.
+
+### Khởi chạy môi trường:
+Tại thư mục gốc, tạo tệp `.env` phù hợp, sau đó chạy lệnh:
+```bash
+# Khởi tạo và chạy ngầm các dịch vụ (Database, Backend, Frontend qua Nginx)
+docker compose up -d --build
+```
+Hệ thống sẽ chạy 3 containers:
+1. `mongodb` (Port `27017`)
+2. `backend` (Port `5000`)
+3. `frontend` (Port `8080` thông qua Nginx)
+
+### Lệnh hữu ích với Docker:
+- **Xem logs của tất cả dịch vụ:**
+  ```bash
+  docker compose logs -f
+  ```
+- **Nạp seed dữ liệu mẫu bên trong Docker container:**
+  ```bash
+  docker compose exec backend npm run seed
+  ```
+- **Dừng và xóa các container:**
+  ```bash
+  docker compose down
+  ```
+
+---
+
+## 🧪 Kiểm Tra & Test Chất Lượng Code
+
+Bạn có thể chạy các lệnh kiểm thử chất lượng code sau tại thư mục gốc của dự án:
 
 ```bash
-# Khởi chạy các dịch vụ (Backend và Frontend)
-docker compose up -d --build
+# Quét lỗi code & định dạng (ESLint cho frontend)
+npm run lint
 
-# Xem logs của hệ thống
-docker compose logs -f
+# Kiểm tra tĩnh kiểu dữ liệu (TypeScript typecheck cho frontend)
+npm run typecheck
+
+# Chạy toàn bộ các Unit Tests của Backend
+npm test
+
+# Build production đóng gói code frontend tối ưu hóa
+npm run build
 ```
 
 ---
@@ -301,37 +354,104 @@ Vào repository trên GitHub (`dinhtron027/wepsalonhair`), điều hướng tớ
 
 Mỗi khi bạn thực hiện `git push` mã nguồn mới lên nhánh `main`, luồng GitHub Actions sẽ tự động kích hoạt SSH để kéo code và build chạy lại dự án trên EC2.
 
----
-
-## 🧪 Kiểm Tra & Test Chất Lượng Code
-
-Bạn có thể chạy các lệnh kiểm thử chất lượng code sau tại thư mục gốc:
-
-```bash
-# Quét lỗi code & định dạng (ESLint cho frontend)
-npm run lint
-
-# Kiểm tra tĩnh kiểu dữ liệu (TypeScript typecheck cho frontend)
-npm run typecheck
-
-# Chạy toàn bộ các Unit Tests của Backend
-npm test
-
-# Build production đóng gói code tối ưu hóa
-npm run build
-```
-
-### Hướng dẫn kiểm tra sau khi Deploy:
-1. **Xem trạng thái Docker containers**: `docker ps`
-2. **Xem nhật ký hoạt động**: `docker compose logs -f`
-3. **Kiểm tra trạng thái Nginx**: `sudo systemctl status nginx`
-4. **Kiểm tra phản hồi của API**:
+### 6. Hướng dẫn kiểm tra sau khi Deploy:
+1. **Xem trạng thái Docker containers:** `docker ps`
+2. **Xem nhật ký hoạt động:** `docker compose logs -f`
+3. **Kiểm tra trạng thái Nginx:** `sudo systemctl status nginx`
+4. **Kiểm tra phản hồi của API:**
    `curl -i https://api.salonduongchi.website/api/health`
-5. **Truy cập web**: Vào địa chỉ `https://salonduongchi.website` trên trình duyệt xem giao diện và dữ liệu CRM đã được hiển thị đầy đủ và ổn định.
+5. **Truy cập web:** Vào địa chỉ `https://salonduongchi.website` trên trình duyệt để kiểm tra hoạt động thực tế.
 
 ---
 
-## ⚠️ Lưu ý về Giá Dịch Vụ & Liên hệ
-* Mọi mức giá của dịch vụ trên website đều hiển thị bằng đơn vị **VND** (ví dụ: `250.000 đ`).
-* Mức giá hiển thị là **giá tham khảo cơ bản**. Chi phí dịch vụ thực tế có thể thay đổi linh hoạt tùy vào chiều dài, độ dày và mức độ hư tổn của tóc của khách hàng sau khi được chuyên viên tư vấn trực tiếp tại tiệm.
-* Các liên kết tư vấn/chăm sóc khách hàng hoặc đặt lịch gấp có thể điều hướng trực tiếp sang số điện thoại Hotline hoặc link Zalo chính thức của Salon Dương Chí.
+## ⚠️ Khắc Phục Sự Cố Thường Gặp (Troubleshooting)
+
+### 1. Xung đột dependency khi chạy `npm install` tại thư mục frontend
+* **Hiện tượng:** Quá trình cài đặt package bị dừng lại kèm nhiều cảnh báo lỗi liên quan đến `peer dependency`.
+* **Nguyên nhân:** Thư viện SDK Facebook cũ chưa được cập nhật tương thích với cây phụ thuộc mới của npm.
+* **Cách xử lý:** Bắt buộc chạy lệnh cài đặt kèm cờ bỏ qua xung đột:
+  ```bash
+  npm install --legacy-peer-deps
+  ```
+
+### 2. Lỗi kết nối Cơ sở dữ liệu (`MongooseServerSelectionError`)
+* **Hiện tượng:** Chạy `npm run dev` hoặc `npm run seed` bị crash và báo lỗi không kết nối được MongoDB.
+* **Nguyên nhân:** Dịch vụ MongoDB local chưa được khởi chạy hoặc sai cấu hình URI kết nối.
+* **Cách xử lý:** 
+  - Đảm bảo MongoDB đang chạy trên cổng `27017` bằng cách kiểm tra status dịch vụ máy chủ hoặc chạy nhanh qua Docker container (Xem phần cài đặt nhanh MongoDB bằng Docker ở trên).
+  - Kiểm tra biến `MONGODB_URI` trong tệp `.env` đã trỏ đúng IP và cổng (ví dụ: `mongodb://127.0.0.1:27017/wepsalonhair`).
+
+### 3. Lỗi chặn truy cập API (`Blocked by CORS Policy`)
+* **Hiện tượng:** Giao diện web hiển thị lỗi kết nối hoặc các API backend bị trình duyệt chặn, báo lỗi CORS.
+* **Nguyên nhân:** Địa chỉ URL của Frontend chạy local/production không khớp với khai báo được phép kết nối tại cấu hình Backend.
+* **Cách xử lý:** Mở tệp `.env` tại thư mục gốc, cập nhật biến `FRONTEND_URL` trùng khớp với địa chỉ chạy thực tế của Frontend (Ví dụ: `FRONTEND_URL=http://localhost:5173` hoặc `FRONTEND_URL=http://127.0.0.1:5173`).
+
+### 4. Lỗi xung đột cổng mạng (Port `5000` hoặc `5173` already in use)
+* **Hiện tượng:** Khởi động Backend báo lỗi `EADDRINUSE: address already in use :::5000`.
+* **Nguyên nhân:** Đang có tiến trình chạy ngầm chiếm dụng cổng mạng.
+* **Cách xử lý:**
+  - Trên Linux/MacOS: Chạy lệnh `lsof -i :5000` để tìm PID của tiến trình, sau đó tắt bằng lệnh `kill -9 <PID>`.
+  - Hoặc bạn có thể đổi giá trị `PORT` trong tệp `.env` backend thành cổng khác (ví dụ: `5001`), sau đó điều chỉnh cấu hình tương ứng ở frontend.
+
+---
+
+## 🚀 Tính Năng Mới & Lịch Sử Nâng Cấp (Changelog)
+
+Dưới đây là chi tiết các hạng mục tính năng nâng cấp lớn liên quan đến giao dịch dịch vụ tóc nữ và hệ thống quản trị CRM khách hàng:
+
+### 1. Thanh Điều Hướng Dropdown 10 Mục
+* **Dropdown Menu Lưới 2 Cột (Desktop):** Giao diện Dropdown dịch vụ được mở rộng sang dạng lưới 2 cột tinh tế (`min-width: 460px`), hiển thị đầy đủ 10 dịch vụ/chức năng chính.
+* **Hamburger Menu (Mobile):** Hỗ trợ phân cấp cây thư mục dịch vụ động rõ ràng trên các thiết bị di động.
+* **10 Liên Kết Điều Hướng:**
+  * **Trải Nghiệm** (`/services/experience`) - Quy trình phục vụ khách hàng tiêu chuẩn 5 sao.
+  * **Chăm Dưỡng** (`/services/care`) - Bí quyết chăm sóc tóc và liệu trình khuyên dùng.
+  * **Bảng Giá** (`/pricing`) - Tổng hợp bảng giá dịch vụ trực quan.
+  * **7 Danh Mục Dịch Vụ Nữ:**
+    1. Cắt & Tạo Kiểu Nữ (`/services/category/haircut`)
+    2. Uốn Tóc Nữ (`/services/category/perm`)
+    3. Duỗi Tóc Nữ (`/services/category/straightening`)
+    4. Nhuộm Tóc Nữ (`/services/category/color`)
+    5. Phục Hồi Tóc (`/services/category/treatment`)
+    6. Gội Đầu Dưỡng Sinh (`/services/category/shampoo`)
+    7. Combo Làm Đẹp (`/services/category/combo`)
+
+### 2. Quản Lý Dữ Liệu Dịch Vụ Hệ Thống (Backend Schema & Idempotent Seed)
+* **Unified Schema:** Tệp [Service.js](file:///home/dinh_trong/salon/backend/models/Service.js) định nghĩa cấu trúc dữ liệu dịch vụ chuẩn hóa gồm: `name`, `slug`, `category`, `categorySlug`, `description`, `price`, `duration`, `durationMinutes`, `suitableFor` (mảng đối tượng phù hợp), `benefits` (mảng lợi ích), `isFeatured` (dịch vụ nổi bật).
+* **Mongoose Middleware:** Tích hợp hook `pre('validate')` tự động chuyển đổi tên thành `slug`, ánh xạ danh mục tiếng Việt sang `categorySlug` chuẩn tiếng Anh, và đồng bộ tự động giữa `duration` và `durationMinutes` để tương thích ngược với Admin Dashboard cũ.
+* **Idempotent Seeding:** Lệnh `npm run seed` tự động nạp **30 dịch vụ** cao cấp dành cho nữ vào cơ sở dữ liệu. Lệnh này chạy idempotent (không tạo bản ghi trùng lặp khi chạy nhiều lần nhờ cơ chế tìm và cập nhật theo `slug` hoặc chèn mới nếu chưa tồn tại).
+
+### 3. Các Trang Giao Diện Mới (Frontend Pages)
+* **Trang Trải Nghiệm** (`/services/experience`): Sử dụng hiệu ứng dòng thời gian (`framer-motion`) mô phỏng quy trình 6 bước phục vụ khách hàng chu đáo và sang trọng.
+* **Trang Chăm Dưỡng** (`/services/care`): Cung cấp các thông tin hữu ích về chăm sóc tóc hư tổn, dưỡng màu và các liệu trình chuyên sâu tại salon.
+* **Trang Chi Tiết Danh Mục** (`/services/category/:categorySlug`): Tự động tải danh sách dịch vụ thuộc danh mục tương ứng từ backend, hiển thị dưới dạng card dịch vụ hiện đại có hiển thị đối tượng phù hợp, lợi ích dịch vụ, và nút "Đặt lịch ngay".
+* **Trang Bảng Giá** (`/pricing`): Phân nhóm động các dịch vụ theo danh mục, hiển thị rõ ràng thông tin giá cả đi kèm cảnh báo: *Giá dịch vụ trên mang tính chất tham khảo, chi phí thực tế sẽ điều chỉnh linh hoạt tùy thuộc vào độ dài, độ dày và tình trạng sức khỏe thực tế của tóc.*
+* **Hỗ Trợ Pre-select Dịch Vụ Khi Đặt Lịch** (`/booking?service=<slug>`): Trang đặt lịch tự động chọn trước dịch vụ khách hàng mong muốn dựa trên tham số query từ đường dẫn.
+
+### 4. Salon Customer CRM (Hệ thống Quản lý Khách hàng Chuyên nghiệp)
+Hệ thống nâng cấp trang quản trị **Khách hàng** (`/admin/customers`) từ danh sách cơ bản thành cổng CRM đầy đủ:
+* **Hồ sơ CRM tổng hợp:** Hiển thị thẻ chỉ số (Summary CRM Cards) gồm Tổng số khách, Khách mới, Khách VIP, Khách cần chăm sóc, Doanh thu và Khách lâu chưa quay lại.
+* **Bộ lọc nâng cao & Phân khúc tự động (CRM Segmentation):**
+  * Lọc theo tên, số điện thoại, email, stylist, trạng thái lịch hẹn, khoảng ngày đặt lịch.
+  * Phân khúc khách hàng tự động và gắn thẻ tag: `new` (Mới), `regular` (Thường xuyên), `vip` (VIP - từ 10 cuộc hẹn hoặc chi tiêu >= 5M), `inactive` (Lâu chưa quay lại - quá 60 ngày), `high_value` (Chi tiêu cao - trên 3M), `color_customer` (Từng nhuộm), `treatment_needed` (Cần phục hồi).
+* **Quản lý ghi chú chăm sóc (Customer Note):** Hỗ trợ thêm ghi chú nội bộ, tư vấn, hoặc khiếu nại với dòng thời gian (Timeline) rõ ràng.
+* **Lưu trữ công thức nhuộm (Hair Formula):** Ghi lại chi tiết thuốc nhuộm, oxy, mức độ nền tóc trước/sau dịch vụ để đảm bảo kết quả đồng đều cho những lần làm tóc tiếp theo.
+* **Thống kê sản phẩm đã mua:** Quét tự động lịch sử đơn hàng để gợi ý các sản phẩm dưỡng tóc khách hàng đã từng sử dụng.
+* **Đặt lịch lại nhanh (Quick Rebook):** Tạo lịch hẹn trực tiếp cho khách hàng ngay trong hồ sơ chi tiết mà không cần tải lại trang. Hỗ trợ khách lẻ vãng lai dựa trên số điện thoại/email mà không bắt buộc có mã tài khoản (User Object ID) trên hệ thống.
+
+### 5. Hệ thống Xác thực Tài khoản Mới (Email/Password & Google Login)
+Hệ thống xác thực người dùng được cải tiến toàn diện:
+* **Tạm ẩn Đăng nhập bằng Facebook**: Để tối ưu hóa và dọn dẹp thư viện, chức năng đăng nhập bằng Facebook đã được ẩn trên giao diện (sẽ được tích hợp lại ở phiên bản tiếp theo).
+* **Đăng ký tài khoản mới**: Người dùng có thể đăng ký tài khoản khách hàng mới qua form `/register` gồm: *Họ tên*, *Email*, *Số điện thoại (tùy chọn)*, *Mật khẩu* và *Xác nhận mật khẩu*.
+  - **Mật khẩu an toàn**: Mật khẩu của người dùng được tự động hash bảo mật một chiều bằng `bcryptjs` trước khi lưu trữ vào MongoDB.
+  - **Xác thực Backend**: Tích hợp kiểm tra email trùng lặp và xác nhận khớp mật khẩu tập trung bằng Joi schema tại API `POST /api/auth/register`.
+* **Đồng bộ hóa Google Login & Liên kết email**: Sau khi xác thực Google OAuth thành công, hệ thống sẽ tự động liên kết với tài khoản local nếu trùng email, tránh tạo tài khoản trùng lặp và giữ nguyên quyền lợi khách hàng.
+* **Cá nhân hóa lời chào mừng trên Navbar**:
+  - Giao diện Header của Desktop và Mobile tự động chuyển đổi từ nút *"Đăng Nhập"* thành lời chào cá nhân hóa *"Xin chào, {Tên}"* (hoặc fallback sang email trước dấu `@`) kèm theo ảnh đại diện (avatar) Google thu nhỏ có viền Rose đặc trưng của tiệm.
+  - Sau khi đăng nhập thành công, session được lưu trữ an toàn trong `localStorage` và tự động khôi phục thông qua API `GET /api/auth/me` mỗi khi tải lại trang, giúp duy trì phiên làm việc không bị gián đoạn.
+* **Hướng dẫn kiểm thử thủ công**:
+  1. Truy cập trang Đăng nhập (`/login`) -> Click *"Đăng ký ngay"* -> Chuyển sang `/register`.
+  2. Điền thông tin đăng ký (thử nhập mật khẩu không khớp hoặc email đã tồn tại để xem thông báo lỗi hiển thị trực quan).
+  3. Đăng ký thành công -> Hệ thống tự động lưu session đăng nhập và chuyển hướng bạn về Trang chủ.
+  4. Navbar & Mobile Menu lập tức hiển thị *"Xin chào, {Họ tên}"* cùng nút *"Đăng xuất"*.
+  5. Reload (F5) trang -> Xác nhận phiên đăng nhập vẫn được duy trì mượt mà.
+  6. Click nút *"Đăng xuất"* -> Hệ thống xóa sạch dữ liệu session trong bộ nhớ và chuyển hướng bạn về trang Đăng nhập.

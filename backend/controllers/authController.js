@@ -35,9 +35,17 @@ const loginFacebook = asyncHandler(async (req, res) => {
   return sendSuccess(res, { message: 'Dang nhap Facebook thanh cong', data: result });
 });
 
+const getMe = asyncHandler(async (req, res) => {
+  return sendSuccess(res, {
+    message: 'Lay thong tin nguoi dung thanh cong',
+    data: authService.sanitizeUser(req.user)
+  });
+});
+
 module.exports = {
   register,
   login,
   loginGoogle,
-  loginFacebook
+  loginFacebook,
+  getMe
 };

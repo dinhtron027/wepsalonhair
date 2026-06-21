@@ -47,8 +47,21 @@ const Navbar: React.FC = () => {
 
   // Auth Store State
   const token = useAuth((state) => state.token);
+  const user = useAuth((state) => state.user);
   const isAdmin = useAuth((state) => state.isAdmin);
   const logout = useAuth((state) => state.logout);
+
+  // Lấy first name (tên đầu tiên) để hiển thị gọn trên navbar
+  const displayName = (() => {
+    if (!user) return "";
+    const name = user.name?.trim();
+    if (name) {
+      // Chỉ lấy từ đầu tiên nếu tên quá dài (> 12 ký tự)
+      return name.length > 12 ? name.split(" ")[0] : name;
+    }
+    // Fallback sang phần trước @ của email
+    return user.email?.split("@")[0] ?? "";
+  })();
 
   // Close menus when route changes
   useEffect(() => {
@@ -109,7 +122,7 @@ const Navbar: React.FC = () => {
         <NavbarInner>
           {/* Logo (Trang Chủ - Chỉ cần Logo/Text click để về Home) */}
           <LogoLink href="/">
-            <span>Salon Dương Chí</span>
+            <span>Salon Dương Chi</span>
           </LogoLink>
 
           {/* Desktop Navigation Links */}
@@ -174,6 +187,62 @@ const Navbar: React.FC = () => {
             {/* Auth / Admin */}
             {token ? (
               <>
+                {/* Lời chào + Avatar */}
+                <div
+                  style={{
+                    display: "inline-flex",
+                    alignItems: "center",
+                    gap: "0.4rem",
+                    fontSize: "0.875rem",
+                    fontWeight: 500,
+                    color: "#1e293b",
+                    maxWidth: "160px",
+                  }}
+                >
+                  {user?.avatar ? (
+                    <img
+                      src={user.avatar}
+                      alt={displayName}
+                      style={{
+                        width: "28px",
+                        height: "28px",
+                        borderRadius: "50%",
+                        objectFit: "cover",
+                        border: "2px solid rgba(244, 63, 94, 0.3)",
+                        flexShrink: 0,
+                      }}
+                      referrerPolicy="no-referrer"
+                    />
+                  ) : (
+                    <span
+                      style={{
+                        width: "28px",
+                        height: "28px",
+                        borderRadius: "50%",
+                        background: "linear-gradient(135deg, #f43f5e, #fb923c)",
+                        display: "inline-flex",
+                        alignItems: "center",
+                        justifyContent: "center",
+                        fontSize: "0.7rem",
+                        fontWeight: 700,
+                        color: "white",
+                        flexShrink: 0,
+                      }}
+                    >
+                      {displayName.charAt(0).toUpperCase()}
+                    </span>
+                  )}
+                  <span
+                    style={{
+                      overflow: "hidden",
+                      textOverflow: "ellipsis",
+                      whiteSpace: "nowrap",
+                    }}
+                  >
+                    Xin chào, {displayName}
+                  </span>
+                </div>
+
                 {isAdmin() && (
                   <NavLinkBase
                     onClick={() => navigate("/admin")}

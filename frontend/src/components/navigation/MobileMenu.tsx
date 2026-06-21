@@ -1,6 +1,6 @@
 import React, { useState } from "react";
-import { useNavigate } from "react-router-dom";
-import { ShoppingBag, LogOut, LayoutDashboard, User } from "lucide-react";
+import { useNavigate, Link } from "react-router-dom";
+import { ShoppingBag, LogOut, LayoutDashboard } from "lucide-react";
 import type { MobileMenuProps } from "./types";
 import { menuManager } from "./menuData";
 import { useAuth } from "../../hooks/useAuth";
@@ -8,6 +8,7 @@ import {
   MobileOverlay,
   MobilePanel,
   MobileNavItem,
+  MobileNavButton,
   MobileDropdownSection,
   MobileDropdownItem,
   MobileDivider,
@@ -26,10 +27,19 @@ const MobileMenu: React.FC<MobileMenuProps> = ({
 }) => {
   const navigate = useNavigate();
   const token = useAuth((state) => state.token);
+  const user = useAuth((state) => state.user);
   const isAdmin = useAuth((state) => state.isAdmin);
-  const getCurrentUser = useAuth((state) => state.getCurrentUser);
   const logout = useAuth((state) => state.logout);
-  const user = getCurrentUser();
+
+  // Lấy display name giống Navbar
+  const displayName = (() => {
+    if (!user) return "";
+    const name = user.name?.trim();
+    if (name) {
+      return name.length > 16 ? name.split(" ")[0] : name;
+    }
+    return user.email?.split("@")[0] ?? "";
+  })();
 
   // State to track which dropdown items are expanded
   const [expandedItems, setExpandedItems] = useState<Record<string, boolean>>({});
@@ -38,11 +48,6 @@ const MobileMenu: React.FC<MobileMenuProps> = ({
     logout();
     onClose();
     navigate("/login");
-  };
-
-  const handleItemClick = (path: string) => {
-    navigate(path);
-    onClose();
   };
 
   const toggleExpand = (id: string) => {
@@ -63,21 +68,8 @@ const MobileMenu: React.FC<MobileMenuProps> = ({
             <div key={item.id}>
               {hasDropdown ? (
                 <>
-                  <MobileNavItem
-                    as="button"
+                  <MobileNavButton
                     onClick={() => toggleExpand(item.id)}
-                    style={{
-                      cursor: "pointer",
-                      color: "#1e293b",
-                      width: "100%",
-                      textAlign: "left",
-                      display: "flex",
-                      justifyContent: "space-between",
-                      alignItems: "center",
-                      border: "none",
-                      background: "none",
-                      font: "inherit",
-                    }}
                   >
                     <span>{item.title}</span>
                     <span
@@ -90,13 +82,15 @@ const MobileMenu: React.FC<MobileMenuProps> = ({
                     >
                       ▼
                     </span>
-                  </MobileNavItem>
+                  </MobileNavButton>
                   {isExpanded && (
                     <MobileDropdownSection>
                       {item.children?.map((child) => (
                         <MobileDropdownItem
                           key={child.id}
-                          onClick={() => handleItemClick(child.path)}
+                          as={Link}
+                          to={child.path}
+                          onClick={onClose}
                         >
                           {child.icon && (
                             <span className="mr-1">{child.icon}</span>
@@ -108,7 +102,7 @@ const MobileMenu: React.FC<MobileMenuProps> = ({
                   )}
                 </>
               ) : (
-                <MobileNavItem onClick={() => handleItemClick(item.path)}>
+                <MobileNavItem as={Link} to={item.path} onClick={onClose}>
                   {item.title}
                 </MobileNavItem>
               )}
@@ -121,23 +115,64 @@ const MobileMenu: React.FC<MobileMenuProps> = ({
         {/* User Info / Auth */}
         {token ? (
           <>
-            {user?.name && (
-              <div
+            <div
+              style={{
+                padding: "0.75rem 1rem",
+                fontSize: "0.95rem",
+                fontWeight: 600,
+                color: "#1e293b",
+                display: "flex",
+                alignItems: "center",
+                gap: "0.6rem",
+                borderBottom: "1px solid rgba(244, 63, 94, 0.05)",
+                marginBottom: "0.5rem",
+              }}
+            >
+              {user?.avatar ? (
+                <img
+                  src={user.avatar}
+                  alt={displayName}
+                  style={{
+                    width: "32px",
+                    height: "32px",
+                    borderRadius: "50%",
+                    objectFit: "cover",
+                    border: "2px solid rgba(244, 63, 94, 0.3)",
+                    flexShrink: 0,
+                  }}
+                  referrerPolicy="no-referrer"
+                />
+              ) : (
+                <span
+                  style={{
+                    width: "32px",
+                    height: "32px",
+                    borderRadius: "50%",
+                    background: "linear-gradient(135deg, #f43f5e, #fb923c)",
+                    display: "inline-flex",
+                    alignItems: "center",
+                    justifyContent: "center",
+                    fontSize: "0.8rem",
+                    fontWeight: 700,
+                    color: "white",
+                    flexShrink: 0,
+                  }}
+                >
+                  {displayName.charAt(0).toUpperCase()}
+                </span>
+              )}
+              <span
                 style={{
-                  padding: "0.5rem 1rem",
-                  fontSize: "0.875rem",
-                  color: "#64748b",
-                  display: "flex",
-                  alignItems: "center",
-                  gap: "0.5rem",
+                  overflow: "hidden",
+                  textOverflow: "ellipsis",
+                  whiteSpace: "nowrap",
                 }}
               >
-                <User size={16} />
-                <span>Xin chào, {user.name}</span>
-              </div>
-            )}
+                Xin chào, {displayName}
+              </span>
+            </div>
             {isAdmin() && (
-              <MobileNavItem onClick={() => handleItemClick("/admin")}>
+              <MobileNavItem as={Link} to="/admin" onClick={onClose}>
                 <LayoutDashboard size={18} style={{ marginRight: "8px" }} />
                 Quản Trị Viên
               </MobileNavItem>
@@ -151,19 +186,19 @@ const MobileMenu: React.FC<MobileMenuProps> = ({
             </MobileNavItem>
           </>
         ) : (
-          <MobileNavItem onClick={() => handleItemClick("/login")}>
+          <MobileNavItem as={Link} to="/login" onClick={onClose}>
             Đăng Nhập / Trải Nghiệm
           </MobileNavItem>
         )}
 
         {/* Cart Link */}
-        <MobileNavItem onClick={() => handleItemClick("/cart")}>
+        <MobileNavItem as={Link} to="/cart" onClick={onClose}>
           <ShoppingBag size={18} style={{ marginRight: "8px" }} />
           Giỏ Hàng ({cartCount})
         </MobileNavItem>
 
         {/* CTA */}
-        <MobileCTA onClick={() => handleItemClick("/booking")}>
+        <MobileCTA as={Link} to="/booking" onClick={onClose}>
           ĐẶT LỊCH NGAY
         </MobileCTA>
       </MobilePanel>

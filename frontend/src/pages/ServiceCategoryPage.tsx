@@ -19,7 +19,7 @@ const categoryMetadata: Record<string, CategoryMeta> = {
     name: "Cắt & Tạo Kiểu Nữ",
     title: "Cắt & Tạo Kiểu Tóc Nữ",
     tagline: "Thiết kế dáng tóc tôn vinh khuôn mặt của bạn",
-    description: "Từng đường cắt tinh tế thiết kế phom dáng tóc layer, bob, lob hoặc tỉa mái bay chuẩn Hàn bởi Master Stylist tại Dương Chí.",
+    description: "Từng đường cắt tinh tế thiết kế phom dáng tóc layer, bob, lob hoặc tỉa mái bay chuẩn Hàn bởi Master Stylist tại Dương Chi.",
     benefits: [
       "Tư vấn kỹ lưỡng theo tỉ lệ khuôn mặt",
       "Báo giá công khai rõ ràng trước khi cắt",
@@ -168,7 +168,7 @@ const ServiceCategoryPage = () => {
           </div>
           <div className="rounded-2xl border border-rose-100 bg-rose-50/50 p-5 space-y-3">
             <h4 className="text-xs font-bold text-rose-600 uppercase tracking-wider flex items-center gap-1.5">
-              <Sparkles size={14} /> Đặc Quyền Tại Dương Chí:
+              <Sparkles size={14} /> Đặc Quyền Tại Dương Chi:
             </h4>
             <ul className="space-y-2 text-xs md:text-sm text-slate-700">
               {meta.benefits.map((b, bIdx) => (

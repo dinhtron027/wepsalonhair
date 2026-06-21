@@ -6,7 +6,7 @@ const steps = [
   {
     icon: Coffee,
     title: "1. Chào Đón & Thưởng Trà",
-    description: "Ngay khi bước vào Dương Chí, quý khách sẽ được tiếp đón nồng hậu, thưởng thức ly trà ấm thảo mộc thanh lọc và cảm nhận không gian spa thư giãn tuyệt đối.",
+    description: "Ngay khi bước vào Dương Chi, quý khách sẽ được tiếp đón nồng hậu, thưởng thức ly trà ấm thảo mộc thanh lọc và cảm nhận không gian spa thư giãn tuyệt đối.",
     time: "5 phút"
   },
   {
@@ -18,7 +18,7 @@ const steps = [
   {
     icon: ShieldCheck,
     title: "3. Báo Giá Minh Bạch",
-    description: "Dương Chí cam kết công khai mức giá chi tiết dựa trên tình trạng tóc trước khi bắt đầu thực hiện. Tuyệt đối không phát sinh chi phí hay chèo kéo ép dịch vụ.",
+    description: "Dương Chi cam kết công khai mức giá chi tiết dựa trên tình trạng tóc trước khi bắt đầu thực hiện. Tuyệt đối không phát sinh chi phí hay chèo kéo ép dịch vụ.",
     time: "5 phút"
   },
   {
@@ -59,7 +59,7 @@ const ExperiencePage = () => {
           transition={{ delay: 0.1 }}
           className="text-4xl font-bold text-slate-900 md:text-5xl"
         >
-          Trải Nghiệm Khách Hàng Tại Dương Chí
+          Trải Nghiệm Khách Hàng Tại Dương Chi
         </motion.h1>
         <motion.p
           initial={{ opacity: 0 }}
@@ -67,7 +67,7 @@ const ExperiencePage = () => {
           transition={{ delay: 0.2 }}
           className="mx-auto max-w-2xl text-slate-600"
         >
-          Tại Salon Dương Chí, chúng tôi tin rằng làm tóc không chỉ là thay đổi ngoại hình, mà là một hành trình nuông chiều bản thân, đánh thức sự tự tin và vẻ đẹp độc bản của bạn.
+          Tại Salon Dương Chi, chúng tôi tin rằng làm tóc không chỉ là thay đổi ngoại hình, mà là một hành trình nuông chiều bản thân, đánh thức sự tự tin và vẻ đẹp độc bản của bạn.
         </motion.p>
       </section>
 
@@ -88,7 +88,7 @@ const ExperiencePage = () => {
                 whileInView={{ opacity: 1, y: 0 }}
                 viewport={{ once: true, margin: "-100px" }}
                 transition={{ duration: 0.5, delay: idx * 0.1 }}
-                className={`flex flex-col md:flex-row items-center justify-between gap-6 md:gap-12 ${
+                className={`flex flex-col-reverse md:flex-row items-center justify-between gap-6 md:gap-12 ${
                   isEven ? "md:flex-row-reverse" : ""
                 }`}
               >
@@ -125,7 +125,7 @@ const ExperiencePage = () => {
         viewport={{ once: true }}
         className="rounded-3xl border border-rose-100 bg-gradient-to-br from-rose-50/50 to-pink-50/50 p-8 md:p-12 text-center space-y-6"
       >
-        <h2 className="text-2xl font-bold text-slate-900 md:text-3xl">Cam Kết Vàng Từ Dương Chí</h2>
+        <h2 className="text-2xl font-bold text-slate-900 md:text-3xl">Cam Kết Vàng Từ Dương Chi</h2>
         <p className="mx-auto max-w-2xl text-slate-700 text-sm md:text-base leading-relaxed">
           Chúng tôi coi mái tóc quý khách như một tác phẩm nghệ thuật. Mỗi dịch vụ được thực hiện với các cam kết: Vệ sinh sạch sẽ chuẩn y khoa, tận tâm lắng nghe, trung thực báo giá và chỉ sử dụng sản phẩm organic nhập khẩu chính ngạch cao cấp nhất.
         </p>

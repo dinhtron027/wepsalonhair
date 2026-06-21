@@ -1,7 +1,7 @@
 import { create } from "zustand";
 import { authService } from "../../../../app/control/di/container";
 import type { UserRole } from "../../entity/User";
-import type { LoginCredentials } from "../ports/IAuthService";
+import type { LoginCredentials, RegisterPayload } from "../ports/IAuthService";
 export type { UserRole } from "../../entity/User";
 
 export type AuthUser = {
@@ -10,12 +10,14 @@ export type AuthUser = {
   email: string;
   phone?: string;
   role: UserRole;
+  avatar?: string;
 };
 
 type AuthState = {
   user: AuthUser | null;
   token: string | null;
   isLoading: boolean;
+  register: (payload: RegisterPayload) => Promise<AuthUser>;
   login: (credentials: LoginCredentials) => Promise<AuthUser>;
   loginWithGoogle: (idToken: string) => Promise<AuthUser>;
   loginWithFacebook: (accessToken: string) => Promise<AuthUser>;
@@ -44,6 +46,7 @@ const toAuthUser = (user: ReturnType<typeof authService.getCurrentUser>): AuthUs
     email: dto.email,
     phone: dto.phone,
     role: dto.role,
+    avatar: dto.avatar,
   };
 };
 
@@ -85,6 +88,28 @@ export const useAuth = create<AuthState>((set, get) => ({
   token: initialToken,
   isLoading: false,
 
+  register: async (payload) => {
+    set({ isLoading: true });
+    try {
+      const session = await authService.register(payload);
+      const dto = session.user.toDTO();
+      const currentUser: AuthUser = {
+        id: dto.id,
+        name: dto.name,
+        email: dto.email,
+        phone: dto.phone,
+        role: dto.role,
+        avatar: dto.avatar,
+      };
+
+      set({ user: currentUser, token: session.token, isLoading: false });
+      return currentUser;
+    } catch (error) {
+      set({ isLoading: false });
+      throw error;
+    }
+  },
+
   login: async (credentials) => {
     set({ isLoading: true });
     try {
@@ -96,6 +121,7 @@ export const useAuth = create<AuthState>((set, get) => ({
         email: dto.email,
         phone: dto.phone,
         role: dto.role,
+        avatar: dto.avatar,
       };
 
       set({ user: currentUser, token: session.token, isLoading: false });
@@ -117,6 +143,7 @@ export const useAuth = create<AuthState>((set, get) => ({
         email: dto.email,
         phone: dto.phone,
         role: dto.role,
+        avatar: dto.avatar,
       };
 
       set({ user: currentUser, token: session.token, isLoading: false });
@@ -138,6 +165,7 @@ export const useAuth = create<AuthState>((set, get) => ({
         email: dto.email,
         phone: dto.phone,
         role: dto.role,
+        avatar: dto.avatar,
       };
 
       set({ user: currentUser, token: session.token, isLoading: false });

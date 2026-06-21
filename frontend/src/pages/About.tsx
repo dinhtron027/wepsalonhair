@@ -8,14 +8,14 @@ const About = () => {
       {/* Intro */}
       <SectionTitle
         eyebrow="Câu Chuyện Thương Hiệu"
-        title="Salon Dương Chí"
-        description="Hơn cả một điểm đến làm đẹp, Salon Dương Chí là trạm dừng chân tĩnh lặng để bạn được nâng niu và chữa lành. Nơi nghệ thuật tạo mẫu tóc song hành cùng sự tinh tế của người Á Đông."
+        title="Salon Dương Chi"
+        description="Hơn cả một điểm đến làm đẹp, Salon Dương Chi là trạm dừng chân tĩnh lặng để bạn được nâng niu và chữa lành. Nơi nghệ thuật tạo mẫu tóc song hành cùng sự tinh tế của người Á Đông."
         align="left"
       />
 
       <AnimatedContainer className="rounded-3xl border border-rose-100 bg-white/80 p-8 shadow-lg shadow-rose-100 backdrop-blur-lg">
         <p className="text-slate-700 leading-relaxed">
-          Tối giản, thanh lịch nhưng vô cùng ấm áp với ánh sáng dịu nhẹ và hương tinh dầu mộc mạc. Mọi góc nhỏ tại Dương Chí đều được sắp đặt tỉ mỉ để mang đến cho bạn sự khoan khoái như một buổi spa thiền tịnh.
+          Tối giản, thanh lịch nhưng vô cùng ấm áp với ánh sáng dịu nhẹ và hương tinh dầu mộc mạc. Mọi góc nhỏ tại Dương Chi đều được sắp đặt tỉ mỉ để mang đến cho bạn sự khoan khoái như một buổi spa thiền tịnh.
         </p>
 
         <p className="text-slate-700 leading-relaxed mt-4">
@@ -29,17 +29,17 @@ const About = () => {
         <SectionTitle
           eyebrow="Người Kiến Tạo"
           title="Chủ Nhân Của Cảm Hứng"
-          description="Người thổi hồn vào từng trải nghiệm tại Dương Chí."
+          description="Người thổi hồn vào từng trải nghiệm tại Dương Chi."
           align="left"
         />
 
         <AnimatedContainer className="rounded-3xl border border-rose-100 bg-white/80 p-8 shadow-lg shadow-rose-100 backdrop-blur-lg">
           <h3 className="text-xl font-semibold text-slate-900 mb-3">
-            Dương Chí - Nghệ nhân của suối tóc
+            Dương Chi - Nghệ nhân của suối tóc
           </h3>
 
           <p className="text-slate-700 leading-relaxed">
-            Mang trong mình tình yêu với cái đẹp thanh tao, Dương Chí luôn theo đuổi triết lý: "Mái tóc là trang sức quý giá nhất của người phụ nữ". Không chạy theo những xu hướng công nghiệp, Chí chọn lối đi riêng với nghệ thuật thiết kế tóc cá nhân hóa.
+            Mang trong mình tình yêu với cái đẹp thanh tao, Dương Chi luôn theo đuổi triết lý: "Mái tóc là trang sức quý giá nhất của người phụ nữ". Không chạy theo những xu hướng công nghiệp, Chi chọn lối đi riêng với nghệ thuật thiết kế tóc cá nhân hóa.
           </p>
 
           <p className="text-slate-700 leading-relaxed mt-4">

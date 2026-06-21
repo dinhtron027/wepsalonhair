@@ -91,7 +91,7 @@ const CarePage = () => {
           transition={{ delay: 0.2 }}
           className="mx-auto max-w-2xl text-slate-600"
         >
-          Sở hữu mái tóc đẹp bắt đầu từ nền tảng tóc khỏe. Các liệu trình chăm dưỡng chuyên sâu tại Dương Chí được thiết kế để điều trị tận gốc từng vấn đề của sợi tóc và da đầu.
+          Sở hữu mái tóc đẹp bắt đầu từ nền tảng tóc khỏe. Các liệu trình chăm dưỡng chuyên sâu tại Dương Chi được thiết kế để điều trị tận gốc từng vấn đề của sợi tóc và da đầu.
         </motion.p>
       </section>
 

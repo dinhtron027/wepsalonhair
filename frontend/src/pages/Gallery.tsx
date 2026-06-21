@@ -31,7 +31,7 @@ const Gallery = () => {
       <SectionTitle
         eyebrow="Tuyển Tập"
         title="Tuyển Tập Dấu Ấn Thanh Xuân"
-        description="Lưu giữ những tác phẩm nghệ thuật trên từng lọn tóc. Cảm nhận nhịp đập của xu hướng qua lăng kính mềm mại, tự nhiên đầy nét thơ của Dương Chí."
+        description="Lưu giữ những tác phẩm nghệ thuật trên từng lọn tóc. Cảm nhận nhịp đập của xu hướng qua lăng kính mềm mại, tự nhiên đầy nét thơ của Dương Chi."
         align="left"
       />
 

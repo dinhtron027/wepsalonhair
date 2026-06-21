@@ -413,13 +413,19 @@ export const MobilePanel = styled.nav<{ $isOpen: boolean }>`
   border-bottom: 1px solid ${tokens.border};
   box-shadow: ${tokens.shadow};
   padding: 1rem 1.5rem 1.5rem;
+  max-height: calc(100vh - 72px);
+  overflow-y: auto;
+  -webkit-overflow-scrolling: touch;
+  pointer-events: ${({ $isOpen }) => ($isOpen ? "auto" : "none")};
+  visibility: ${({ $isOpen }) => ($isOpen ? "visible" : "hidden")};
   transform: ${({ $isOpen }) =>
     $isOpen ? "translateY(0)" : "translateY(-100%)"};
   opacity: ${({ $isOpen }) => ($isOpen ? 1 : 0)};
   pointer-events: ${({ $isOpen }) => ($isOpen ? "auto" : "none")};
   visibility: ${({ $isOpen }) => ($isOpen ? "visible" : "hidden")};
   transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1),
-    opacity 0.25s ease;
+    opacity 0.25s ease,
+    visibility 0.3s ease;
 
   @media (min-width: 1024px) {
     display: none;
@@ -435,6 +441,28 @@ export const MobileNavItem = styled.a`
   font-weight: 600;
   color: ${tokens.text};
   text-decoration: none;
+  transition: ${tokens.transition};
+
+  &:hover {
+    background: rgba(194, 24, 91, 0.06);
+    color: ${tokens.brand};
+  }
+`;
+
+export const MobileNavButton = styled.button`
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  width: 100%;
+  padding: 0.75rem 1rem;
+  border-radius: ${tokens.radius};
+  font-size: 1rem;
+  font-weight: 600;
+  color: ${tokens.text};
+  border: none;
+  background: transparent;
+  cursor: pointer;
+  font-family: inherit;
   transition: ${tokens.transition};
 
   &:hover {

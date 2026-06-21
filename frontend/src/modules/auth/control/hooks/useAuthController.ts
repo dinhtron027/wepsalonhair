@@ -3,7 +3,7 @@ import { useLocation, useNavigate } from "react-router-dom";
 import toast from "react-hot-toast";
 import { useAuth } from "../store/authStore";
 import { getApiErrorMessage } from "../../../../services/api";
-import type { LoginCredentials } from "../ports/IAuthService";
+import type { LoginCredentials, RegisterPayload } from "../ports/IAuthService";
 import { AppError } from "../../../../shared/entity/AppError";
 
 const NETWORK_ERROR_TOAST =
@@ -37,6 +37,7 @@ export const useAuthController = () => {
   const login = useAuth((state) => state.login);
   const loginWithGoogle = useAuth((state) => state.loginWithGoogle);
   const loginWithFacebook = useAuth((state) => state.loginWithFacebook);
+  const registerAction = useAuth((state) => state.register);
   const getCurrentUser = useAuth((state) => state.getCurrentUser);
   const isLoading = useAuth((state) => state.isLoading);
 
@@ -126,10 +127,27 @@ export const useAuthController = () => {
     }
   };
 
+  const submitRegister = async (payload: RegisterPayload): Promise<boolean> => {
+    try {
+      await registerAction(payload);
+      toast.success("Đăng ký tài khoản thành công!");
+      navigate("/", { replace: true });
+      return true;
+    } catch (error) {
+      if (isNetworkError(error)) {
+        toast.error(NETWORK_ERROR_TOAST);
+        return false;
+      }
+      toast.error(getApiErrorMessage(error, "Đăng ký không thành công."));
+      return false;
+    }
+  };
+
   return {
     isLoading,
     submitLogin,
     submitGoogleLogin,
-    submitFacebookLogin
+    submitFacebookLogin,
+    submitRegister
   };
 };

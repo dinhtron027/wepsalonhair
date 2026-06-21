@@ -74,7 +74,7 @@ const Pricing = () => {
       <SectionTitle
         eyebrow="Bảng Giá"
         title="Mức Giá Của Sự Hoàn Mỹ"
-        description="Thông tin chi tiết về từng mức giá dịch vụ tại Dương Chí để bạn yên tâm tận hưởng liệu trình chăm sóc tóc tốt nhất."
+        description="Thông tin chi tiết về từng mức giá dịch vụ tại Dương Chi để bạn yên tâm tận hưởng liệu trình chăm sóc tóc tốt nhất."
         align="left"
       />
 
@@ -115,7 +115,7 @@ const Pricing = () => {
                           <span className="text-xs text-slate-500 font-medium">{durationValue} phút</span>
                         </div>
                         <p className="text-xs text-slate-500 max-w-2xl leading-relaxed">
-                          {service.description || "Liệu trình chăm sóc tóc tận tâm chuyên nghiệp bởi đội ngũ stylist Dương Chí."}
+                          {service.description || "Liệu trình chăm sóc tóc tận tâm chuyên nghiệp bởi đội ngũ stylist Dương Chi."}
                         </p>
                       </div>
                       <div className="flex items-center justify-between sm:justify-end gap-4 min-w-[150px]">

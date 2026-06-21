@@ -1,11 +1,8 @@
 import { useState } from "react";
+import { Link } from "react-router-dom";
 import toast from "react-hot-toast";
 import { Eye, EyeOff } from "lucide-react";
 import { GoogleOAuthProvider, GoogleLogin, CredentialResponse } from "@react-oauth/google";
-import * as _FacebookLoginModule from "react-facebook-login/dist/facebook-login-render-props";
-import { ReactFacebookLoginInfo } from "react-facebook-login";
-// eslint-disable-next-line @typescript-eslint/no-explicit-any
-const FacebookLogin: any = (_FacebookLoginModule as any).default?.default ?? (_FacebookLoginModule as any).default ?? _FacebookLoginModule;
 import LoadingSpinner from "../../../../components/LoadingSpinner";
 import { useAuthController } from "../../control/hooks/useAuthController";
 import SectionTitle from "../../../../components/SectionTitle";
@@ -13,14 +10,14 @@ import AnimatedContainer from "../../../../components/AnimatedContainer";
 
 // In a real app, these should come from env variables
 const GOOGLE_CLIENT_ID = (import.meta.env.VITE_GOOGLE_CLIENT_ID || "PASTE_YOUR_GOOGLE_CLIENT_ID_HERE").trim();
-const FACEBOOK_APP_ID = (import.meta.env.VITE_FACEBOOK_APP_ID || "PASTE_YOUR_FACEBOOK_APP_ID_HERE").trim();
+// const FACEBOOK_APP_ID = (import.meta.env.VITE_FACEBOOK_APP_ID || "PASTE_YOUR_FACEBOOK_APP_ID_HERE").trim();
 
 const LoginPage = () => {
   const [identifier, setIdentifier] = useState("");
   const [password, setPassword] = useState("");
   const [showPassword, setShowPassword] = useState(false);
   
-  const { isLoading, submitLogin, submitGoogleLogin, submitFacebookLogin } = useAuthController();
+  const { isLoading, submitLogin, submitGoogleLogin } = useAuthController();
 
 
   const handleSubmit = async (event: React.FormEvent) => {
@@ -47,13 +44,13 @@ const LoginPage = () => {
     toast.error("Không thể kết nối Google");
   };
 
-  const onFacebookCallback = async (response: ReactFacebookLoginInfo) => {
-    if (response.accessToken) {
-      await submitFacebookLogin(response.accessToken);
-    } else {
-      toast.error("Không thể kết nối Facebook");
-    }
-  };
+  // const onFacebookCallback = async (response: ReactFacebookLoginInfo) => {
+  //   if (response.accessToken) {
+  //     await submitFacebookLogin(response.accessToken);
+  //   } else {
+  //     toast.error("Không thể kết nối Facebook");
+  //   }
+  // };
 
   return (
     <GoogleOAuthProvider clientId={GOOGLE_CLIENT_ID}>
@@ -62,7 +59,7 @@ const LoginPage = () => {
           <SectionTitle
             eyebrow="Khởi đầu"
             title="Đăng Nhập"
-            description="Chào mừng bạn trở lại với không gian thư giãn của Dương Chí."
+            description="Chào mừng bạn trở lại với không gian thư giãn của Dương Chi."
           />
           
           <form
@@ -129,12 +126,13 @@ const LoginPage = () => {
                   onError={onGoogleError}
                   theme="outline"
                   shape="pill"
-                  width="100%"
+                  width="320"
                   text="signin_with"
                 />
               </div>
 
-              <FacebookLogin
+              {/* Facebook Login tạm ẩn - Sẽ triển khai sau */}
+              {/* <FacebookLogin
                 appId={FACEBOOK_APP_ID}
                 autoLoad={false}
                 fields="name,email,picture"
@@ -152,12 +150,14 @@ const LoginPage = () => {
                     Đăng nhập với Facebook
                   </button>
                 )}
-              />
+              /> */}
             </div>
             
             <p className="text-center text-sm text-slate-600 mt-6">
               Chưa có tài khoản?{" "}
-              <span className="font-semibold text-rose-500">Liên hệ salon để được hỗ trợ đăng ký.</span>
+              <Link to="/register" className="font-semibold text-rose-500 hover:underline">
+                Đăng ký ngay
+              </Link>
             </p>
           </form>
         </AnimatedContainer>

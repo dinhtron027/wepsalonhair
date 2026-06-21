@@ -11,6 +11,7 @@ import ProductDetailPage from "../pages/ProductDetailPage";
 import CartPage from "../pages/CartPage";
 import BookingPage from "../pages/BookingPage";
 import LoginPage from "../pages/LoginPage";
+import RegisterPage from "../pages/RegisterPage";
 import ExperiencePage from "../pages/ExperiencePage";
 import CarePage from "../pages/CarePage";
 import ServiceCategoryPage from "../pages/ServiceCategoryPage";
@@ -32,6 +33,7 @@ export const publicRoutes = [
   { path: "/contact", element: <Contact />, name: "Lien he" },
   { path: "/cart", element: <CartPage />, name: "Gio hang" },
   { path: "/login", element: <LoginPage />, name: "Dang nhap" },
+  { path: "/register", element: <RegisterPage />, name: "Dang ky" },
 ];
 
 export const menuLinks = publicRoutes.filter(

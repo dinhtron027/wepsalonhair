@@ -1,10 +1,9 @@
 import { useQuery } from "@tanstack/react-query";
 import { productService } from "../../../../app/control/di/container";
-import { queryKeys } from "../../../../services/adminApi";
 
 export const useProductsController = () => {
   const productsQuery = useQuery({
-    queryKey: [...queryKeys.publicProducts],
+    queryKey: ["public-products-instances"],
     queryFn: () => productService.listPublicProducts(),
   });
 

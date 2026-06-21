@@ -9,7 +9,7 @@ import SectionTitle from "../../../../components/SectionTitle";
 import AnimatedContainer from "../../../../components/AnimatedContainer";
 
 // In a real app, these should come from env variables
-const GOOGLE_CLIENT_ID = (import.meta.env.VITE_GOOGLE_CLIENT_ID || "PASTE_YOUR_GOOGLE_CLIENT_ID_HERE").trim();
+const GOOGLE_CLIENT_ID = (import.meta.env.VITE_GOOGLE_CLIENT_ID || "341805672397-drrn7mtcfoci9a472fbt7hlt39v35lb3.apps.googleusercontent.com").trim();
 // const FACEBOOK_APP_ID = (import.meta.env.VITE_FACEBOOK_APP_ID || "PASTE_YOUR_FACEBOOK_APP_ID_HERE").trim();
 
 const LoginPage = () => {

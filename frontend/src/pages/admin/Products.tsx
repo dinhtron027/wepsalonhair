@@ -147,77 +147,139 @@ const ProductsPage = () => {
         <h3 className="text-lg font-semibold">{isEditing ? "Cập nhật sản phẩm" : "Thêm sản phẩm mới"}</h3>
         <p className="mt-1 text-sm text-slate-500">Quản lý danh mục sản phẩm và tồn kho bán lẻ.</p>
 
-        <form onSubmit={handleSubmit} className="mt-5 grid gap-3 md:grid-cols-2 lg:grid-cols-4">
-          <input
-            required
-            value={form.name}
-            onChange={(event) => setForm((prev) => ({ ...prev, name: event.target.value }))}
-            className="rounded-xl border border-slate-300 px-3 py-2 text-sm"
-            placeholder="Tên sản phẩm"
-          />
-          <input
-            value={form.category}
-            onChange={(event) => setForm((prev) => ({ ...prev, category: event.target.value }))}
-            className="rounded-xl border border-slate-300 px-3 py-2 text-sm"
-            placeholder="Danh mục (dầu gội, sáp,...)"
-          />
-          <input
-            required
-            type="number"
-            min={0}
-            value={form.price}
-            onChange={(event) => setForm((prev) => ({ ...prev, price: event.target.value }))}
-            className="rounded-xl border border-slate-300 px-3 py-2 text-sm"
-            placeholder="Giá bán"
-          />
-          <input
-            required
-            type="number"
-            min={0}
-            value={form.stock}
-            onChange={(event) => setForm((prev) => ({ ...prev, stock: event.target.value }))}
-            className="rounded-xl border border-slate-300 px-3 py-2 text-sm"
-            placeholder="Số lượng tồn"
-          />
-          <input
-            type="number"
-            min={0}
-            value={form.lowStockThreshold}
-            onChange={(event) =>
-              setForm((prev) => ({ ...prev, lowStockThreshold: event.target.value }))
-            }
-            className="rounded-xl border border-slate-300 px-3 py-2 text-sm"
-            placeholder="Ngưỡng cảnh báo thấp"
-          />
-          <input
-            value={form.image}
-            onChange={(event) => setForm((prev) => ({ ...prev, image: event.target.value }))}
-            className="rounded-xl border border-slate-300 px-3 py-2 text-sm"
-            placeholder="Link ảnh"
-          />
-          <label className="inline-flex items-center gap-2 rounded-xl border border-slate-300 px-3 py-2 text-sm">
-            <input
-              type="checkbox"
-              checked={form.isActive}
-              onChange={(event) => setForm((prev) => ({ ...prev, isActive: event.target.checked }))}
-            />
-            Đang kinh doanh
-          </label>
-          <div />
-          <textarea
-            value={form.description}
-            onChange={(event) => setForm((prev) => ({ ...prev, description: event.target.value }))}
-            className="rounded-xl border border-slate-300 px-3 py-2 text-sm md:col-span-2"
-            rows={3}
-            placeholder="Mô tả sản phẩm"
-          />
-          <div className="flex gap-2 md:col-span-2 lg:col-span-2">
+        <form onSubmit={handleSubmit} className="mt-5 space-y-6">
+          <div className="grid gap-6 md:grid-cols-2">
+            {/* Cột trái: Thông tin sản phẩm */}
+            <div className="space-y-6">
+              <div className="rounded-xl border border-slate-200 p-4 bg-slate-50/50 space-y-4">
+                <h4 className="font-semibold text-slate-700 text-sm border-b border-slate-200 pb-2">1. Thông tin sản phẩm</h4>
+                
+                <div className="flex flex-col gap-1.5">
+                  <label htmlFor="name" className="text-xs font-semibold text-slate-600">Tên sản phẩm <span className="text-rose-500">*</span></label>
+                  <input
+                    id="name"
+                    required
+                    value={form.name}
+                    onChange={(event) => setForm((prev) => ({ ...prev, name: event.target.value }))}
+                    className="rounded-xl border border-slate-300 px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-cyan-500/20"
+                    placeholder="Ví dụ: Dầu gội bưởi, Sáp vuốt tóc Clay"
+                  />
+                </div>
+
+                <div className="flex flex-col gap-1.5">
+                  <label htmlFor="category" className="text-xs font-semibold text-slate-600">Danh mục <span className="text-slate-400">(Tùy chọn)</span></label>
+                  <input
+                    id="category"
+                    value={form.category}
+                    onChange={(event) => setForm((prev) => ({ ...prev, category: event.target.value }))}
+                    className="rounded-xl border border-slate-300 px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-cyan-500/20"
+                    placeholder="Ví dụ: Dầu gội, Sáp vuốt tóc, Tinh dầu"
+                  />
+                </div>
+
+                <div className="flex flex-col gap-1.5">
+                  <label htmlFor="image" className="text-xs font-semibold text-slate-600">Ảnh sản phẩm (Link ảnh URL)</label>
+                  <input
+                    id="image"
+                    value={form.image}
+                    onChange={(event) => setForm((prev) => ({ ...prev, image: event.target.value }))}
+                    className="rounded-xl border border-slate-300 px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-cyan-500/20"
+                    placeholder="Dán link ảnh (ví dụ: https://images.unsplash.com/...)"
+                  />
+                </div>
+
+                <div className="flex flex-col gap-1.5">
+                  <label htmlFor="description" className="text-xs font-semibold text-slate-600">Mô tả sản phẩm</label>
+                  <textarea
+                    id="description"
+                    value={form.description}
+                    onChange={(event) => setForm((prev) => ({ ...prev, description: event.target.value }))}
+                    className="rounded-xl border border-slate-300 px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-cyan-500/20"
+                    rows={3}
+                    placeholder="Mô tả công dụng, cách dùng và thành phần sản phẩm..."
+                  />
+                </div>
+              </div>
+            </div>
+
+            {/* Cột phải: Giá & Kho hàng */}
+            <div className="space-y-6">
+              <div className="rounded-xl border border-slate-200 p-4 bg-slate-50/50 space-y-4 h-full">
+                <h4 className="font-semibold text-slate-700 text-sm border-b border-slate-200 pb-2">2. Giá & Kho hàng</h4>
+                
+                <div className="flex flex-col gap-1.5">
+                  <label htmlFor="price" className="text-xs font-semibold text-slate-600">Giá bán (VNĐ) <span className="text-rose-500">*</span></label>
+                  <div className="relative">
+                    <input
+                      id="price"
+                      required
+                      type="number"
+                      min={0}
+                      value={form.price}
+                      onChange={(event) => setForm((prev) => ({ ...prev, price: event.target.value }))}
+                      className="w-full rounded-xl border border-slate-300 pl-3 pr-12 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-cyan-500/20"
+                      placeholder="Ví dụ: 120000"
+                    />
+                    <span className="absolute right-3 top-2.5 text-xs font-medium text-slate-400">VNĐ</span>
+                  </div>
+                </div>
+
+                <div className="flex flex-col gap-1.5">
+                  <label htmlFor="stock" className="text-xs font-semibold text-slate-600">Số lượng tồn kho <span className="text-rose-500">*</span></label>
+                  <input
+                    id="stock"
+                    required
+                    type="number"
+                    min={0}
+                    value={form.stock}
+                    onChange={(event) => setForm((prev) => ({ ...prev, stock: event.target.value }))}
+                    className="rounded-xl border border-slate-300 px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-cyan-500/20"
+                    placeholder="Ví dụ: 10"
+                  />
+                </div>
+
+                <div className="flex flex-col gap-1.5">
+                  <label htmlFor="lowStockThreshold" className="text-xs font-semibold text-slate-600">Ngưỡng cảnh báo sắp hết hàng <span className="text-rose-500">*</span></label>
+                  <input
+                    id="lowStockThreshold"
+                    required
+                    type="number"
+                    min={0}
+                    value={form.lowStockThreshold}
+                    onChange={(event) =>
+                      setForm((prev) => ({ ...prev, lowStockThreshold: event.target.value }))
+                    }
+                    className="rounded-xl border border-slate-300 px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-cyan-500/20"
+                    placeholder="Ví dụ: 5"
+                  />
+                  <span className="text-xs text-slate-400">Hệ thống sẽ cảnh báo khi số lượng tồn thấp hơn hoặc bằng mức này.</span>
+                </div>
+
+                <div className="flex items-center justify-between border-t border-slate-200/60 pt-4 mt-2">
+                  <span className="text-xs font-semibold text-slate-600">Trạng thái bán hàng</span>
+                  <label className="inline-flex items-center cursor-pointer select-none">
+                    <input
+                      type="checkbox"
+                      checked={form.isActive}
+                      onChange={(event) => setForm((prev) => ({ ...prev, isActive: event.target.checked }))}
+                      className="sr-only peer"
+                    />
+                    <div className="relative w-11 h-6 bg-slate-200 peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full rtl:peer-checked:after:-translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:start-[2px] after:bg-white after:border-slate-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-cyan-600"></div>
+                    <span className="ms-2 text-xs font-semibold text-slate-600">Đang kinh doanh</span>
+                  </label>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          {/* Hộp nút Submit / Huỷ chỉnh sửa */}
+          <div className="flex items-center gap-3 border-t border-slate-200 pt-5">
             <button
               type="submit"
               disabled={isSubmitting}
-              className="rounded-xl bg-cyan-600 px-4 py-2 text-sm font-semibold text-white hover:bg-cyan-700 disabled:opacity-70"
+              className="rounded-xl bg-cyan-600 hover:bg-cyan-700 active:bg-cyan-800 transition-colors px-6 py-2.5 text-sm font-semibold text-white disabled:opacity-70 shadow-sm"
             >
-              {isSubmitting ? "Đang xử lý..." : isEditing ? "Lưu cập nhật" : "Tạo sản phẩm"}
+              {isSubmitting ? "Đang xử lý..." : isEditing ? "Cập nhật sản phẩm" : "Tạo sản phẩm"}
             </button>
             {isEditing ? (
               <button
@@ -226,7 +288,7 @@ const ProductsPage = () => {
                   setEditingProductId(null);
                   setForm(defaultForm);
                 }}
-                className="rounded-xl border border-slate-300 px-4 py-2 text-sm font-semibold text-slate-700"
+                className="rounded-xl border border-slate-300 hover:bg-slate-50 active:bg-slate-100 transition-colors px-5 py-2.5 text-sm font-semibold text-slate-700"
               >
                 Hủy chỉnh sửa
               </button>
@@ -243,31 +305,121 @@ const ProductsPage = () => {
             <LoadingSpinner label="Đang tải sản phẩm..." />
           </div>
         ) : (
-          <div className="mt-4 overflow-x-auto">
-            <table className="min-w-full text-left text-sm">
-              <thead className="border-b border-slate-200 text-slate-500">
-                <tr>
-                  <th className="px-2 py-2 font-semibold">Sản phẩm</th>
-                  <th className="px-2 py-2 font-semibold">Giá</th>
-                  <th className="px-2 py-2 font-semibold">Tồn kho</th>
-                  <th className="px-2 py-2 font-semibold">Trạng thái</th>
-                  <th className="px-2 py-2 font-semibold text-right">Thao tác</th>
-                </tr>
-              </thead>
-              <tbody>
-                {sortedProducts.map((product) => {
-                  const isLowStock = product.stock <= (product.lowStockThreshold || 0);
+          <div className="mt-4">
+            {/* Desktop Table View */}
+            <div className="hidden md:block overflow-x-auto">
+              <table className="min-w-full text-left text-sm">
+                <thead className="border-b border-slate-200 text-slate-500">
+                  <tr>
+                    <th className="px-2 py-2 font-semibold">Sản phẩm</th>
+                    <th className="px-2 py-2 font-semibold">Giá</th>
+                    <th className="px-2 py-2 font-semibold">Tồn kho</th>
+                    <th className="px-2 py-2 font-semibold">Trạng thái</th>
+                    <th className="px-2 py-2 font-semibold text-right">Thao tác</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {sortedProducts.map((product) => {
+                    const isLowStock = product.stock <= (product.lowStockThreshold || 0);
 
-                  return (
-                    <tr key={product._id} className="border-b border-slate-100">
-                      <td className="px-2 py-3">
-                        <p className="font-semibold text-slate-800">{product.name}</p>
-                        <p className="text-xs text-slate-500">{product.category || "Không phân loại"}</p>
-                      </td>
-                      <td className="px-2 py-3 text-slate-700">{formatCurrency(product.price)}</td>
-                      <td className="px-2 py-3">
+                    return (
+                      <tr key={product._id} className="border-b border-slate-100">
+                        <td className="px-2 py-3">
+                          <div className="flex items-center gap-3">
+                            {product.image ? (
+                              <img
+                                src={product.image}
+                                alt={product.name}
+                                className="w-10 h-10 rounded-lg object-cover flex-shrink-0"
+                              />
+                            ) : (
+                              <div className="w-10 h-10 rounded-lg bg-slate-100 flex items-center justify-center flex-shrink-0 text-slate-400 font-semibold text-xs">
+                                Ảnh
+                              </div>
+                            )}
+                            <div>
+                              <p className="font-semibold text-slate-800">{product.name}</p>
+                              <p className="text-xs text-slate-500">{product.category || "Không phân loại"}</p>
+                            </div>
+                          </div>
+                        </td>
+                        <td className="px-2 py-3 text-slate-700">{formatCurrency(product.price)}</td>
+                        <td className="px-2 py-3">
+                          <span
+                            className={`rounded-full px-2 py-1 text-xs font-semibold ${
+                              isLowStock
+                                ? "bg-amber-100 text-amber-700"
+                                : "bg-emerald-100 text-emerald-700"
+                            }`}
+                          >
+                            {product.stock} ({isLowStock ? "Sắp hết" : "Ổn định"})
+                          </span>
+                        </td>
+                        <td className="px-2 py-3 text-slate-700">
+                          {product.isActive ? "Đang bán" : "Ngừng bán"}
+                        </td>
+                        <td className="px-2 py-3">
+                          <div className="flex justify-end gap-2">
+                            <button
+                              onClick={() => handleEdit(product)}
+                              className="rounded-lg border border-slate-300 px-3 py-1 text-xs font-semibold text-slate-700 hover:bg-slate-50"
+                            >
+                              Sửa
+                            </button>
+                            <button
+                              onClick={() => handleDelete(product)}
+                              disabled={deleteMutation.isPending}
+                              className="rounded-lg border border-rose-300 px-3 py-1 text-xs font-semibold text-rose-600 hover:bg-rose-50 disabled:opacity-70"
+                            >
+                              Xóa
+                            </button>
+                          </div>
+                        </td>
+                      </tr>
+                    );
+                  })}
+                </tbody>
+              </table>
+            </div>
+
+            {/* Mobile Card View */}
+            <div className="block md:hidden space-y-4">
+              {sortedProducts.map((product) => {
+                const isLowStock = product.stock <= (product.lowStockThreshold || 0);
+                return (
+                  <div key={product._id} className="p-4 rounded-xl border border-slate-200 bg-slate-50/50 space-y-3">
+                    <div className="flex items-start gap-3">
+                      {product.image ? (
+                        <img
+                          src={product.image}
+                          alt={product.name}
+                          className="w-16 h-16 rounded-xl object-cover flex-shrink-0 border border-slate-200"
+                        />
+                      ) : (
+                        <div className="w-16 h-16 rounded-xl bg-slate-100 flex items-center justify-center flex-shrink-0 text-slate-400 font-semibold text-xs border border-slate-200">
+                          Không ảnh
+                        </div>
+                      )}
+                      <div className="min-w-0 flex-1">
+                        <div className="flex justify-between items-start gap-2">
+                          <h4 className="font-semibold text-slate-800 text-sm line-clamp-1">{product.name}</h4>
+                          <span className="inline-block rounded-lg bg-slate-200/60 px-2 py-0.5 text-[10px] font-semibold text-slate-700 flex-shrink-0">
+                            {product.category || "Chưa phân loại"}
+                          </span>
+                        </div>
+                        <p className="text-xs text-slate-500 line-clamp-2 mt-1">{product.description || "Không có mô tả."}</p>
+                      </div>
+                    </div>
+
+                    <div className="grid grid-cols-3 gap-2 text-xs border-t border-slate-150/70 pt-3">
+                      <div>
+                        <p className="text-slate-400">Giá bán</p>
+                        <p className="font-semibold text-slate-700 mt-0.5">{formatCurrency(product.price)}</p>
+                      </div>
+                      <div>
+                        <p className="text-slate-400">Tồn kho</p>
                         <span
-                          className={`rounded-full px-2 py-1 text-xs font-semibold ${
+                          className={`inline-block rounded-full px-2 py-0.5 text-[10px] font-semibold mt-0.5 ${
                             isLowStock
                               ? "bg-amber-100 text-amber-700"
                               : "bg-emerald-100 text-emerald-700"
@@ -275,32 +427,36 @@ const ProductsPage = () => {
                         >
                           {product.stock} ({isLowStock ? "Sắp hết" : "Ổn định"})
                         </span>
-                      </td>
-                      <td className="px-2 py-3 text-slate-700">
-                        {product.isActive ? "Đang bán" : "Ngừng bán"}
-                      </td>
-                      <td className="px-2 py-3">
-                        <div className="flex justify-end gap-2">
-                          <button
-                            onClick={() => handleEdit(product)}
-                            className="rounded-lg border border-slate-300 px-3 py-1 text-xs font-semibold text-slate-700 hover:bg-slate-50"
-                          >
-                            Sửa
-                          </button>
-                          <button
-                            onClick={() => handleDelete(product)}
-                            disabled={deleteMutation.isPending}
-                            className="rounded-lg border border-rose-300 px-3 py-1 text-xs font-semibold text-rose-600 hover:bg-rose-50 disabled:opacity-70"
-                          >
-                            Xóa
-                          </button>
-                        </div>
-                      </td>
-                    </tr>
-                  );
-                })}
-              </tbody>
-            </table>
+                      </div>
+                      <div>
+                        <p className="text-slate-400">Trạng thái</p>
+                        <span className={`inline-block rounded-full px-2 py-0.5 text-[10px] font-semibold mt-0.5 ${
+                          product.isActive ? "bg-cyan-150 text-cyan-800" : "bg-slate-200 text-slate-600"
+                        }`}>
+                          {product.isActive ? "Đang bán" : "Ngừng bán"}
+                        </span>
+                      </div>
+                    </div>
+
+                    <div className="flex gap-2 justify-end border-t border-slate-150/70 pt-3">
+                      <button
+                        onClick={() => handleEdit(product)}
+                        className="flex-1 text-center rounded-lg border border-slate-300 py-2 text-xs font-semibold text-slate-700 bg-white hover:bg-slate-50 active:bg-slate-100"
+                      >
+                        Sửa
+                      </button>
+                      <button
+                        onClick={() => handleDelete(product)}
+                        disabled={deleteMutation.isPending}
+                        className="flex-1 text-center rounded-lg border border-rose-300 py-2 text-xs font-semibold text-rose-600 bg-white hover:bg-rose-50 active:bg-rose-100 disabled:opacity-70"
+                      >
+                        Xóa
+                      </button>
+                    </div>
+                  </div>
+                );
+              })}
+            </div>
 
             {sortedProducts.length === 0 ? (
               <p className="mt-4 rounded-xl border border-dashed border-slate-200 p-4 text-sm text-slate-500">

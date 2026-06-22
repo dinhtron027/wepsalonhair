@@ -238,6 +238,25 @@ npm test
 npm run build
 ```
 
+### 📱 Kiểm thử Giao diện Di động (Mobile Responsive UI Testing)
+
+Để kiểm tra giao diện Admin hiển thị và hoạt động mượt mà trên các thiết bị di động (mobile & tablet):
+1. **Sử dụng Trình duyệt (Chrome/Firefox/Edge DevTools):**
+   - Mở Dashboard Admin (`/admin`).
+   - Nhấn phím `F12` (hoặc chuột phải chọn **Inspect**).
+   - Click vào biểu tượng **Toggle Device Toolbar** (hình điện thoại/máy tính bảng) ở góc trên bên trái cửa sổ Inspect (hoặc nhấn `Ctrl + Shift + M`).
+   - Chọn các thiết bị mô phỏng phổ biến để kiểm tra các breakpoint:
+     - **320px** (Mobile nhỏ - SE)
+     - **375px / 390px / 414px** (Mobile trung bình/lớn - iPhone X/12/Pro Max, Samsung Galaxy)
+     - **768px** (Tablet - iPad Mini)
+     - **1024px** (Tablet Pro / Laptop nhỏ - iPad Pro)
+2. **Các điểm chính cần kiểm tra:**
+   - **Thanh Sidebar/Drawer trên Mobile:** Bấm vào nút hamburger ở Topbar để trượt Sidebar ra ngoài. Kiểm tra lớp overlay mờ (backdrop) phía sau, khi click vào backdrop hoặc click chọn một trang điều hướng bất kỳ, Sidebar sẽ tự động đóng lại để giải phóng không gian màn hình.
+   - **Nút Đăng xuất ở Header:** Trên mobile, nút này được thu gọn thành icon đơn giản để tiết kiệm diện tích Topbar.
+   - **Trang Lịch Hẹn (Bookings):** Tự động chuyển đổi giữa Tab **Lịch biểu (Calendar)** và **Danh sách (List)**. Trên thiết bị di động, mặc định mở Tab **Danh sách** dạng các card cuộn dọc hiển thị thông tin rõ ràng và có các nút cập nhật trạng thái lớn, dễ chạm.
+   - **Trang Dịch Vụ, Sản Phẩm, Đơn Hàng:** Tự động ẩn các bảng Table cồng kềnh và chuyển đổi sang giao diện dạng thẻ **Card** trực quan, rõ ràng, không bị tràn ngang toàn trang.
+   - **Trang Kho Hàng:** Các bảng dữ liệu chi tiết được bọc trong container cho phép cuộn ngang mượt mà, với thuộc tính `whitespace-nowrap` giúp dữ liệu không bị bẻ dòng gây biến dạng bảng biểu.
+
 ---
 
 ## 🌐 Hướng Dẫn Thiết Lập & Deploy Production (AWS EC2)
@@ -395,7 +414,50 @@ Mỗi khi bạn thực hiện `git push` mã nguồn mới lên nhánh `main`, l
 
 ---
 
+## 📘 Hướng Dẫn Vận Hành Cho Quản Trị Viên (Admin Guide)
+
+Dưới đây là hướng dẫn chi tiết cách tạo và quản lý dịch vụ mới trên trang quản trị Admin (`/admin/services`):
+
+### 1. Tạo Dịch Vụ Mới
+Truy cập vào trang quản trị Dịch Vụ, form tạo mới được chia thành các nhóm trường dữ liệu trực quan:
+- **Thông Tin Cơ Bản**:
+  - **Tên dịch vụ**: Tên hiển thị trên trang khách hàng (Ví dụ: *Uốn Sóng Lơi Hàn Quốc*).
+  - **Danh mục dịch vụ**: Chọn một trong các nhóm danh mục cố định (Cắt & Tạo Kiểu Nữ, Uốn Tóc Nữ, Duỗi Tóc Nữ, Nhuộm Tóc Nữ, Phục Hồi Tóc, Gội Đầu Dưỡng Sinh, Combo Làm Đẹp). **Quy tắc quan trọng**: Hệ thống sử dụng danh mục cố định này để tự động phân phối dịch vụ vào các trang danh mục tương ứng của khách hàng. Không được chỉnh sửa danh mục ngoài danh sách này.
+  - **Mô tả dịch vụ**: Đoạn giới thiệu ngắn về đặc tính, công dụng, đối tượng phù hợp của dịch vụ.
+- **Giá & Thời Lượng**:
+  - **Giá gốc (VNĐ)**: Nhập số nguyên dương (không sử dụng dấu chấm/phẩy).
+  - **Giảm giá chung (%)**: Nhập từ 0 đến 100 nếu muốn giảm giá dịch vụ này mọi lúc.
+  - **Thời lượng thực hiện**: Số phút dự kiến (Ví dụ: *60* phút).
+- **Hình Ảnh**:
+  - **Ảnh dịch vụ (Link ảnh URL)**: Đường dẫn tuyệt đối của hình ảnh (`https://...`). Xem hướng dẫn upload ảnh lên Cloudinary để lấy link URL ảnh tại mục [Nguồn lưu trữ ảnh](#cloudinary).
+
+### 2. Thiết Lập Khuyến Mãi Giờ Vàng
+Khuyến mãi giờ vàng (Happy Hour) cho phép thiết lập ưu đãi giảm giá tự động vào các khung giờ cố định trong tuần để thu hút khách hàng đặt lịch vào giờ thấp điểm:
+- Gạt nút **"Kích hoạt"** trong phần *Khuyến mãi giờ vàng*.
+- **Tên chương trình**: Tên chương trình hiển thị cho khách hàng (Ví dụ: *Ưu đãi buổi sáng*).
+- **Mức giảm giá giờ vàng (%)**: Nhập số phần trăm giảm giá (Ví dụ: *15* tương đương giảm 15%).
+- **Khung giờ áp dụng**: Chọn giờ bắt đầu và kết thúc (Giờ kết thúc phải lớn hơn giờ bắt đầu).
+- **Ngày áp dụng**: Click chọn các ngày trong tuần (T2 - CN) muốn áp dụng khuyến mãi.
+
+### 3. Quy Tắc Nhập Dữ Liệu và Validation
+Hệ thống tích hợp validation tự động cả ở Frontend và Backend:
+- Tên dịch vụ là duy nhất (không được tạo 2 dịch vụ trùng tên).
+- Thời lượng tối thiểu phải là 15 phút.
+- Khi kích hoạt giờ vàng, bắt buộc phải điền đầy đủ các thông tin: Tên chương trình, mức giảm giá, giờ bắt đầu/kết thúc và ít nhất một ngày áp dụng.
+
+<a name="cloudinary"></a>
+### 4. Hướng Dẫn Upload Ảnh Lên Cloudinary Để Lấy Link
+Vì dự án chưa tích hợp API upload trực tiếp từ mã nguồn, để có link ảnh dạng `https://...` hợp lệ:
+1. Đăng nhập vào trang quản trị [Cloudinary Console](https://cloudinary.com).
+2. Vào mục **Assets (Media Library)** ở thanh menu bên trái.
+3. Nhấp nút **Upload** ở góc trên bên phải để tải ảnh từ máy tính của bạn lên.
+4. Di chuột vào ảnh đã upload, click biểu tượng **Link (Copy URL)** để copy link ảnh tuyệt đối.
+5. Dán link này vào ô nhập liệu **Link hình ảnh** trong form tạo dịch vụ.
+
+---
+
 ## 🚀 Tính Năng Mới & Lịch Sử Nâng Cấp (Changelog)
+
 
 Dưới đây là chi tiết các hạng mục tính năng nâng cấp lớn liên quan đến giao dịch dịch vụ tóc nữ và hệ thống quản trị CRM khách hàng:
 

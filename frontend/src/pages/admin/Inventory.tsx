@@ -78,53 +78,73 @@ const InventoryPage = () => {
           Quản lý tồn kho theo thời gian thực và cảnh báo sản phẩm sắp hết.
         </p>
 
-        <form onSubmit={handleSubmit} className="mt-4 grid gap-3 md:grid-cols-2 lg:grid-cols-4">
-          <select
-            value={form.productId}
-            onChange={(event) => setForm((prev) => ({ ...prev, productId: event.target.value }))}
-            className="rounded-xl border border-slate-300 px-3 py-2 text-sm"
-          >
-            {(data?.products || []).map((product) => (
-              <option key={product._id} value={product._id}>
-                {product.name}
-              </option>
-            ))}
-          </select>
+        <form onSubmit={handleSubmit} className="mt-5 space-y-4">
+          <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
+            <div className="flex flex-col gap-1.5">
+              <label htmlFor="productId" className="text-xs font-semibold text-slate-600">Sản phẩm <span className="text-rose-500">*</span></label>
+              <select
+                id="productId"
+                value={form.productId}
+                onChange={(event) => setForm((prev) => ({ ...prev, productId: event.target.value }))}
+                className="rounded-xl border border-slate-300 px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-cyan-500/20 bg-white"
+              >
+                {(data?.products || []).map((product) => (
+                  <option key={product._id} value={product._id}>
+                    {product.name}
+                  </option>
+                ))}
+              </select>
+            </div>
 
-          <select
-            value={form.type}
-            onChange={(event) =>
-              setForm((prev) => ({ ...prev, type: event.target.value as "import" | "export" }))
-            }
-            className="rounded-xl border border-slate-300 px-3 py-2 text-sm"
-          >
-            <option value="import">Nhập kho</option>
-            <option value="export">Xuất kho</option>
-          </select>
+            <div className="flex flex-col gap-1.5">
+              <label htmlFor="type" className="text-xs font-semibold text-slate-600">Loại giao dịch <span className="text-rose-500">*</span></label>
+              <select
+                id="type"
+                value={form.type}
+                onChange={(event) =>
+                  setForm((prev) => ({ ...prev, type: event.target.value as "import" | "export" }))
+                }
+                className="rounded-xl border border-slate-300 px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-cyan-500/20 bg-white"
+              >
+                <option value="import">Nhập kho</option>
+                <option value="export">Xuất kho</option>
+              </select>
+            </div>
 
-          <input
-            type="number"
-            min={1}
-            value={form.quantity}
-            onChange={(event) => setForm((prev) => ({ ...prev, quantity: event.target.value }))}
-            className="rounded-xl border border-slate-300 px-3 py-2 text-sm"
-            placeholder="Số lượng"
-          />
+            <div className="flex flex-col gap-1.5">
+              <label htmlFor="quantity" className="text-xs font-semibold text-slate-600">Số lượng <span className="text-rose-500">*</span></label>
+              <input
+                id="quantity"
+                type="number"
+                min={1}
+                value={form.quantity}
+                onChange={(event) => setForm((prev) => ({ ...prev, quantity: event.target.value }))}
+                className="rounded-xl border border-slate-300 px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-cyan-500/20"
+                placeholder="Số lượng"
+              />
+            </div>
 
-          <input
-            value={form.note}
-            onChange={(event) => setForm((prev) => ({ ...prev, note: event.target.value }))}
-            className="rounded-xl border border-slate-300 px-3 py-2 text-sm"
-            placeholder="Ghi chú"
-          />
+            <div className="flex flex-col gap-1.5">
+              <label htmlFor="note" className="text-xs font-semibold text-slate-600">Ghi chú</label>
+              <input
+                id="note"
+                value={form.note}
+                onChange={(event) => setForm((prev) => ({ ...prev, note: event.target.value }))}
+                className="rounded-xl border border-slate-300 px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-cyan-500/20"
+                placeholder="Ghi chú điều chỉnh"
+              />
+            </div>
+          </div>
 
-          <button
-            type="submit"
-            disabled={adjustMutation.isPending}
-            className="rounded-xl bg-cyan-600 px-4 py-2 text-sm font-semibold text-white hover:bg-cyan-700 disabled:opacity-70 lg:col-span-4"
-          >
-            {adjustMutation.isPending ? "Đang cập nhật..." : "Xác nhận"}
-          </button>
+          <div className="flex justify-end pt-2">
+            <button
+              type="submit"
+              disabled={adjustMutation.isPending}
+              className="w-full sm:w-auto rounded-xl bg-cyan-600 px-6 py-2.5 text-sm font-semibold text-white hover:bg-cyan-700 active:bg-cyan-800 transition-colors disabled:opacity-70 shadow-sm"
+            >
+              {adjustMutation.isPending ? "Đang cập nhật..." : "Xác nhận điều chỉnh"}
+            </button>
+          </div>
         </form>
       </section>
 
@@ -140,10 +160,10 @@ const InventoryPage = () => {
           <table className="min-w-full text-left text-sm">
             <thead className="border-b border-slate-200 text-slate-500">
               <tr>
-                <th className="px-2 py-2 font-semibold">Sản phẩm</th>
-                <th className="px-2 py-2 font-semibold">Danh mục</th>
-                <th className="px-2 py-2 font-semibold">Tồn hiện tại</th>
-                <th className="px-2 py-2 font-semibold">Ngưỡng cảnh báo</th>
+                <th className="px-3 py-3 font-semibold whitespace-nowrap">Sản phẩm</th>
+                <th className="px-3 py-3 font-semibold whitespace-nowrap">Danh mục</th>
+                <th className="px-3 py-3 font-semibold whitespace-nowrap">Tồn hiện tại</th>
+                <th className="px-3 py-3 font-semibold whitespace-nowrap">Ngưỡng cảnh báo</th>
               </tr>
             </thead>
             <tbody>
@@ -151,11 +171,11 @@ const InventoryPage = () => {
                 const isLowStock = product.stock <= (product.lowStockThreshold || 0);
                 return (
                   <tr key={product._id} className="border-b border-slate-100">
-                    <td className="px-2 py-3 font-semibold text-slate-800">{product.name}</td>
-                    <td className="px-2 py-3 text-slate-700">{product.category || "-"}</td>
-                    <td className="px-2 py-3">
+                    <td className="px-3 py-3 font-semibold text-slate-800 whitespace-nowrap">{product.name}</td>
+                    <td className="px-3 py-3 text-slate-700 whitespace-nowrap">{product.category || "-"}</td>
+                    <td className="px-3 py-3 whitespace-nowrap">
                       <span
-                        className={`rounded-full px-2 py-1 text-xs font-semibold ${
+                        className={`rounded-full px-2.5 py-1 text-xs font-semibold ${
                           isLowStock
                             ? "bg-rose-100 text-rose-700"
                             : "bg-emerald-100 text-emerald-700"
@@ -164,7 +184,7 @@ const InventoryPage = () => {
                         {product.stock}
                       </span>
                     </td>
-                    <td className="px-2 py-3 text-slate-700">{product.lowStockThreshold}</td>
+                    <td className="px-3 py-3 text-slate-700 whitespace-nowrap">{product.lowStockThreshold}</td>
                   </tr>
                 );
               })}
@@ -179,24 +199,24 @@ const InventoryPage = () => {
           <table className="min-w-full text-left text-sm">
             <thead className="border-b border-slate-200 text-slate-500">
               <tr>
-                <th className="px-2 py-2 font-semibold">Thời gian</th>
-                <th className="px-2 py-2 font-semibold">Sản phẩm</th>
-                <th className="px-2 py-2 font-semibold">Loại</th>
-                <th className="px-2 py-2 font-semibold">Số lượng</th>
-                <th className="px-2 py-2 font-semibold">Tồn trước/sau</th>
-                <th className="px-2 py-2 font-semibold">Người thao tác</th>
+                <th className="px-3 py-3 font-semibold whitespace-nowrap">Thời gian</th>
+                <th className="px-3 py-3 font-semibold whitespace-nowrap">Sản phẩm</th>
+                <th className="px-3 py-3 font-semibold whitespace-nowrap">Loại</th>
+                <th className="px-3 py-3 font-semibold whitespace-nowrap">Số lượng</th>
+                <th className="px-3 py-3 font-semibold whitespace-nowrap">Tồn trước/sau</th>
+                <th className="px-3 py-3 font-semibold whitespace-nowrap">Người thao tác</th>
               </tr>
             </thead>
             <tbody>
               {(data?.transactions || []).map((transaction) => (
                 <tr key={transaction._id} className="border-b border-slate-100">
-                  <td className="px-2 py-2 text-slate-700">
+                  <td className="px-3 py-3 text-slate-700 whitespace-nowrap">
                     {new Date(transaction.createdAt).toLocaleString("vi-VN")}
                   </td>
-                  <td className="px-2 py-2 text-slate-700">{transaction.productId?.name || "-"}</td>
-                  <td className="px-2 py-2">
+                  <td className="px-3 py-3 text-slate-700 whitespace-nowrap">{transaction.productId?.name || "-"}</td>
+                  <td className="px-3 py-3 whitespace-nowrap">
                     <span
-                      className={`rounded-full px-2 py-1 text-xs font-semibold ${
+                      className={`rounded-full px-2.5 py-1 text-xs font-semibold ${
                         transaction.type === "import"
                           ? "bg-emerald-100 text-emerald-700"
                           : "bg-amber-100 text-amber-700"
@@ -205,11 +225,11 @@ const InventoryPage = () => {
                       {transaction.type === "import" ? "Nhập" : "Xuất"}
                     </span>
                   </td>
-                  <td className="px-2 py-2 text-slate-700">{transaction.quantity}</td>
-                  <td className="px-2 py-2 text-slate-700">
+                  <td className="px-3 py-3 text-slate-700 whitespace-nowrap">{transaction.quantity}</td>
+                  <td className="px-3 py-3 text-slate-700 whitespace-nowrap">
                     {transaction.previousStock} → {transaction.newStock}
                   </td>
-                  <td className="px-2 py-2 text-slate-700">{transaction.createdBy?.name || "-"}</td>
+                  <td className="px-3 py-3 text-slate-700 whitespace-nowrap">{transaction.createdBy?.name || "-"}</td>
                 </tr>
               ))}
             </tbody>

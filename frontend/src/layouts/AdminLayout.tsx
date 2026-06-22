@@ -47,6 +47,14 @@ const AdminLayout = () => {
   return (
     <div className="min-h-screen bg-slate-100 text-slate-900">
       <div className="flex min-h-screen">
+        {/* Backdrop overlay for mobile */}
+        {mobileOpen && (
+          <div
+            className="fixed inset-0 z-30 bg-slate-950/40 backdrop-blur-sm lg:hidden"
+            onClick={() => setMobileOpen(false)}
+          />
+        )}
+
         <aside
           className={`fixed inset-y-0 left-0 z-40 w-72 border-r border-slate-200 bg-gradient-to-b from-slate-950 via-slate-900 to-slate-800 px-6 py-6 text-white transition-transform lg:static lg:translate-x-0 ${
             mobileOpen ? "translate-x-0" : "-translate-x-full"
@@ -74,6 +82,7 @@ const AdminLayout = () => {
                   key={item.to}
                   to={item.to}
                   end={item.to === "/admin"}
+                  onClick={() => setMobileOpen(false)}
                   className={({ isActive }) =>
                     `flex items-center gap-3 rounded-xl px-4 py-3 text-sm font-medium transition ${
                       isActive
@@ -114,10 +123,11 @@ const AdminLayout = () => {
                 </div>
                 <button
                   onClick={handleLogout}
-                  className="inline-flex items-center gap-2 rounded-xl border border-slate-200 px-4 py-2 text-sm font-medium text-slate-700 hover:bg-slate-50"
+                  className="inline-flex items-center gap-2 rounded-xl border border-slate-200 px-3 py-2 text-sm font-medium text-slate-700 hover:bg-slate-50 md:px-4 md:py-2"
+                  aria-label="Đăng xuất"
                 >
                   <LogOut size={16} />
-                  Đăng xuất
+                  <span className="hidden md:inline">Đăng xuất</span>
                 </button>
               </div>
             </div>

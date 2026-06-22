@@ -220,7 +220,7 @@ const CustomerDetailModal = ({
                       </dd>
                     </div>
                     <div>
-                      <dt className="text-slate-500">Thợ quen</dt>
+                      <dt className="text-slate-500">Thợ Làm Tóc</dt>
                       <dd className="font-semibold text-slate-800">
                         {customer.preferredStaff || "-"}
                       </dd>

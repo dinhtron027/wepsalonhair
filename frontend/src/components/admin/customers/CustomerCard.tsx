@@ -121,7 +121,7 @@ const CustomerCard = ({ customer, onOpen, onRebook }: CustomerCardProps) => {
         <div className="rounded-xl border border-slate-100 p-3">
           <p className="flex items-center gap-2 text-xs font-semibold text-slate-500">
             <UserRound size={14} />
-            Thợ quen
+            Thợ Làm Tóc
           </p>
           <p className="mt-2 text-sm font-semibold text-slate-800">
             {customer.preferredStaff || "Chưa xác định"}

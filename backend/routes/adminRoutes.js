@@ -12,9 +12,13 @@ const {
   serviceSchemas
 } = require('../utils/validationSchemas');
 
+const uploadMiddleware = require('../middleware/uploadMiddleware');
+
 const router = express.Router();
 
 router.use(authMiddleware, roleMiddleware('admin'));
+
+router.post('/uploads/image', uploadMiddleware('image'), adminController.uploadImage);
 
 router.get('/bookings', adminController.getAdminBookings);
 router.patch(

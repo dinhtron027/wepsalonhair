@@ -70,7 +70,10 @@ const envSchema = Joi.object({
   DEFAULT_CUSTOMER_PASSWORD: Joi.string().min(6).default('Customer@123456'),
   GOOGLE_CLIENT_ID: Joi.string().allow('').optional(),
   GOOGLE_CLIENT_SECRET: Joi.string().allow('').optional(),
-  GOOGLE_CALLBACK_URL: Joi.string().allow('').optional()
+  GOOGLE_CALLBACK_URL: Joi.string().allow('').optional(),
+  CLOUDINARY_CLOUD_NAME: Joi.string().allow('').optional(),
+  CLOUDINARY_API_KEY: Joi.string().allow('').optional(),
+  CLOUDINARY_API_SECRET: Joi.string().allow('').optional()
 })
   .unknown()
   .prefs({ abortEarly: false });

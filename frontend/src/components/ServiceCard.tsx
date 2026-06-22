@@ -10,6 +10,7 @@ export type ServiceCardData = {
   price: number;
   description?: string;
   image?: string;
+  imageUrl?: string;
   durationMinutes?: number;
 };
 
@@ -36,7 +37,7 @@ const ServiceCard = ({ service }: ServiceCardProps) => {
     >
       <div className="relative h-56 overflow-hidden">
         <motion.img
-          src={service.image || "https://placehold.co/800x500?text=Dich+vu"}
+          src={service.imageUrl || service.image || "https://placehold.co/800x500?text=Dich+vu"}
           alt={service.name}
           className="h-full w-full object-cover"
           whileHover={{ scale: 1.06 }}

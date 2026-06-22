@@ -109,6 +109,16 @@ const serviceSchema = new mongoose.Schema(
       trim: true,
       default: ''
     },
+    imageUrl: {
+      type: String,
+      trim: true,
+      default: ''
+    },
+    cloudinaryPublicId: {
+      type: String,
+      trim: true,
+      default: ''
+    },
     duration: {
       type: Number,
       required: true,
@@ -185,6 +195,12 @@ serviceSchema.pre('validate', function (next) {
   }
   if (this.durationMinutes && !this.duration) {
     this.duration = this.durationMinutes;
+  }
+  if (this.imageUrl && !this.image) {
+    this.image = this.imageUrl;
+  }
+  if (this.image && !this.imageUrl) {
+    this.imageUrl = this.image;
   }
   next();
 });

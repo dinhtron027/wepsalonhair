@@ -33,6 +33,16 @@ const productSchema = new mongoose.Schema(
       trim: true,
       default: ''
     },
+    imageUrl: {
+      type: String,
+      trim: true,
+      default: ''
+    },
+    cloudinaryPublicId: {
+      type: String,
+      trim: true,
+      default: ''
+    },
     category: {
       type: String,
       trim: true,
@@ -50,5 +60,15 @@ const productSchema = new mongoose.Schema(
 
 productSchema.index({ isActive: 1, category: 1, createdAt: -1 });
 productSchema.index({ stock: 1, lowStockThreshold: 1 });
+
+productSchema.pre('validate', function (next) {
+  if (this.imageUrl && !this.image) {
+    this.image = this.imageUrl;
+  }
+  if (this.image && !this.imageUrl) {
+    this.imageUrl = this.image;
+  }
+  next();
+});
 
 module.exports = mongoose.model('Product', productSchema);

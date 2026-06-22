@@ -14,6 +14,7 @@ type Service = {
   category: string;
   durationMinutes: number;
   image?: string;
+  imageUrl?: string;
 };
 
 const formatCurrency = (value: number) =>
@@ -106,7 +107,7 @@ const ServiceDetailPage = () => {
             </div>
           </div>
           <div className="overflow-hidden rounded-3xl border border-rose-100 bg-white/80 shadow-xl shadow-rose-100">
-            <img src={service.image || "https://placehold.co/900x700?text=Dich+vu"} alt={service.name} className="h-full w-full object-cover" />
+            <img src={service.imageUrl || service.image || "https://placehold.co/900x700?text=Dich+vu"} alt={service.name} className="h-full w-full object-cover" />
           </div>
         </div>
       </section>

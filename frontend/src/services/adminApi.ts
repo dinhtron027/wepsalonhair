@@ -30,6 +30,8 @@ export type ServiceEntity = {
   price: number;
   discount?: number;
   image?: string;
+  imageUrl?: string;
+  cloudinaryPublicId?: string;
   suitableFor?: string[];
   benefits?: string[];
   isFeatured?: boolean;
@@ -48,6 +50,8 @@ export type ProductEntity = {
   description: string;
   category: string;
   image?: string;
+  imageUrl?: string;
+  cloudinaryPublicId?: string;
   price: number;
   stock: number;
   lowStockThreshold: number;
@@ -569,4 +573,17 @@ export const adjustInventory = async (payload: {
 export const fetchRevenueStats = async () => {
   const response = await api.get("/api/admin/stats/revenue");
   return extractApiData<RevenueStats>(response);
+};
+
+export const uploadImage = async (file: File, folder: string) => {
+  const formData = new FormData();
+  formData.append("image", file);
+  formData.append("folder", folder);
+
+  const response = await api.post("/api/admin/uploads/image", formData, {
+    headers: {
+      "Content-Type": "multipart/form-data",
+    },
+  });
+  return extractApiData<{ imageUrl: string; publicId: string }>(response);
 };

@@ -4,6 +4,7 @@ const productService = require('../services/productService');
 const serviceService = require('../services/serviceService');
 const customerService = require('../services/customerService');
 const Customer = require('../models/Customer');
+const cloudinaryService = require('../services/cloudinaryService');
 const {
   broadcastSystemNotification,
   emitRealtimeEvent
@@ -214,8 +215,29 @@ const getRevenueStatistics = asyncHandler(async (req, res) => {
     data: stats
   });
 });
+const uploadImage = asyncHandler(async (req, res) => {
+  if (!req.file) {
+    throw new ApiError(400, 'Vui lòng chọn hình ảnh để tải lên');
+  }
+
+  const folderType = req.body.folder || req.query.folder || 'general';
+  const folderName = ['services', 'products'].includes(folderType)
+    ? `salon/${folderType}`
+    : 'salon/general';
+
+  const uploadResult = await cloudinaryService.uploadBuffer(req.file.buffer, folderName);
+
+  return sendSuccess(res, {
+    message: 'Upload ảnh thành công',
+    data: {
+      imageUrl: uploadResult.imageUrl,
+      publicId: uploadResult.publicId
+    }
+  });
+});
 
 module.exports = {
+  uploadImage,
   getAdminBookings,
   updateAdminBooking,
   getAdminServices,

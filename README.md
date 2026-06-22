@@ -446,13 +446,21 @@ Hệ thống tích hợp validation tự động cả ở Frontend và Backend:
 - Khi kích hoạt giờ vàng, bắt buộc phải điền đầy đủ các thông tin: Tên chương trình, mức giảm giá, giờ bắt đầu/kết thúc và ít nhất một ngày áp dụng.
 
 <a name="cloudinary"></a>
-### 4. Hướng Dẫn Upload Ảnh Lên Cloudinary Để Lấy Link
-Vì dự án chưa tích hợp API upload trực tiếp từ mã nguồn, để có link ảnh dạng `https://...` hợp lệ:
-1. Đăng nhập vào trang quản trị [Cloudinary Console](https://cloudinary.com).
-2. Vào mục **Assets (Media Library)** ở thanh menu bên trái.
-3. Nhấp nút **Upload** ở góc trên bên phải để tải ảnh từ máy tính của bạn lên.
-4. Di chuột vào ảnh đã upload, click biểu tượng **Link (Copy URL)** để copy link ảnh tuyệt đối.
-5. Dán link này vào ô nhập liệu **Link hình ảnh** trong form tạo dịch vụ.
+### 4. Hướng Dẫn Upload Ảnh Lên Cloudinary
+Dự án đã tích hợp tính năng tải ảnh lên Cloudinary bảo mật trực tiếp từ giao diện Admin (khi tạo/chỉnh sửa dịch vụ và sản phẩm):
+1. **Hoạt động**:
+   - Quản trị viên có thể kéo thả, click để chọn tệp hoặc chụp trực tiếp từ camera/chọn từ thư viện ảnh trên điện thoại.
+   - Giao diện hiển thị ảnh xem trước (local preview) lập tức kèm trạng thái tải lên ("Đang tải ảnh...").
+   - File ảnh được gửi lên Backend Node.js dưới dạng multipart/form-data. Backend kiểm tra quyền Admin, xác thực file (chỉ chấp nhận JPG, PNG, WEBP và dung lượng dưới 5MB).
+   - Backend chuyển tiếp file buffer trực tiếp sang Cloudinary để giữ bảo mật tuyệt đối cho `CLOUDINARY_API_SECRET` (không lưu file tạm trên server).
+   - Nhận URL bảo mật từ Cloudinary và lưu vào database dưới dạng `imageUrl` (đồng bộ tự động với `image`) và `cloudinaryPublicId`.
+2. **Cấu hình môi trường**:
+   Bổ sung các khóa sau vào file `.env` ở Backend:
+   ```env
+   CLOUDINARY_CLOUD_NAME=ten_cloud_cua_ban
+   CLOUDINARY_API_KEY=api_key_cua_ban
+   CLOUDINARY_API_SECRET=api_secret_cua_ban
+   ```
 
 ---
 

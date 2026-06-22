@@ -14,6 +14,7 @@ type ProductResponse = {
   description: string;
   stock: number;
   image: string;
+  imageUrl?: string;
   category: string;
   isActive: boolean;
   lowStockThreshold?: number;
@@ -35,18 +36,22 @@ const CATEGORY_LABELS: Record<string, string> = {
   "duong-am": "Dưỡng ẩm",
 };
 
-const mapApiProduct = (item: ProductResponse): ProductEntity => ({
-  _id: item._id,
-  id: item._id,
-  name: item.name,
-  price: item.price,
-  description: item.description,
-  shortDescription: item.description,
-  stock: item.stock,
-  image: item.image,
-  category: item.category,
-  isActive: item.isActive,
-});
+const mapApiProduct = (item: ProductResponse): ProductEntity => {
+  const finalImage = item.imageUrl || item.image;
+  return {
+    _id: item._id,
+    id: item._id,
+    name: item.name,
+    price: item.price,
+    description: item.description,
+    shortDescription: item.description,
+    stock: item.stock,
+    image: finalImage,
+    imageUrl: finalImage,
+    category: item.category,
+    isActive: item.isActive,
+  };
+};
 
 const ProductDetailPage = () => {
   // Route dùng param `:id` là MongoDB ObjectId

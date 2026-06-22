@@ -75,6 +75,8 @@ const serviceSchemas = {
     discount: Joi.number().min(0).max(100).default(0),
     description: Joi.string().trim().allow('').default(''),
     image: Joi.string().trim().uri().allow('').default(''),
+    imageUrl: Joi.string().trim().uri().allow('').default(''),
+    cloudinaryPublicId: Joi.string().trim().allow('').default(''),
     duration: Joi.number().integer().min(15).max(480),
     durationMinutes: Joi.number().integer().min(15).max(480).default(60),
     slug: Joi.string().trim().allow(''),
@@ -92,6 +94,8 @@ const serviceSchemas = {
     discount: Joi.number().min(0).max(100),
     description: Joi.string().trim().allow(''),
     image: Joi.string().trim().uri().allow(''),
+    imageUrl: Joi.string().trim().uri().allow(''),
+    cloudinaryPublicId: Joi.string().trim().allow(''),
     duration: Joi.number().integer().min(15).max(480),
     durationMinutes: Joi.number().integer().min(15).max(480),
     slug: Joi.string().trim().allow(''),
@@ -112,6 +116,8 @@ const productSchemas = {
     stock: Joi.number().integer().min(0).required(),
     lowStockThreshold: Joi.number().integer().min(0).default(5),
     image: Joi.string().trim().uri().allow('').default(''),
+    imageUrl: Joi.string().trim().uri().allow('').default(''),
+    cloudinaryPublicId: Joi.string().trim().allow('').default(''),
     category: Joi.string().trim().allow('').default(''),
     isActive: Joi.boolean().default(true)
   }),
@@ -122,6 +128,8 @@ const productSchemas = {
     stock: Joi.number().integer().min(0),
     lowStockThreshold: Joi.number().integer().min(0),
     image: Joi.string().trim().uri().allow(''),
+    imageUrl: Joi.string().trim().uri().allow(''),
+    cloudinaryPublicId: Joi.string().trim().allow(''),
     category: Joi.string().trim().allow(''),
     isActive: Joi.boolean()
   }).min(1)

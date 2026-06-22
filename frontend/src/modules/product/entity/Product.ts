@@ -5,6 +5,7 @@ export type ProductDTO = {
   description?: string;
   category?: string;
   image?: string;
+  imageUrl?: string;
   stock?: number;
   lowStockThreshold?: number;
   isActive?: boolean;
@@ -27,7 +28,7 @@ export class Product {
     this._price = dto.price;
     this._description = dto.description || "";
     this._category = dto.category || "";
-    this._image = dto.image || "";
+    this._image = dto.imageUrl || dto.image || "";
     this._stock = dto.stock ?? 0;
     this._lowStockThreshold = dto.lowStockThreshold ?? 0;
     this._isActive = dto.isActive ?? true;
@@ -81,6 +82,7 @@ export class Product {
       description: this._description,
       category: this._category,
       image: this._image,
+      imageUrl: this._image,
       stock: this._stock,
       lowStockThreshold: this._lowStockThreshold,
       isActive: this._isActive,

@@ -42,13 +42,11 @@ const ServicesPage = () => {
               key={service._id}
               className="rounded-2xl border border-rose-100 bg-white p-6 shadow-md transition hover:shadow-xl"
             >
-              {service.image ? (
-                <img
-                  src={service.image}
-                  alt={service.name}
-                  className="mb-4 h-44 w-full rounded-xl object-cover"
-                />
-              ) : null}
+              <img
+                src={service.imageUrl || service.image || "https://placehold.co/800x500?text=Dich+vu"}
+                alt={service.name}
+                className="mb-4 h-44 w-full rounded-xl object-cover"
+              />
               <p className="text-xs uppercase tracking-[0.2em] text-rose-400">{service.category}</p>
               <h2 className="mb-2 text-2xl font-semibold">{service.name}</h2>
               <p className="mb-4 min-h-[72px] text-slate-600">

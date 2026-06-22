@@ -8,6 +8,7 @@ export type ProductEntity = {
   name: string;
   price: number;
   image?: string;
+  imageUrl?: string;
   description?: string;
   shortDescription?: string;
   category?: string;
@@ -44,13 +45,16 @@ const normalizeProduct = (product: InputProduct): ProductEntity | null => {
     return null;
   }
 
+  const finalImg = product.imageUrl || product.image || "";
+
   return {
     _id: normalizedId,
     id: normalizedId,
     slug: product.slug,
     name: product.name,
     price: product.price,
-    image: product.image || "",
+    image: finalImg,
+    imageUrl: finalImg,
     description: product.description || "",
     shortDescription: product.shortDescription || "",
     category: product.category || "",

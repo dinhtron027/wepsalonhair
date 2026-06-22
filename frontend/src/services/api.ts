@@ -25,6 +25,18 @@ const createInvalidApiResponseError = () => {
 };
 
 export const getApiErrorMessage = (error: unknown, fallback = "Co loi xay ra") => {
+  if (error && typeof error === "object" && "statusCode" in error && "message" in error) {
+    const appError = error as { statusCode: number; message: string };
+    if (appError.statusCode >= 500) {
+      const msg = appError.message;
+      if (msg && msg !== "Loi ket noi server" && msg !== "Network Error" && !/timeout/i.test(msg)) {
+        return msg;
+      }
+      return "Loi ket noi server";
+    }
+    return appError.message;
+  }
+
   const axiosError = error as AxiosError<{ message?: string }>;
   const backendMessage = axiosError.response?.data?.message;
 

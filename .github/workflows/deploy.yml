@@ -5,6 +5,10 @@ on:
     branches:
       - main
 
+concurrency:
+  group: production-deploy
+  cancel-in-progress: true
+
 jobs:
   deploy:
     name: SSH Deploy to EC2
@@ -28,8 +32,15 @@ jobs:
             # Di chuyển vào thư mục dự án trên EC2
             cd /home/ubuntu/salon-root
             
-            # Kéo mã nguồn mới nhất từ Github
-            git pull origin main
+            # Sửa quyền sở hữu thư mục về ubuntu:ubuntu
+            sudo chown -R ubuntu:ubuntu .
+            
+            # Xóa các file lock Git bị kẹt nếu có
+            rm -f .git/index.lock .git/ORIG_HEAD.lock .git/HEAD.lock
+            
+            # Fetch và reset cứng về origin/main để đảm bảo lấy mã nguồn sạch từ GitHub
+            git fetch origin main
+            git reset --hard origin/main
             
             # Dừng và xóa các container cũ
             sudo docker compose down

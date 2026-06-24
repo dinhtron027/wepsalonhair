@@ -30,10 +30,10 @@ jobs:
             git pull origin main
             
             # Dừng và xóa các container cũ
-            docker compose down
+            sudo docker compose down
             
             # Xây dựng và khởi chạy lại các container ở dạng background
-            docker compose up -d --build
+            sudo docker compose up -d --build
             
             # Dọn dẹp các Docker image rác/không dùng để giải phóng đĩa cứng
-            docker system prune -f
+            sudo docker system prune -f

@@ -32,21 +32,54 @@ jobs:
             # Di chuyển vào thư mục dự án trên EC2
             cd /home/ubuntu/salon-root
             
+            # 1. Kiểm tra dung lượng đĩa và in cảnh báo trước khi deploy
+            echo "=== KIỂM TRA DUNG LƯỢNG ĐĨA TRƯỚC DEPLOY ==="
+            df -h /
+            df -ih /
+            sudo docker system df
+            
+            # Trích xuất dung lượng trống khả dụng (cột Available của phân vùng /)
+            AVAIL_KB=$(df / | awk 'NR==2 {print $4}')
+            AVAIL_GB=$(( AVAIL_KB / 1024 / 1024 ))
+            echo "Dung lượng đĩa trống khả dụng: ${AVAIL_GB} GB"
+            
+            if [ "$AVAIL_GB" -lt 2 ]; then
+              echo "================================================================="
+              echo "⚠️ CẢNH BÁO CỰC KỲ QUAN TRỌNG:"
+              echo "Dung lượng đĩa khả dụng của máy chủ rất thấp (dưới 2GB)!"
+              echo "Hiện tại chỉ còn lại ${AVAIL_GB} GB trống."
+              echo "Có nguy cơ cao Docker build sẽ thất bại do thiếu bộ nhớ đĩa (ENOSPC)."
+              echo "Khuyến nghị tăng dung lượng EBS Volume của EC2 lên tối thiểu 20GB hoặc 30GB."
+              echo "================================================================="
+            fi
+            
             # Sửa quyền sở hữu thư mục về ubuntu:ubuntu
             sudo chown -R ubuntu:ubuntu .
             
             # Xóa các file lock Git bị kẹt nếu có
             rm -f .git/index.lock .git/ORIG_HEAD.lock .git/HEAD.lock
             
-            # Fetch và reset cứng về origin/main để đảm bảo lấy mã nguồn sạch từ GitHub
+            # 2. Fetch và reset cứng về origin/main để lấy mã nguồn sạch từ GitHub
             git fetch origin main
             git reset --hard origin/main
             
-            # Dừng và xóa các container cũ
-            sudo docker compose down --remove-orphans
+            # 3. Dọn dẹp dung lượng đĩa an toàn TRƯỚC khi build
+            echo "=== TIẾN HÀNH DỌN DẸP DUNG LƯỢNG AN TOÀN TRƯỚC BUILD ==="
+            sudo docker builder prune -f
+            sudo docker image prune -f
+            sudo docker container prune -f
+            sudo docker network prune -f
+            sudo journalctl --vacuum-time=3d || true
+            sudo apt-get clean || true
             
-            # Xây dựng và khởi chạy lại các container ở dạng background
-            sudo docker compose up -d --build
+            # 4. Build image mới TRƯỚC để tránh downtime (Không dừng container cũ trước)
+            echo "=== BIÊN DỊCH DOCKER IMAGES MỚI (KHÔNG CÓ DOWNTIME) ==="
+            sudo docker compose build
             
-            # Dọn dẹp các Docker image rác/không dùng để giải phóng đĩa cứng
-            sudo docker system prune -f
+            # 5. Nếu build thành công, restart container để áp dụng code mới
+            echo "=== KHỞI CHẠY CONTAINER MỚI THAY THẾ ==="
+            sudo docker compose up -d --remove-orphans
+            
+            # 6. Dọn dẹp đĩa nhẹ sau khi deploy thành công
+            echo "=== DỌN DẸP LẠI SAU KHI DEPLOY THÀNH CÔNG ==="
+            sudo docker image prune -f

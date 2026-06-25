@@ -1,4 +1,5 @@
-import { Filter, RotateCcw, Search } from "lucide-react";
+import { useState } from "react";
+import { Filter, RotateCcw, Search, ChevronDown, ChevronUp } from "lucide-react";
 import type {
   BookingStatus,
   CustomerFilterOptions,
@@ -42,15 +43,61 @@ const CustomerFilters = ({
   onApply,
   onReset,
 }: CustomerFiltersProps) => {
+  const [isCollapsed, setIsCollapsed] = useState(true);
+
   const update = <K extends keyof CustomerFilterParams>(
     key: K,
     nextValue: CustomerFilterParams[K]
   ) => onChange({ ...value, [key]: nextValue });
 
+  // Count active filters (excluding default page/limit/sortBy/sortOrder)
+  const activeFiltersCount = [
+    value.segment,
+    value.serviceCategory,
+    value.staffId,
+    value.status,
+    value.dateFrom,
+    value.dateTo,
+  ].filter(Boolean).length;
+
   return (
-    <section className="rounded-2xl border border-slate-200 bg-white p-4 shadow-sm">
-      <div className="grid gap-3 md:grid-cols-2 xl:grid-cols-4">
-        <label className="relative md:col-span-2">
+    <section className="rounded-2xl border border-slate-200 bg-white p-4 shadow-sm space-y-4">
+      {/* Mobile Search & Filter toggle bar */}
+      <div className="flex items-center justify-between gap-3 md:hidden">
+        <label className="relative flex-1">
+          <Search
+            size={17}
+            className="pointer-events-none absolute left-3 top-1/2 -translate-y-1/2 text-slate-400"
+          />
+          <input
+            value={value.search || ""}
+            onChange={(event) => update("search", event.target.value)}
+            onKeyDown={(event) => {
+              if (event.key === "Enter") {
+                onApply();
+                setIsCollapsed(true);
+              }
+            }}
+            placeholder="Tìm tên, SĐT, email..."
+            className="w-full rounded-xl border border-slate-200 bg-white pl-10 pr-3 py-2.5 text-sm text-slate-700 outline-none transition focus:border-cyan-400 focus:ring-2 focus:ring-cyan-100"
+            style={{ minHeight: "44px" }}
+          />
+        </label>
+        <button
+          type="button"
+          onClick={() => setIsCollapsed((prev) => !prev)}
+          className="flex items-center justify-center gap-1.5 rounded-xl border border-slate-200 bg-white px-3 py-2.5 text-xs font-semibold text-slate-700 hover:bg-slate-50 transition shrink-0"
+          style={{ minHeight: "44px" }}
+        >
+          <Filter size={15} />
+          <span>Lọc {activeFiltersCount > 0 && `(${activeFiltersCount})`}</span>
+          {isCollapsed ? <ChevronDown size={14} /> : <ChevronUp size={14} />}
+        </button>
+      </div>
+
+      <div className={`grid gap-3 md:grid-cols-2 xl:grid-cols-4 ${isCollapsed ? "hidden md:grid" : "grid"}`}>
+        {/* Desktop Search input (hidden on mobile row) */}
+        <label className="relative md:col-span-2 hidden md:block">
           <Search
             size={17}
             className="pointer-events-none absolute left-3 top-1/2 -translate-y-1/2 text-slate-400"
@@ -159,19 +206,27 @@ const CustomerFilters = ({
         </select>
       </div>
 
-      <div className="mt-4 flex flex-wrap gap-2">
+      <div className={`mt-4 flex flex-wrap gap-2 ${isCollapsed ? "hidden md:flex" : "flex"}`}>
         <button
           type="button"
-          onClick={onApply}
-          className="inline-flex items-center gap-2 rounded-xl bg-cyan-600 px-4 py-2.5 text-sm font-semibold text-white hover:bg-cyan-700"
+          onClick={() => {
+            onApply();
+            setIsCollapsed(true);
+          }}
+          className="inline-flex items-center justify-center gap-2 rounded-xl bg-cyan-600 px-4 py-2.5 text-sm font-semibold text-white hover:bg-cyan-700 flex-1 md:flex-none"
+          style={{ minHeight: "44px" }}
         >
           <Filter size={16} />
           Áp dụng bộ lọc
         </button>
         <button
           type="button"
-          onClick={onReset}
-          className="inline-flex items-center gap-2 rounded-xl border border-slate-200 px-4 py-2.5 text-sm font-semibold text-slate-700 hover:bg-slate-50"
+          onClick={() => {
+            onReset();
+            setIsCollapsed(true);
+          }}
+          className="inline-flex items-center justify-center gap-2 rounded-xl border border-slate-200 px-4 py-2.5 text-sm font-semibold text-slate-700 hover:bg-slate-50 flex-1 md:flex-none"
+          style={{ minHeight: "44px" }}
         >
           <RotateCcw size={16} />
           Đặt lại

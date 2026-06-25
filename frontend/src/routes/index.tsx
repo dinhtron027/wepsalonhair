@@ -6,6 +6,7 @@ import Contact from "../pages/Contact";
 import About from "../pages/About";
 import Pricing from "../pages/Pricing";
 import News from "../pages/News";
+import NewsDetail from "../pages/NewsDetail";
 import ProductsPage from "../pages/ProductsPage";
 import ProductDetailPage from "../pages/ProductDetailPage";
 import CartPage from "../pages/CartPage";
@@ -30,6 +31,7 @@ export const publicRoutes = [
   { path: "/gallery", element: <Gallery />, name: "Bo suu tap" },
   { path: "/booking", element: <BookingPage />, name: "Dat lich" },
   { path: "/news", element: <News />, name: "Tin tuc" },
+  { path: "/news/:slug", element: <NewsDetail />, name: "Chi tiet tin tuc" },
   { path: "/contact", element: <Contact />, name: "Lien he" },
   { path: "/cart", element: <CartPage />, name: "Gio hang" },
   { path: "/login", element: <LoginPage />, name: "Dang nhap" },

@@ -124,7 +124,7 @@ const MobileMenu: React.FC<MobileMenuProps> = ({
                 display: "flex",
                 alignItems: "center",
                 gap: "0.6rem",
-                borderBottom: "1px solid rgba(244, 63, 94, 0.05)",
+                borderBottom: "1px solid rgba(0, 0, 0, 0.06)",
                 marginBottom: "0.5rem",
               }}
             >
@@ -137,7 +137,7 @@ const MobileMenu: React.FC<MobileMenuProps> = ({
                     height: "32px",
                     borderRadius: "50%",
                     objectFit: "cover",
-                    border: "2px solid rgba(244, 63, 94, 0.3)",
+                    border: "2px solid rgba(0, 0, 0, 0.1)",
                     flexShrink: 0,
                   }}
                   referrerPolicy="no-referrer"
@@ -148,12 +148,12 @@ const MobileMenu: React.FC<MobileMenuProps> = ({
                     width: "32px",
                     height: "32px",
                     borderRadius: "50%",
-                    background: "linear-gradient(135deg, #f43f5e, #fb923c)",
+                    background: "#1a1a1a",
                     display: "inline-flex",
                     alignItems: "center",
                     justifyContent: "center",
                     fontSize: "0.8rem",
-                    fontWeight: 700,
+                    fontWeight: 600,
                     color: "white",
                     flexShrink: 0,
                   }}

@@ -107,15 +107,15 @@ const CustomersPage = () => {
   );
 
   return (
-    <div className="space-y-5">
-      <section className="rounded-2xl border border-slate-200 bg-white p-5 shadow-sm">
+    <div className="space-y-5 font-sans">
+      <section className="rounded-xl border border-slate-200 bg-white p-5 shadow-sm">
         <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
           <div>
-            <p className="text-xs font-semibold uppercase tracking-[0.25em] text-cyan-600">
+            <p className="text-[10px] font-semibold uppercase tracking-wider text-slate-400">
               Salon Customer CRM
             </p>
-            <h2 className="mt-1 text-2xl font-bold text-slate-900">Khách hàng</h2>
-            <p className="mt-1 max-w-3xl text-sm text-slate-500">
+            <h2 className="mt-0.5 text-base font-semibold text-slate-950">Khách hàng</h2>
+            <p className="mt-1 text-xs text-slate-400 font-light max-w-3xl leading-relaxed">
               Theo dõi hành vi, lịch sử làm tóc, công thức màu, ghi chú tư vấn và tạo
               lịch chăm sóc lại từ một hồ sơ thống nhất.
             </p>
@@ -124,13 +124,14 @@ const CustomersPage = () => {
             type="button"
             onClick={() => customerQuery.refetch()}
             disabled={customerQuery.isFetching}
-            className="inline-flex items-center justify-center gap-2 rounded-xl border border-slate-200 px-4 py-2.5 text-sm font-semibold text-slate-700 hover:bg-slate-50 disabled:opacity-60"
+            className="inline-flex items-center justify-center gap-2 rounded-lg border border-slate-200 bg-white px-3.5 py-1.5 text-xs font-medium text-slate-600 hover:bg-slate-50 hover:text-slate-900 transition-all duration-150 disabled:opacity-60"
           >
             <RefreshCcw
-              size={16}
+              size={13}
               className={customerQuery.isFetching ? "animate-spin" : ""}
+              strokeWidth={1.5}
             />
-            Làm mới dữ liệu
+            Làm mới
           </button>
         </div>
       </section>
@@ -146,20 +147,20 @@ const CustomersPage = () => {
       />
 
       {customerQuery.isLoading ? (
-        <div className="rounded-2xl border border-slate-200 bg-white p-12">
-          <LoadingSpinner size="lg" label="Đang tải dữ liệu CRM khách hàng..." />
+        <div className="rounded-xl border border-slate-200 bg-white p-12 flex justify-center items-center">
+          <LoadingSpinner size="sm" label="Đang tải dữ liệu khách hàng..." />
         </div>
       ) : null}
 
       {customerQuery.isError ? (
-        <section className="rounded-2xl border border-rose-200 bg-rose-50 p-8 text-center">
-          <p className="font-semibold text-rose-800">
-            Không thể tải dữ liệu khách hàng từ máy chủ.
+        <section className="rounded-xl border border-rose-200 bg-rose-50/40 p-8 text-center space-y-4">
+          <p className="text-xs font-medium text-rose-800">
+            Không thể tải dữ liệu khách hàng từ máy chủ. Vui lòng thử lại.
           </p>
           <button
             type="button"
             onClick={() => customerQuery.refetch()}
-            className="mt-4 rounded-xl bg-rose-600 px-4 py-2.5 text-sm font-semibold text-white"
+            className="rounded-lg bg-rose-600 hover:bg-rose-700 transition px-4 py-2 text-xs font-semibold text-white shadow-sm"
           >
             Thử tải lại
           </button>
@@ -168,7 +169,7 @@ const CustomersPage = () => {
 
       {!customerQuery.isLoading && !customerQuery.isError ? (
         <>
-          <div className="space-y-4">
+          <div className="space-y-3">
             {(data?.items || []).map((customer) => (
               <CustomerCard
                 key={customer.id}
@@ -180,23 +181,23 @@ const CustomersPage = () => {
           </div>
 
           {!data?.items.length ? (
-            <section className="rounded-2xl border border-dashed border-slate-300 bg-white p-10 text-center">
-              <Users className="mx-auto text-slate-300" size={42} />
-              <h3 className="mt-4 font-semibold text-slate-900">
+            <section className="rounded-xl border border-dashed border-slate-200 bg-white p-12 text-center">
+              <Users className="mx-auto text-slate-300" size={32} strokeWidth={1.5} />
+              <h3 className="mt-4 text-xs font-semibold text-slate-800">
                 {hasActiveFilters
                   ? "Không có khách hàng phù hợp bộ lọc"
                   : "Chưa có dữ liệu khách hàng"}
               </h3>
-              <p className="mt-1 text-sm text-slate-500">
+              <p className="mt-1 text-xs text-slate-400 font-light">
                 {hasActiveFilters
                   ? "Hãy thử bỏ bớt điều kiện tìm kiếm hoặc đặt lại bộ lọc."
-                  : "Chạy seed hoặc tạo lịch hẹn đầu tiên để hình thành hồ sơ CRM."}
+                  : "Hệ thống sẽ tự động cập nhật khi khách hàng đăng ký đặt lịch."}
               </p>
               {hasActiveFilters ? (
                 <button
                   type="button"
                   onClick={resetFilters}
-                  className="mt-4 rounded-xl bg-slate-900 px-4 py-2.5 text-sm font-semibold text-white"
+                  className="mt-4 rounded-lg bg-slate-900 hover:bg-slate-800 transition px-4 py-2 text-xs font-semibold text-white shadow-sm"
                 >
                   Đặt lại bộ lọc
                 </button>
@@ -205,8 +206,8 @@ const CustomersPage = () => {
           ) : null}
 
           {data && data.pagination.totalPages > 1 ? (
-            <section className="flex flex-col gap-3 rounded-2xl border border-slate-200 bg-white p-4 sm:flex-row sm:items-center sm:justify-between">
-              <p className="text-sm text-slate-500">
+            <section className="flex flex-col gap-3 rounded-xl border border-slate-200 bg-white p-4 sm:flex-row sm:items-center sm:justify-between">
+              <p className="text-xs text-slate-450 font-light">
                 Hiển thị trang {data.pagination.page}/{data.pagination.totalPages} ·{" "}
                 {data.pagination.total} khách hàng
               </p>
@@ -215,19 +216,19 @@ const CustomersPage = () => {
                   type="button"
                   onClick={() => changePage(data.pagination.page - 1)}
                   disabled={data.pagination.page <= 1}
-                  className="inline-flex items-center gap-1 rounded-xl border border-slate-200 px-3 py-2 text-sm font-semibold text-slate-700 disabled:opacity-40"
+                  className="inline-flex items-center gap-1.5 rounded-lg border border-slate-200 bg-white px-3 py-1.5 text-xs font-medium text-slate-600 disabled:opacity-40 hover:bg-slate-50 transition"
                 >
-                  <ChevronLeft size={16} />
+                  <ChevronLeft size={14} strokeWidth={1.5} />
                   Trước
                 </button>
                 <button
                   type="button"
                   onClick={() => changePage(data.pagination.page + 1)}
                   disabled={data.pagination.page >= data.pagination.totalPages}
-                  className="inline-flex items-center gap-1 rounded-xl border border-slate-200 px-3 py-2 text-sm font-semibold text-slate-700 disabled:opacity-40"
+                  className="inline-flex items-center gap-1.5 rounded-lg border border-slate-200 bg-white px-3 py-1.5 text-xs font-medium text-slate-600 disabled:opacity-40 hover:bg-slate-50 transition"
                 >
                   Sau
-                  <ChevronRight size={16} />
+                  <ChevronRight size={14} strokeWidth={1.5} />
                 </button>
               </div>
             </section>

@@ -24,6 +24,8 @@ import {
   CartBadge,
   MobileActions,
   HamburgerButton,
+  UserGreeting,
+  UserGreetingText,
 } from "./navigation/styled";
 
 /**
@@ -180,7 +182,7 @@ const Navbar: React.FC = () => {
               onClick={() => setCartOpen(true)}
               aria-label="Xem giỏ hàng"
             >
-              <ShoppingBag size={18} />
+              <ShoppingBag size={18} strokeWidth={1.5} />
               {itemCount > 0 && <CartBadge>{itemCount}</CartBadge>}
             </CartButton>
 
@@ -188,17 +190,7 @@ const Navbar: React.FC = () => {
             {token ? (
               <>
                 {/* Lời chào + Avatar */}
-                <div
-                  style={{
-                    display: "inline-flex",
-                    alignItems: "center",
-                    gap: "0.4rem",
-                    fontSize: "0.875rem",
-                    fontWeight: 500,
-                    color: "#1e293b",
-                    maxWidth: "160px",
-                  }}
-                >
+                <UserGreeting>
                   {user?.avatar ? (
                     <img
                       src={user.avatar}
@@ -208,7 +200,7 @@ const Navbar: React.FC = () => {
                         height: "28px",
                         borderRadius: "50%",
                         objectFit: "cover",
-                        border: "2px solid rgba(244, 63, 94, 0.3)",
+                        border: "2px solid rgba(0, 0, 0, 0.1)",
                         flexShrink: 0,
                       }}
                       referrerPolicy="no-referrer"
@@ -219,12 +211,12 @@ const Navbar: React.FC = () => {
                         width: "28px",
                         height: "28px",
                         borderRadius: "50%",
-                        background: "linear-gradient(135deg, #f43f5e, #fb923c)",
+                        background: "#1a1a1a",
                         display: "inline-flex",
                         alignItems: "center",
                         justifyContent: "center",
                         fontSize: "0.7rem",
-                        fontWeight: 700,
+                        fontWeight: 600,
                         color: "white",
                         flexShrink: 0,
                       }}
@@ -232,16 +224,10 @@ const Navbar: React.FC = () => {
                       {displayName.charAt(0).toUpperCase()}
                     </span>
                   )}
-                  <span
-                    style={{
-                      overflow: "hidden",
-                      textOverflow: "ellipsis",
-                      whiteSpace: "nowrap",
-                    }}
-                  >
+                  <UserGreetingText>
                     Xin chào, {displayName}
-                  </span>
-                </div>
+                  </UserGreetingText>
+                </UserGreeting>
 
                 {isAdmin() && (
                   <NavLinkBase
@@ -254,29 +240,11 @@ const Navbar: React.FC = () => {
                 )}
                 <button
                   onClick={handleLogout}
-                  style={{
-                    display: "inline-flex",
-                    alignItems: "center",
-                    gap: "0.25rem",
-                    padding: "0.5rem 0.875rem",
-                    borderRadius: "12px",
-                    fontSize: "0.875rem",
-                    fontWeight: 600,
-                    color: "#ef4444",
-                    border: "1px solid rgba(239, 68, 68, 0.2)",
-                    background: "rgba(239, 68, 68, 0.05)",
-                    cursor: "pointer",
-                    transition: "all 0.2s",
-                  }}
-                  onMouseOver={(e) => {
-                    e.currentTarget.style.background = "rgba(239, 68, 68, 0.1)";
-                  }}
-                  onMouseOut={(e) => {
-                    e.currentTarget.style.background = "rgba(239, 68, 68, 0.05)";
-                  }}
+                  className="inline-flex items-center justify-center rounded-xl border border-red-200 bg-red-50/20 p-2 text-red-500 hover:bg-red-50 transition-all active:scale-95 min-[1400px]:gap-1.5 min-[1400px]:px-3 min-[1400px]:py-2 min-[1400px]:text-sm"
+                  title="Đăng xuất"
                 >
-                  <LogOut size={15} />
-                  <span>Đăng xuất</span>
+                  <LogOut size={15} strokeWidth={1.75} />
+                  <span className="hidden min-[1400px]:inline">Đăng xuất</span>
                 </button>
               </>
             ) : (
@@ -287,7 +255,8 @@ const Navbar: React.FC = () => {
 
             {/* CTA ĐẶT LỊCH NGAY (Nổi bật nhất) */}
             <CTAButton onClick={() => navigate("/booking")}>
-              ĐẶT LỊCH NGAY
+              <span className="hidden min-[1400px]:inline">ĐẶT LỊCH NGAY</span>
+              <span className="inline min-[1400px]:hidden">Đặt lịch</span>
             </CTAButton>
           </NavActions>
 

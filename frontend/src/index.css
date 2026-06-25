@@ -1,13 +1,13 @@
-@import url("https://fonts.googleapis.com/css2?family=Pretendard:wght@400;500;600;700&family=Playfair+Display:wght@600&display=swap");
+@import url("https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Playfair+Display:ital,wght@0,600;0,700;1,600&display=swap");
 
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
 
 :root {
-  font-family: "Pretendard", "Inter", system-ui, -apple-system, sans-serif;
-  color: #0f172a;
-  background-color: #fff;
+  font-family: "Inter", system-ui, -apple-system, sans-serif;
+  color: #1a1a1a;
+  background-color: #faf9f6;
 }
 
 * {
@@ -17,9 +17,7 @@
 body {
   margin: 0;
   min-height: 100vh;
-  background: radial-gradient(circle at 20% 20%, #ffe4e6 0, transparent 35%),
-    radial-gradient(circle at 80% 0%, #fef3c7 0, transparent 28%),
-    #fff;
+  background-color: #faf9f6;
 }
 
 a {

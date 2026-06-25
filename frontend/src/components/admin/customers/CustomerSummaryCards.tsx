@@ -54,7 +54,7 @@ const CustomerSummaryCards = ({ summary }: CustomerSummaryCardsProps) => {
   ];
 
   return (
-    <section className="grid gap-3 sm:grid-cols-2 xl:grid-cols-6">
+    <section className="grid gap-3 grid-cols-2 md:grid-cols-3 xl:grid-cols-6">
       {cards.map((card) => {
         const Icon = card.icon;
         return (

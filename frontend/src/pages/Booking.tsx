@@ -14,26 +14,26 @@ const Booking = () => {
       />
       <div className="grid gap-8 lg:grid-cols-[1.2fr_0.8fr] items-start">
         <BookingForm />
-        <AnimatedContainer className="rounded-3xl border border-rose-100 bg-white/70 p-6 shadow-lg shadow-rose-100 backdrop-blur-lg">
-          <h3 className="text-lg font-semibold text-slate-900">Ghi chú concierge</h3>
-          <ul className="mt-4 space-y-3 text-sm text-slate-700">
-            <li>- Xác nhận qua SMS trong 30 phút giờ làm việc.</li>
-            <li>- Đến sớm 10 phút để thưởng trà ấm và thư giãn.</li>
-            <li>- Miễn phí cắt mái trong 2 tuần sau khi cắt.</li>
-            <li>- Hủy/đổi lịch vui lòng báo trước 12 giờ.</li>
+        <AnimatedContainer className="rounded-2xl border border-neutral-200/60 bg-white p-6 shadow-sm">
+          <h3 className="text-sm font-semibold text-charcoal uppercase tracking-wider">Ghi chú concierge</h3>
+          <ul className="mt-4 space-y-3.5 text-xs text-slate-500 font-light leading-relaxed">
+            <li>Xác nhận qua SMS trong 30 phút giờ làm việc.</li>
+            <li>Đến sớm 10 phút để thưởng trà ấm và thư giãn.</li>
+            <li>Miễn phí cắt dáng mái bay trong 2 tuần đầu.</li>
+            <li>Hủy/đổi lịch vui lòng thông báo trước 12 giờ.</li>
           </ul>
-          <div className="mt-6 space-y-4">
-            <h4 className="text-sm font-semibold text-rose-500 uppercase tracking-[0.2em]">
-              Stylist
+          <div className="mt-8 space-y-4">
+            <h4 className="text-[10px] font-semibold text-taupe uppercase tracking-[0.25em]">
+              Stylist Phụ Trách
             </h4>
             <div className="grid gap-3 sm:grid-cols-2">
               {stylists.map((stylist) => (
                 <div
                   key={stylist.name}
-                  className="rounded-2xl border border-rose-100 bg-white/90 px-4 py-3 text-sm text-slate-800 shadow-sm"
+                  className="rounded-xl border border-neutral-200/60 bg-white px-4 py-3 text-xs text-slate-700 font-light"
                 >
-                  <p className="font-semibold text-slate-900">{stylist.name}</p>
-                  <p className="text-rose-500">{stylist.specialty}</p>
+                  <p className="font-medium text-charcoal">{stylist.name}</p>
+                  <p className="text-taupe mt-0.5 font-normal">{stylist.specialty}</p>
                 </div>
               ))}
             </div>

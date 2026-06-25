@@ -15,6 +15,7 @@ import {
   updateAdminBooking,
 } from "../../services/adminApi";
 import { getApiErrorMessage } from "../../services/api";
+import { X } from "lucide-react";
 import "react-big-calendar/lib/css/react-big-calendar.css";
 
 type CalendarEvent = {
@@ -234,8 +235,99 @@ const BookingsPage = () => {
     );
   }
 
+  const renderDetailForm = () => {
+    if (!selectedBooking) {
+      return (
+        <p className="mt-4 text-sm text-slate-500">
+          Chọn một lịch hẹn trên lịch hoặc danh sách để xem chi tiết và cập nhật trạng thái.
+        </p>
+      );
+    }
+
+    return (
+      <form onSubmit={handleUpdateBooking} className="mt-4 space-y-3">
+        <div>
+          <p className="text-sm text-slate-500">Khách hàng</p>
+          <p className="font-semibold text-slate-800">{selectedBooking.customerName}</p>
+          <p className="text-sm text-slate-600">{selectedBooking.phone}</p>
+        </div>
+
+        <div className="rounded-xl bg-slate-50 p-3 text-sm space-y-1">
+          <p className="text-slate-650">Dịch vụ: <span className="font-semibold text-slate-800">{selectedBooking.serviceName}</span></p>
+          <p className="text-slate-650">
+            Thời gian: <span className="font-semibold text-slate-800">{new Date(selectedBooking.date).toLocaleDateString("vi-VN")} - {selectedBooking.time}</span>
+          </p>
+        </div>
+
+        <label className="block text-sm">
+          <span className="mb-1 block font-medium text-slate-600">Trạng thái</span>
+          <select
+            value={updateForm.status}
+            onChange={(event) =>
+              setUpdateForm((prev) => ({
+                ...prev,
+                status: event.target.value as BookingStatus,
+              }))
+            }
+            className="w-full rounded-xl border border-slate-300 px-3 py-2.5 text-sm"
+          >
+            {statusOptions.map((status) => (
+              <option key={status.value} value={status.value}>
+                {status.label}
+              </option>
+            ))}
+          </select>
+        </label>
+
+        <label className="block text-sm">
+          <span className="mb-1 block font-medium text-slate-600">Thợ phục vụ</span>
+          <input
+            value={updateForm.stylist}
+            onChange={(event) =>
+              setUpdateForm((prev) => ({ ...prev, stylist: event.target.value }))
+            }
+            className="w-full rounded-xl border border-slate-300 px-3 py-2.5 text-sm"
+            placeholder="Tên thợ"
+          />
+        </label>
+
+        <label className="block text-sm">
+          <span className="mb-1 block font-medium text-slate-600">Màu nhuộm đã dùng</span>
+          <input
+            value={updateForm.hairColorUsed}
+            onChange={(event) =>
+              setUpdateForm((prev) => ({ ...prev, hairColorUsed: event.target.value }))
+            }
+            className="w-full rounded-xl border border-slate-300 px-3 py-2.5 text-sm"
+            placeholder="Ví dụ: Nâu lạnh 6.11"
+          />
+        </label>
+
+        <label className="block text-sm">
+          <span className="mb-1 block font-medium text-slate-600">Ghi chú</span>
+          <textarea
+            value={updateForm.note}
+            onChange={(event) => setUpdateForm((prev) => ({ ...prev, note: event.target.value }))}
+            className="w-full rounded-xl border border-slate-300 px-3 py-2 text-sm"
+            rows={4}
+            placeholder="Ghi chú dịch vụ..."
+          />
+        </label>
+
+        <button
+          type="submit"
+          disabled={updateMutation.isPending}
+          className="w-full rounded-xl bg-slate-900 py-3 text-sm font-semibold text-white hover:bg-slate-800 disabled:opacity-70 transition flex items-center justify-center"
+          style={{ minHeight: "44px" }}
+        >
+          {updateMutation.isPending ? "Đang cập nhật..." : "Lưu thay đổi"}
+        </button>
+      </form>
+    );
+  };
+
   return (
-    <div className="space-y-6">
+    <div className="space-y-6 animate-fadeIn">
       <section className="rounded-2xl border border-slate-200 bg-white p-6 shadow-sm">
         <h3 className="text-lg font-semibold">Tạo lịch hẹn mới</h3>
         <p className="mt-1 text-sm text-slate-500">
@@ -250,20 +342,23 @@ const BookingsPage = () => {
               setNewBookingForm((prev) => ({ ...prev, customerName: event.target.value }))
             }
             placeholder="Tên khách hàng"
-            className="rounded-xl border border-slate-300 px-3 py-2 text-sm"
+            className="rounded-xl border border-slate-300 px-3 py-2.5 text-sm"
+            style={{ minHeight: "42px" }}
           />
           <input
             required
             value={newBookingForm.phone}
             onChange={(event) => setNewBookingForm((prev) => ({ ...prev, phone: event.target.value }))}
             placeholder="Số điện thoại"
-            className="rounded-xl border border-slate-300 px-3 py-2 text-sm"
+            className="rounded-xl border border-slate-300 px-3 py-2.5 text-sm"
+            style={{ minHeight: "42px" }}
           />
           <input
             value={newBookingForm.email}
             onChange={(event) => setNewBookingForm((prev) => ({ ...prev, email: event.target.value }))}
             placeholder="Email (không bắt buộc)"
-            className="rounded-xl border border-slate-300 px-3 py-2 text-sm"
+            className="rounded-xl border border-slate-300 px-3 py-2.5 text-sm"
+            style={{ minHeight: "42px" }}
           />
           <select
             required
@@ -271,7 +366,8 @@ const BookingsPage = () => {
             onChange={(event) =>
               setNewBookingForm((prev) => ({ ...prev, serviceId: event.target.value }))
             }
-            className="rounded-xl border border-slate-300 px-3 py-2 text-sm"
+            className="rounded-xl border border-slate-300 px-3 py-2.5 text-sm"
+            style={{ minHeight: "42px" }}
           >
             {(services || []).map((service) => (
               <option key={service._id} value={service._id}>
@@ -284,26 +380,30 @@ const BookingsPage = () => {
             type="date"
             value={newBookingForm.date}
             onChange={(event) => setNewBookingForm((prev) => ({ ...prev, date: event.target.value }))}
-            className="rounded-xl border border-slate-300 px-3 py-2 text-sm"
+            className="rounded-xl border border-slate-300 px-3 py-2.5 text-sm"
+            style={{ minHeight: "42px" }}
           />
           <input
             required
             type="time"
             value={newBookingForm.time}
             onChange={(event) => setNewBookingForm((prev) => ({ ...prev, time: event.target.value }))}
-            className="rounded-xl border border-slate-300 px-3 py-2 text-sm"
+            className="rounded-xl border border-slate-300 px-3 py-2.5 text-sm"
+            style={{ minHeight: "42px" }}
           />
           <input
             value={newBookingForm.note}
             onChange={(event) => setNewBookingForm((prev) => ({ ...prev, note: event.target.value }))}
             placeholder="Ghi chú"
-            className="rounded-xl border border-slate-300 px-3 py-2 text-sm md:col-span-2"
+            className="rounded-xl border border-slate-300 px-3 py-2.5 text-sm md:col-span-2"
+            style={{ minHeight: "42px" }}
           />
 
           <button
             type="submit"
             disabled={createMutation.isPending}
-            className="rounded-xl bg-cyan-600 px-4 py-2 text-sm font-semibold text-white hover:bg-cyan-700 disabled:opacity-70"
+            className="rounded-xl bg-cyan-600 px-4 py-2.5 text-sm font-semibold text-white hover:bg-cyan-700 disabled:opacity-70 transition flex items-center justify-center"
+            style={{ minHeight: "44px" }}
           >
             {createMutation.isPending ? "Đang xử lý..." : "Tạo lịch hẹn"}
           </button>
@@ -415,7 +515,7 @@ const BookingsPage = () => {
                     </span>
                   </div>
 
-                  <div className="text-xs text-slate-600 space-y-1.5 bg-slate-50 p-2.5 rounded-lg">
+                  <div className="text-xs text-slate-650 space-y-1.5 bg-slate-50 p-2.5 rounded-lg">
                     <p>Dịch vụ: <span className="font-semibold text-slate-800">{booking.serviceName}</span></p>
                     <p>Thời gian: <span className="font-semibold text-slate-800">{new Date(booking.date).toLocaleDateString("vi-VN")} - {booking.time}</span></p>
                     {booking.stylist && <p>Thợ phục vụ: <span className="font-semibold text-slate-800">{booking.stylist}</span></p>}
@@ -433,93 +533,31 @@ const BookingsPage = () => {
           )}
         </div>
 
-        <div className="rounded-2xl border border-slate-200 bg-white p-5 shadow-sm">
+        {/* Desktop Detail View (Hidden on mobile) */}
+        <div className="hidden md:block rounded-2xl border border-slate-200 bg-white p-5 shadow-sm">
           <h3 className="text-lg font-semibold">Chi tiết lịch hẹn</h3>
-          {selectedBooking ? (
-            <form onSubmit={handleUpdateBooking} className="mt-4 space-y-3">
-              <div>
-                <p className="text-sm text-slate-500">Khách hàng</p>
-                <p className="font-semibold">{selectedBooking.customerName}</p>
-                <p className="text-sm text-slate-500">{selectedBooking.phone}</p>
-              </div>
-
-              <div className="rounded-xl bg-slate-50 p-3 text-sm">
-                <p>Dịch vụ: {selectedBooking.serviceName}</p>
-                <p>
-                  Thời gian: {new Date(selectedBooking.date).toLocaleDateString("vi-VN")} -{" "}
-                  {selectedBooking.time}
-                </p>
-              </div>
-
-              <label className="block text-sm">
-                <span className="mb-1 block text-slate-600">Trạng thái</span>
-                <select
-                  value={updateForm.status}
-                  onChange={(event) =>
-                    setUpdateForm((prev) => ({
-                      ...prev,
-                      status: event.target.value as BookingStatus,
-                    }))
-                  }
-                  className="w-full rounded-xl border border-slate-300 px-3 py-2"
-                >
-                  {statusOptions.map((status) => (
-                    <option key={status.value} value={status.value}>
-                      {status.label}
-                    </option>
-                  ))}
-                </select>
-              </label>
-
-              <label className="block text-sm">
-                <span className="mb-1 block text-slate-600">Thợ phục vụ</span>
-                <input
-                  value={updateForm.stylist}
-                  onChange={(event) =>
-                    setUpdateForm((prev) => ({ ...prev, stylist: event.target.value }))
-                  }
-                  className="w-full rounded-xl border border-slate-300 px-3 py-2"
-                  placeholder="Tên thợ"
-                />
-              </label>
-
-              <label className="block text-sm">
-                <span className="mb-1 block text-slate-600">Màu nhuộm đã dùng</span>
-                <input
-                  value={updateForm.hairColorUsed}
-                  onChange={(event) =>
-                    setUpdateForm((prev) => ({ ...prev, hairColorUsed: event.target.value }))
-                  }
-                  className="w-full rounded-xl border border-slate-300 px-3 py-2"
-                  placeholder="Ví dụ: Nâu lạnh 6.11"
-                />
-              </label>
-
-              <label className="block text-sm">
-                <span className="mb-1 block text-slate-600">Ghi chú</span>
-                <textarea
-                  value={updateForm.note}
-                  onChange={(event) => setUpdateForm((prev) => ({ ...prev, note: event.target.value }))}
-                  className="w-full rounded-xl border border-slate-300 px-3 py-2"
-                  rows={4}
-                />
-              </label>
-
-              <button
-                type="submit"
-                disabled={updateMutation.isPending}
-                className="w-full rounded-xl bg-slate-900 px-4 py-2 text-sm font-semibold text-white hover:bg-slate-800 disabled:opacity-70"
-              >
-                {updateMutation.isPending ? "Đang cập nhật..." : "Lưu thay đổi"}
-              </button>
-            </form>
-          ) : (
-            <p className="mt-4 text-sm text-slate-500">
-              Chọn một lịch hẹn trên lịch để xem chi tiết và cập nhật trạng thái.
-            </p>
-          )}
+          {renderDetailForm()}
         </div>
       </section>
+
+      {/* Mobile Detail Modal (Hidden on desktop, shown when selectedBooking is active on mobile) */}
+      {selectedBooking && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-slate-950/50 p-4 md:hidden">
+          <div className="w-full max-w-lg rounded-2xl bg-white p-5 shadow-xl max-h-[90vh] overflow-y-auto relative">
+            <button
+              type="button"
+              onClick={() => setSelectedBooking(null)}
+              className="absolute top-4 right-4 rounded-lg p-2 text-slate-400 hover:bg-slate-100 hover:text-slate-800 transition flex items-center justify-center"
+              style={{ minHeight: "40px", minWidth: "40px" }}
+              aria-label="Đóng chi tiết"
+            >
+              <X size={20} />
+            </button>
+            <h3 className="text-lg font-semibold text-slate-900 border-b border-slate-100 pb-3">Chi tiết lịch hẹn</h3>
+            {renderDetailForm()}
+          </div>
+        </div>
+      )}
     </div>
   );
 };

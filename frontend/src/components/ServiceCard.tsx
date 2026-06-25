@@ -1,6 +1,6 @@
-import { motion } from "framer-motion";
-import { ArrowRight, CalendarClock } from "lucide-react";
+import { CalendarClock } from "lucide-react";
 import Button from "./Button";
+import ServiceImage from "./ServiceImage";
 
 export type ServiceCardData = {
   _id?: string;
@@ -29,58 +29,52 @@ const ServiceCard = ({ service }: ServiceCardProps) => {
   const serviceId = service._id || service.id || "";
 
   return (
-    <motion.div
-      whileHover={{ y: -6, scale: 1.01 }}
-      transition={{ duration: 0.25, ease: "easeOut" }}
-      className="group flex flex-col overflow-hidden rounded-3xl border border-rose-100 bg-white/90 shadow-lg shadow-rose-100 backdrop-blur-xl"
+    <div
+      className="group flex flex-col overflow-hidden rounded-2xl border border-slate-200 bg-white transition-all duration-300 hover:shadow-[0_8px_30px_rgba(0,0,0,0.04)]"
       id={serviceId ? `card-${serviceId}` : undefined}
     >
-      <div className="relative h-56 overflow-hidden">
-        <motion.img
-          src={service.imageUrl || service.image || "https://placehold.co/800x500?text=Dich+vu"}
+      <div className="relative h-60 overflow-hidden bg-slate-50">
+        <ServiceImage
+          src={service.imageUrl || service.image}
           alt={service.name}
-          className="h-full w-full object-cover"
-          whileHover={{ scale: 1.06 }}
-          transition={{ duration: 0.35 }}
+          className="group-hover:scale-105"
+          aspectRatio="h-full w-full"
         />
-        <div className="absolute inset-0 bg-gradient-to-t from-slate-900/50 via-transparent to-transparent" />
-        <div className="absolute left-3 top-3 flex items-center gap-2">
-          <span className="rounded-full bg-white/85 px-3 py-1 text-xs font-semibold text-slate-700 shadow-md shadow-rose-100">
-            {service.category || "Dich vu"}
-          </span>
-          <span className="rounded-full bg-rose-500/90 px-3 py-1 text-xs font-semibold text-white shadow-lg shadow-rose-200">
-            Gia tu {formatCurrency(service.price)}
+        <div className="absolute left-4 top-4 flex items-center gap-2">
+          <span className="rounded-full bg-white/95 px-3 py-1.5 text-[11px] font-semibold uppercase tracking-wider text-slate-800 shadow-sm backdrop-blur-md">
+            {service.category || "Dịch vụ"}
           </span>
         </div>
       </div>
 
-      <div className="flex flex-1 flex-col gap-4 p-6">
-        <div className="space-y-2">
-          <p className="text-xs uppercase tracking-[0.2em] text-rose-400">Dich vu chuyen nghiep</p>
-          <h3 className="text-lg font-semibold text-slate-900 md:text-xl">{service.name}</h3>
-          <p className="line-clamp-2 text-sm text-slate-600">{service.description || "Khong co mo ta chi tiet."}</p>
+      <div className="flex flex-1 flex-col p-6">
+        <div className="mb-4">
+          <h3 className="mb-2 text-xl font-semibold leading-tight text-slate-900">{service.name}</h3>
+          <p className="line-clamp-2 text-sm leading-relaxed text-slate-500">{service.description || "Chưa có mô tả chi tiết."}</p>
         </div>
 
-        <div className="flex items-center justify-between text-sm text-slate-600">
-          <span className="inline-flex items-center gap-2 rounded-full bg-rose-50 px-3 py-2 text-rose-600 shadow-sm">
-            <CalendarClock size={16} /> {service.durationMinutes || 60} phut
-          </span>
-          <span className="font-semibold text-rose-600">{formatCurrency(service.price)}</span>
+        <div className="mb-6 flex items-center justify-between border-y border-slate-100 py-3 text-sm">
+          <div className="flex items-center gap-2 text-slate-600">
+            <CalendarClock size={15} strokeWidth={1.5} />
+            <span className="font-medium">{service.durationMinutes || 60} phút</span>
+          </div>
+          <span className="font-semibold text-slate-900">{formatCurrency(service.price)}</span>
         </div>
 
-        <div className="flex flex-wrap gap-3">
+        <div className="mt-auto grid grid-cols-2 gap-3">
           {serviceId ? (
-            <Button to={`/services/${serviceId}`} variant="ghost" className="gap-2 px-4 py-2 text-xs md:text-sm">
-              Xem chi tiet
-              <ArrowRight size={16} />
+            <Button to={`/services/${serviceId}`} variant="ghost" className="px-3 py-2.5 text-xs">
+              Chi tiết
             </Button>
-          ) : null}
-          <Button to="/booking" variant="primary" className="px-4 py-2 text-xs md:text-sm">
-            Dat lich
+          ) : (
+            <div />
+          )}
+          <Button to="/booking" variant="primary" className="px-3 py-2.5 text-xs">
+            Đặt lịch
           </Button>
         </div>
       </div>
-    </motion.div>
+    </div>
   );
 };
 

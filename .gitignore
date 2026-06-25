@@ -12,3 +12,4 @@ frontend/.env.*
 npm-debug.log*
 *.log
 *.zip
+.agents/skills

@@ -3,7 +3,7 @@ import AnimatedContainer from "../components/AnimatedContainer";
 
 const About = () => {
   return (
-    <div className="mx-auto max-w-5xl px-4 pb-20 space-y-16">
+    <div className="mx-auto max-w-5xl px-4 pb-24 pt-8 space-y-16">
 
       {/* Intro */}
       <SectionTitle
@@ -13,12 +13,12 @@ const About = () => {
         align="left"
       />
 
-      <AnimatedContainer className="rounded-3xl border border-rose-100 bg-white/80 p-8 shadow-lg shadow-rose-100 backdrop-blur-lg">
-        <p className="text-slate-700 leading-relaxed">
+      <AnimatedContainer className="rounded-2xl border border-neutral-200/60 bg-white p-8 shadow-sm">
+        <p className="text-slate-500 text-sm leading-relaxed font-light">
           Tối giản, thanh lịch nhưng vô cùng ấm áp với ánh sáng dịu nhẹ và hương tinh dầu mộc mạc. Mọi góc nhỏ tại Dương Chi đều được sắp đặt tỉ mỉ để mang đến cho bạn sự khoan khoái như một buổi spa thiền tịnh.
         </p>
 
-        <p className="text-slate-700 leading-relaxed mt-4">
+        <p className="text-slate-500 text-sm leading-relaxed mt-4 font-light">
           Tại đây, chúng tôi trao gửi sự tận tâm vào từng lọn tóc, không ồn ào vội vã, chỉ có tiếng kéo thanh mảnh và dòng nước gội rửa mọi muộn phiền của bạn.
         </p>
       </AnimatedContainer>
@@ -33,17 +33,17 @@ const About = () => {
           align="left"
         />
 
-        <AnimatedContainer className="rounded-3xl border border-rose-100 bg-white/80 p-8 shadow-lg shadow-rose-100 backdrop-blur-lg">
-          <h3 className="text-xl font-semibold text-slate-900 mb-3">
-            Dương Chi - Nghệ nhân của suối tóc
+        <AnimatedContainer className="rounded-2xl border border-neutral-200/60 bg-white p-8 shadow-sm">
+          <h3 className="text-lg font-display text-charcoal mb-3">
+            Dương Chi — Nghệ nhân của suối tóc
           </h3>
 
-          <p className="text-slate-700 leading-relaxed">
+          <p className="text-slate-500 text-sm leading-relaxed font-light">
             Mang trong mình tình yêu với cái đẹp thanh tao, Dương Chi luôn theo đuổi triết lý: "Mái tóc là trang sức quý giá nhất của người phụ nữ". Không chạy theo những xu hướng công nghiệp, Chi chọn lối đi riêng với nghệ thuật thiết kế tóc cá nhân hóa.
           </p>
 
-          <p className="text-slate-700 leading-relaxed mt-4">
-            Từ những đường cắt lơi tự nhiên thấm đẫm spirit Nhật Bản, đến kỹ thuật lên màu tinh tế, mọi tác phẩm đều toát lên khí chất mộc mạc nhưng đầy chiều sâu.
+          <p className="text-slate-500 text-sm leading-relaxed mt-4 font-light">
+            Từ những đường cắt lơi tự nhiên thấm đẫm tinh thần Nhật Bản, đến kỹ thuật lên màu tinh tế, mọi tác phẩm đều toát lên khí chất mộc mạc nhưng đầy chiều sâu.
           </p>
         </AnimatedContainer>
       </div>
@@ -60,28 +60,28 @@ const About = () => {
 
         <div className="grid md:grid-cols-3 gap-6">
 
-          <AnimatedContainer className="rounded-2xl border border-rose-100 bg-white/80 p-6 shadow-md">
-            <h4 className="font-semibold text-slate-900">Anh Minh</h4>
-            <p className="text-sm text-rose-500 mb-2">Senior Stylist</p>
-            <p className="text-sm text-slate-700">
+          <AnimatedContainer className="rounded-2xl border border-neutral-200/60 bg-white p-6 shadow-sm">
+            <h4 className="font-semibold text-charcoal text-sm">Anh Kiệt</h4>
+            <p className="text-[10px] uppercase tracking-wider text-taupe font-medium mt-1 mb-2">Senior Stylist</p>
+            <p className="text-xs text-slate-400 leading-relaxed font-light">
               Chuyên về cắt tóc layer, tạo kiểu tóc nữ hiện đại và thiết kế kiểu tóc
               phù hợp với gương mặt.
             </p>
           </AnimatedContainer>
 
-          <AnimatedContainer className="rounded-2xl border border-rose-100 bg-white/80 p-6 shadow-md">
-            <h4 className="font-semibold text-slate-900">Chị Lan</h4>
-            <p className="text-sm text-rose-500 mb-2">Color Specialist</p>
-            <p className="text-sm text-slate-700">
+          <AnimatedContainer className="rounded-2xl border border-neutral-200/60 bg-white p-6 shadow-sm">
+            <h4 className="font-semibold text-charcoal text-sm">Anh Tâm</h4>
+            <p className="text-[10px] uppercase tracking-wider text-taupe font-medium mt-1 mb-2">Color Specialist</p>
+            <p className="text-xs text-slate-400 leading-relaxed font-light">
               Chuyên gia nhuộm màu thời trang, balayage và các kỹ thuật nhuộm
               tạo hiệu ứng tự nhiên.
             </p>
           </AnimatedContainer>
 
-          <AnimatedContainer className="rounded-2xl border border-rose-100 bg-white/80 p-6 shadow-md">
-            <h4 className="font-semibold text-slate-900">Anh Tuấn</h4>
-            <p className="text-sm text-rose-500 mb-2">Hair Designer</p>
-            <p className="text-sm text-slate-700">
+          <AnimatedContainer className="rounded-2xl border border-neutral-200/60 bg-white p-6 shadow-sm">
+            <h4 className="font-semibold text-charcoal text-sm">Anh Hậu</h4>
+            <p className="text-[10px] uppercase tracking-wider text-taupe font-medium mt-1 mb-2">Hair Designer</p>
+            <p className="text-xs text-slate-400 leading-relaxed font-light">
               Chuyên tạo kiểu tóc uốn, duỗi và phục hồi tóc hư tổn bằng các
               phương pháp chăm sóc hiện đại.
             </p>
@@ -100,12 +100,12 @@ const About = () => {
           align="left"
         />
 
-        <AnimatedContainer className="rounded-3xl border border-rose-100 bg-white/80 p-8 shadow-lg shadow-rose-100 backdrop-blur-lg">
-          <ul className="space-y-3 text-slate-700">
-            <li>• Lắng nghe chất tóc, ngắm nhìn khuôn mặt và cảm nhận lối sống của bạn</li>
-            <li>• Tìm ra "chữ ký" nhan sắc hoàn hảo nhất cho riêng mỗi người</li>
-            <li>• Nâng niu sức khỏe cốt lõi của nang tóc trước khi tạo kiểu</li>
-            <li>• Trải nghiệm tĩnh lặng, chữa lành và thư thái tuyệt đối</li>
+        <AnimatedContainer className="rounded-2xl border border-neutral-200/60 bg-white p-8 shadow-sm">
+          <ul className="space-y-3.5 text-slate-500 text-sm font-light leading-relaxed">
+            <li>Lắng nghe chất tóc, ngắm nhìn khuôn mặt và cảm nhận lối sống của bạn</li>
+            <li>Tìm ra "chữ ký" nhan sắc hoàn hảo nhất cho riêng mỗi người</li>
+            <li>Nâng niu sức khỏe cốt lõi của nang tóc trước khi tạo kiểu</li>
+            <li>Trải nghiệm tĩnh lặng, chữa lành và thư thái tuyệt đối</li>
           </ul>
         </AnimatedContainer>
       </div>
@@ -119,8 +119,8 @@ const About = () => {
           align="left"
         />
 
-        <AnimatedContainer className="rounded-3xl border border-rose-100 bg-white/80 p-8 shadow-lg shadow-rose-100 backdrop-blur-lg">
-          <p className="text-slate-700 leading-relaxed text-lg italic text-center">
+        <AnimatedContainer className="rounded-2xl border border-neutral-200/60 bg-white p-8 shadow-sm">
+          <p className="text-slate-650 leading-relaxed text-base italic text-center font-light">
             "Hãy để chúng tôi đánh thức phiên bản rạng rỡ nhất của chính bạn, một cách nhẹ nhàng và sâu lắng nhất."
           </p>
         </AnimatedContainer>

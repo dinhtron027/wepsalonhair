@@ -56,25 +56,26 @@ const AdminLayout = () => {
         )}
 
         <aside
-          className={`fixed inset-y-0 left-0 z-40 w-72 border-r border-slate-200 bg-gradient-to-b from-slate-950 via-slate-900 to-slate-800 px-6 py-6 text-white transition-transform lg:static lg:translate-x-0 ${
+          className={`fixed inset-y-0 left-0 z-40 w-64 border-r border-slate-200 bg-white px-5 py-6 text-slate-800 transition-transform lg:static lg:translate-x-0 ${
             mobileOpen ? "translate-x-0" : "-translate-x-full"
           }`}
         >
           <div className="flex items-center justify-between">
             <div>
-              <p className="text-xs uppercase tracking-[0.3em] text-cyan-300">Salon Admin</p>
-              <h1 className="mt-1 text-2xl font-semibold">Bảng điều khiển</h1>
+              <p className="text-[10px] uppercase tracking-[0.2em] text-slate-400 font-semibold">Salon Dương Chi</p>
+              <h1 className="mt-0.5 text-lg font-bold text-slate-950">Quản Trị Viên</h1>
             </div>
             <button
               onClick={() => setMobileOpen(false)}
-              className="rounded-lg p-2 text-slate-300 hover:bg-white/10 lg:hidden"
+              className="rounded-lg p-2.5 text-slate-400 hover:bg-slate-100 hover:text-slate-800 lg:hidden flex items-center justify-center"
+              style={{ minHeight: "44px", minWidth: "44px" }}
               aria-label="Đóng menu"
             >
-              <X size={18} />
+              <X size={20} strokeWidth={1.5} />
             </button>
           </div>
 
-          <nav className="mt-8 space-y-2">
+          <nav className="mt-8 space-y-1">
             {navItems.map((item) => {
               const Icon = item.icon;
               return (
@@ -84,14 +85,15 @@ const AdminLayout = () => {
                   end={item.to === "/admin"}
                   onClick={() => setMobileOpen(false)}
                   className={({ isActive }) =>
-                    `flex items-center gap-3 rounded-xl px-4 py-3 text-sm font-medium transition ${
+                    `flex items-center gap-3 rounded-lg px-3 py-3 lg:py-2 text-sm lg:text-xs font-medium transition-all duration-150 ${
                       isActive
-                        ? "bg-cyan-400/20 text-cyan-100"
-                        : "text-slate-200 hover:bg-white/10 hover:text-white"
+                        ? "bg-slate-900 text-white shadow-sm"
+                        : "text-slate-600 hover:bg-slate-50 hover:text-slate-900"
                     }`
                   }
+                  style={{ minHeight: "44px" }}
                 >
-                  <Icon size={18} />
+                  <Icon size={16} strokeWidth={1.5} />
                   {item.label}
                 </NavLink>
               );
@@ -100,40 +102,42 @@ const AdminLayout = () => {
         </aside>
 
         <div className="flex min-h-screen flex-1 flex-col">
-          <header className="sticky top-0 z-30 border-b border-slate-200 bg-white/90 backdrop-blur">
-            <div className="flex items-center justify-between px-4 py-4 lg:px-8">
+          <header className="sticky top-0 z-30 border-b border-slate-200 bg-white/80 backdrop-blur-md">
+            <div className="flex items-center justify-between px-4 py-3 md:px-6 lg:px-8 lg:py-4.5">
               <div className="flex items-center gap-3">
                 <button
                   onClick={() => setMobileOpen((prev) => !prev)}
-                  className="rounded-lg border border-slate-200 p-2 text-slate-700 lg:hidden"
+                  className="rounded-lg border border-slate-200 p-2.5 text-slate-600 lg:hidden flex items-center justify-center"
+                  style={{ minHeight: "44px", minWidth: "44px" }}
                   aria-label="Mở menu"
                 >
-                  <Menu size={18} />
+                  <Menu size={18} strokeWidth={1.5} />
                 </button>
                 <div>
-                  <p className="text-xs text-slate-500">Khu vực quản trị</p>
-                  <h2 className="text-lg font-semibold">{pageTitle}</h2>
+                  <p className="text-[10px] text-slate-400 uppercase tracking-wider font-medium">Bảng điều khiển</p>
+                  <h2 className="text-sm font-semibold text-slate-950">{pageTitle}</h2>
                 </div>
               </div>
 
-              <div className="flex items-center gap-3">
+              <div className="flex items-center gap-4">
                 <div className="hidden text-right sm:block">
-                  <p className="text-sm font-semibold">{user?.name || "Quản trị viên"}</p>
-                  <p className="text-xs text-slate-500">Vai trò: {user?.role || "admin"}</p>
+                  <p className="text-xs font-semibold text-slate-900">{user?.name || "Quản trị viên"}</p>
+                  <p className="text-[10px] text-slate-400 capitalize">Quyền: {user?.role || "admin"}</p>
                 </div>
                 <button
                   onClick={handleLogout}
-                  className="inline-flex items-center gap-2 rounded-xl border border-slate-200 px-3 py-2 text-sm font-medium text-slate-700 hover:bg-slate-50 md:px-4 md:py-2"
+                  className="inline-flex items-center justify-center gap-2 rounded-lg border border-slate-200 bg-white px-4 py-2.5 md:px-3.5 md:py-1.5 text-xs font-medium text-slate-600 hover:bg-slate-50 hover:text-slate-900 transition-all duration-150"
+                  style={{ minHeight: "40px" }}
                   aria-label="Đăng xuất"
                 >
-                  <LogOut size={16} />
+                  <LogOut size={14} strokeWidth={1.5} />
                   <span className="hidden md:inline">Đăng xuất</span>
                 </button>
               </div>
             </div>
           </header>
 
-          <main className="flex-1 px-4 py-6 lg:px-8">
+          <main className="flex-1 bg-slate-50/50 px-4 py-4 md:px-6 lg:px-8 lg:py-6">
             <Outlet />
           </main>
         </div>

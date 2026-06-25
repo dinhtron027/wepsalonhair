@@ -5,6 +5,7 @@ import LoadingSpinner from "../components/LoadingSpinner";
 import { motion } from "framer-motion";
 import { Clock, HelpCircle, Sparkles, ArrowLeft, MessageSquare } from "lucide-react";
 import Button from "../components/Button";
+import ServiceImage from "../components/ServiceImage";
 
 type CategoryMeta = {
   name: string;
@@ -115,7 +116,7 @@ const ServiceCategoryPage = () => {
 
   if (isLoading) {
     return (
-      <div className="mx-auto max-w-4xl px-4 py-20">
+      <div className="mx-auto max-w-4xl px-4 py-24 flex justify-center items-center">
         <LoadingSpinner size="lg" label="Đang chuẩn bị bảng dịch vụ..." />
       </div>
     );
@@ -124,12 +125,12 @@ const ServiceCategoryPage = () => {
   // 404 State
   if (!meta || error) {
     return (
-      <div className="mx-auto max-w-xl px-4 py-20 text-center space-y-6">
-        <div className="rounded-full bg-rose-50 h-20 w-20 flex items-center justify-center mx-auto border border-rose-100 text-rose-500">
-          <HelpCircle size={40} />
+      <div className="mx-auto max-w-xl px-4 py-24 text-center space-y-6">
+        <div className="rounded-full bg-neutral-50 h-20 w-20 flex items-center justify-center mx-auto border border-neutral-200 text-slate-400">
+          <HelpCircle size={40} strokeWidth={1.5} />
         </div>
-        <h1 className="text-3xl font-bold text-slate-900">Danh Mục Không Tồn Tại</h1>
-        <p className="text-slate-600">
+        <h1 className="text-3xl font-display font-normal text-charcoal">Danh Mục Không Tồn Tại</h1>
+        <p className="text-slate-500 text-sm leading-relaxed">
           Rất tiếc, danh mục dịch vụ bạn yêu cầu hiện không có trong hệ thống của chúng tôi. Vui lòng quay lại hoặc chọn danh mục khác.
         </p>
         <div className="flex justify-center">
@@ -151,29 +152,29 @@ const ServiceCategoryPage = () => {
   );
 
   return (
-    <div className="mx-auto max-w-6xl px-4 py-10 space-y-12">
+    <div className="mx-auto max-w-6xl px-4 pb-24 pt-8 space-y-12">
       {/* Back button and Header */}
-      <div className="space-y-4">
-        <Link to="/services" className="inline-flex items-center gap-2 text-sm text-rose-500 hover:text-rose-600 transition">
-          <ArrowLeft size={16} /> Quay lại tất cả dịch vụ
+      <div className="space-y-6">
+        <Link to="/services" className="inline-flex items-center gap-2 text-xs uppercase tracking-wider text-slate-500 hover:text-charcoal transition-colors duration-200">
+          <ArrowLeft size={14} strokeWidth={1.5} /> Quay lại tất cả dịch vụ
         </Link>
 
-        <section className="grid gap-6 md:grid-cols-[1.2fr_0.8fr] items-start border-b border-rose-100 pb-10">
-          <div className="space-y-3">
-            <p className="text-xs uppercase tracking-[0.25em] text-rose-500 font-bold">{meta.tagline}</p>
-            <h1 className="text-3xl font-bold text-slate-900 md:text-4xl">{meta.title}</h1>
-            <p className="text-slate-600 text-sm md:text-base leading-relaxed">
+        <section className="grid gap-10 md:grid-cols-[1.2fr_0.8fr] items-start border-b border-neutral-200 pb-12">
+          <div className="space-y-4">
+            <p className="text-[10px] uppercase tracking-[0.25em] text-taupe font-medium">{meta.tagline}</p>
+            <h1 className="text-3xl font-display text-charcoal font-normal md:text-5xl tracking-tight leading-tight">{meta.title}</h1>
+            <p className="text-slate-500 text-sm md:text-base leading-relaxed font-light">
               {meta.description}
             </p>
           </div>
-          <div className="rounded-2xl border border-rose-100 bg-rose-50/50 p-5 space-y-3">
-            <h4 className="text-xs font-bold text-rose-600 uppercase tracking-wider flex items-center gap-1.5">
-              <Sparkles size={14} /> Đặc Quyền Tại Dương Chi:
+          <div className="rounded-2xl border border-neutral-200/60 bg-neutral-50/40 p-6 space-y-4">
+            <h4 className="text-[10px] font-semibold text-charcoal uppercase tracking-widest flex items-center gap-2">
+              <Sparkles size={14} className="text-taupe" strokeWidth={1.5} /> Đặc Quyền Tại Dương Chi:
             </h4>
-            <ul className="space-y-2 text-xs md:text-sm text-slate-700">
+            <ul className="space-y-2.5 text-xs text-slate-600 font-light">
               {meta.benefits.map((b, bIdx) => (
-                <li key={bIdx} className="flex items-start gap-2">
-                  <span className="text-rose-500 font-bold">✓</span>
+                <li key={bIdx} className="flex items-start gap-2.5">
+                  <span className="text-taupe font-medium">✓</span>
                   <span>{b}</span>
                 </li>
               ))}
@@ -185,11 +186,11 @@ const ServiceCategoryPage = () => {
       {/* Services Cards Grid */}
       <section className="space-y-8">
         {filteredServices.length === 0 ? (
-          <div className="rounded-3xl border border-dashed border-rose-200 bg-rose-50/40 p-10 text-center text-slate-600">
+          <div className="rounded-2xl border border-dashed border-neutral-200 bg-neutral-50/30 p-12 text-center text-slate-400 text-sm">
             Hiện tại danh mục này đang được cập nhật thêm dịch vụ mới. Quý khách vui lòng liên hệ tư vấn trực tiếp để nhận thông tin chi tiết.
           </div>
         ) : (
-          <div className="grid gap-6 grid-cols-1 md:grid-cols-2">
+          <div className="grid gap-8 grid-cols-1 md:grid-cols-2">
             {filteredServices.map((service, idx) => {
               const displayDuration = service.duration || service.durationMinutes || 60;
               return (
@@ -199,30 +200,37 @@ const ServiceCategoryPage = () => {
                   whileInView={{ opacity: 1, y: 0 }}
                   viewport={{ once: true, margin: "-50px" }}
                   transition={{ duration: 0.4, delay: idx * 0.05 }}
-                  className="flex flex-col justify-between overflow-hidden rounded-3xl border border-rose-100 bg-white shadow-md hover:shadow-lg transition duration-300"
+                  className="flex flex-col justify-between overflow-hidden rounded-2xl border border-neutral-200/60 bg-white shadow-sm hover:shadow-md transition-all duration-300"
                 >
-                  <div className="p-6 space-y-4">
+                  <div className="overflow-hidden bg-slate-50 border-b border-neutral-100 aspect-[16/10] w-full">
+                    <ServiceImage
+                      src={service.imageUrl || service.image}
+                      alt={service.name}
+                      aspectRatio="h-full w-full"
+                    />
+                  </div>
+                  <div className="p-6 space-y-4 flex-1">
                     {/* Header Info */}
                     <div className="space-y-1">
                       <div className="flex justify-between items-start gap-4">
-                        <h3 className="text-lg font-bold text-slate-900 md:text-xl">{service.name}</h3>
-                        <span className="text-rose-600 font-bold text-base md:text-lg whitespace-nowrap">
+                        <h3 className="text-lg font-display text-charcoal font-normal">{service.name}</h3>
+                        <span className="text-charcoal font-semibold text-base md:text-lg whitespace-nowrap">
                           {formatCurrency(service.price)}
                         </span>
                       </div>
-                      <p className="text-xs text-rose-500 font-semibold tracking-wider uppercase">Giá tham khảo</p>
+                      <p className="text-[9px] text-slate-400 font-medium tracking-widest uppercase">Giá tham khảo</p>
                     </div>
 
-                    <p className="text-slate-600 text-sm md:text-base leading-relaxed">
+                    <p className="text-slate-500 text-xs md:text-sm leading-relaxed font-light">
                       {service.description}
                     </p>
 
                     {/* Suitable & Benefits list */}
                     {(service.suitableFor?.length || service.benefits?.length) ? (
-                      <div className="grid gap-4 grid-cols-1 sm:grid-cols-2 pt-2 border-t border-slate-50 text-xs text-slate-600">
+                      <div className="grid gap-6 grid-cols-1 sm:grid-cols-2 pt-4 border-t border-neutral-100 text-[11px] text-slate-500 font-light leading-relaxed">
                         {service.suitableFor?.length ? (
                           <div className="space-y-1.5">
-                            <h5 className="font-bold text-slate-800 uppercase tracking-wider">Phù hợp với:</h5>
+                            <h5 className="font-semibold text-charcoal uppercase tracking-wider text-[10px]">Phù hợp với:</h5>
                             <ul className="space-y-1">
                               {service.suitableFor.map((sItem, sIdx) => (
                                 <li key={sIdx} className="list-disc list-inside">{sItem}</li>
@@ -232,7 +240,7 @@ const ServiceCategoryPage = () => {
                         ) : null}
                         {service.benefits?.length ? (
                           <div className="space-y-1.5">
-                            <h5 className="font-bold text-slate-800 uppercase tracking-wider">Ưu thế nổi trội:</h5>
+                            <h5 className="font-semibold text-charcoal uppercase tracking-wider text-[10px]">Ưu thế nổi trội:</h5>
                             <ul className="space-y-1">
                               {service.benefits.map((bItem, bIdx) => (
                                 <li key={bIdx} className="list-disc list-inside">{bItem}</li>
@@ -245,25 +253,25 @@ const ServiceCategoryPage = () => {
                   </div>
 
                   {/* Footer Stats & Actions */}
-                  <div className="border-t border-rose-50 bg-rose-50/20 px-6 py-4 flex items-center justify-between flex-wrap gap-4">
-                    <div className="flex items-center gap-1.5 text-xs text-slate-600">
-                      <Clock size={16} className="text-rose-400" />
+                  <div className="border-t border-neutral-100 bg-neutral-50/20 px-6 py-4 flex items-center justify-between flex-wrap gap-4">
+                    <div className="flex items-center gap-1.5 text-xs text-slate-500 font-light">
+                      <Clock size={15} className="text-slate-400" strokeWidth={1.5} />
                       <span>Thời gian dự kiến: <strong>{displayDuration} phút</strong></span>
                     </div>
 
-                    <div className="flex gap-2 w-full sm:w-auto">
+                    <div className="flex gap-3.5 w-full sm:w-auto">
                       <Button
                         to="https://zalo.me/your_number" // Hoặc sđt thực tế để chat tư vấn
                         variant="ghost"
-                        className="px-4 py-2 text-xs md:text-sm flex-1 sm:flex-initial justify-center gap-1.5"
+                        className="px-4 py-2 text-xs flex-1 sm:flex-initial justify-center gap-1.5 rounded-full border border-neutral-200 text-slate-700 hover:bg-neutral-50"
                       >
-                        <MessageSquare size={16} />
+                        <MessageSquare size={14} strokeWidth={1.5} />
                         Tư Vấn
                       </Button>
                       <Button
                         to={`/booking?service=${service.slug}`}
                         variant="primary"
-                        className="px-4 py-2 text-xs md:text-sm flex-1 sm:flex-initial justify-center"
+                        className="px-5 py-2 text-xs flex-1 sm:flex-initial justify-center rounded-full"
                       >
                         Đặt Lịch Ngay
                       </Button>
@@ -277,7 +285,7 @@ const ServiceCategoryPage = () => {
       </section>
 
       {/* General Note */}
-      <section className="rounded-2xl border border-rose-100 bg-rose-50/30 p-5 text-center text-xs text-slate-600 leading-relaxed">
+      <section className="rounded-xl border border-neutral-200/50 bg-neutral-50/20 p-5 text-center text-[11px] text-slate-400 font-light leading-relaxed">
         * Lưu ý: Mức giá nêu trên là **giá tham khảo cơ bản**. Chi phí dịch vụ thực tế có thể thay đổi nhẹ tùy thuộc vào độ dài, độ dày thực tế và tình trạng hư tổn của tóc quý khách. Quý khách sẽ được kiểm tra chất tóc và nhận báo giá chính xác trực tiếp tại quầy từ Stylist trước khi thực hiện dịch vụ.
       </section>
     </div>

@@ -11,13 +11,13 @@ type ButtonProps = {
 };
 
 const baseClasses =
-  "inline-flex items-center justify-center rounded-full px-5 py-2 text-sm font-semibold transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-offset-2";
+  "inline-flex items-center justify-center rounded-full px-6 py-2.5 text-sm font-medium transition-all duration-300 ease-out active:scale-[0.98] focus:outline-none focus:ring-2 focus:ring-slate-900 focus:ring-offset-2";
 
 const variants = {
   primary:
-    "bg-rose-500 text-white hover:bg-rose-600 shadow-lg shadow-rose-200 hover:shadow-[0_10px_35px_rgba(244,63,94,0.35)] focus:ring-rose-300",
+    "bg-slate-900 text-white hover:bg-black shadow-[0_4px_12px_rgba(0,0,0,0.05)]",
   ghost:
-    "bg-white/70 text-rose-500 border border-rose-100 hover:bg-rose-50 focus:ring-rose-200",
+    "bg-transparent text-slate-900 border border-slate-200 hover:bg-slate-50",
 };
 
 const Button = ({

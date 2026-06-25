@@ -5,6 +5,7 @@ import toast from "react-hot-toast";
 import Button from "../components/Button";
 import LoadingSpinner from "../components/LoadingSpinner";
 import api, { extractApiData, getApiErrorMessage } from "../services/api";
+import ServiceImage from "../components/ServiceImage";
 
 type Service = {
   _id: string;
@@ -106,8 +107,8 @@ const ServiceDetailPage = () => {
               </Button>
             </div>
           </div>
-          <div className="overflow-hidden rounded-3xl border border-rose-100 bg-white/80 shadow-xl shadow-rose-100">
-            <img src={service.imageUrl || service.image || "https://placehold.co/900x700?text=Dich+vu"} alt={service.name} className="h-full w-full object-cover" />
+          <div className="overflow-hidden rounded-3xl border border-rose-100 bg-white/80 shadow-xl shadow-rose-100 relative min-h-[300px]">
+            <ServiceImage src={service.imageUrl || service.image} alt={service.name} aspectRatio="h-full w-full" />
           </div>
         </div>
       </section>

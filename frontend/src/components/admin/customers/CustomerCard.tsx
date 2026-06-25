@@ -83,24 +83,24 @@ const CustomerCard = ({ customer, onOpen, onRebook }: CustomerCardProps) => {
           </div>
         </div>
 
-        <div className="grid flex-1 gap-3 sm:grid-cols-3 xl:max-w-2xl">
-          <div className="rounded-xl bg-slate-50 p-3">
-            <p className="text-xs text-slate-500">Số lịch hẹn</p>
-            <p className="mt-1 text-lg font-bold text-slate-900">{customer.totalAppointments}</p>
+        <div className="grid grid-cols-3 gap-2 flex-1 xl:max-w-2xl">
+          <div className="rounded-xl bg-slate-50 p-2 sm:p-3 text-center sm:text-left">
+            <p className="text-[10px] sm:text-xs text-slate-500">Lịch hẹn</p>
+            <p className="mt-1 text-sm sm:text-lg font-bold text-slate-900">{customer.totalAppointments}</p>
           </div>
-          <div className="rounded-xl bg-slate-50 p-3">
-            <p className="text-xs text-slate-500">Tổng chi tiêu</p>
-            <p className="mt-1 text-lg font-bold text-slate-900">
+          <div className="rounded-xl bg-slate-50 p-2 sm:p-3 text-center sm:text-left">
+            <p className="text-[10px] sm:text-xs text-slate-500">Chi tiêu</p>
+            <p className="mt-1 text-xs sm:text-lg font-bold text-slate-900 truncate">
               {formatCurrency(customer.totalSpent)}
             </p>
           </div>
-          <div className="rounded-xl bg-slate-50 p-3">
-            <p className="text-xs text-slate-500">Lần gần nhất</p>
-            <p className="mt-1 text-sm font-bold text-slate-900">
+          <div className="rounded-xl bg-slate-50 p-2 sm:p-3 text-center sm:text-left">
+            <p className="text-[10px] sm:text-xs text-slate-500">Gần nhất</p>
+            <p className="mt-1 text-xs sm:text-sm font-bold text-slate-900 truncate">
               {formatDate(customer.lastVisitAt)}
             </p>
             {customer.inactiveForDays !== null ? (
-              <p className="mt-0.5 text-xs text-slate-500">
+              <p className="mt-0.5 text-[9px] sm:text-xs text-slate-500 hidden sm:block">
                 {customer.inactiveForDays} ngày trước
               </p>
             ) : null}
@@ -156,7 +156,8 @@ const CustomerCard = ({ customer, onOpen, onRebook }: CustomerCardProps) => {
         </div>
       ) : null}
 
-      <div className="mt-5 flex flex-wrap gap-2 border-t border-slate-100 pt-4">
+      {/* Desktop Action Buttons */}
+      <div className="mt-5 hidden md:flex flex-wrap gap-2 border-t border-slate-100 pt-4">
         <button
           type="button"
           onClick={() => onOpen("overview")}
@@ -198,6 +199,60 @@ const CustomerCard = ({ customer, onOpen, onRebook }: CustomerCardProps) => {
           <FileClock size={15} />
           Xem lịch sử
         </button>
+      </div>
+
+      {/* Mobile Action Buttons (Optimized touch targets & layout) */}
+      <div className="mt-5 md:hidden border-t border-slate-100 pt-3.5 space-y-2">
+        <div className="grid grid-cols-2 gap-2">
+          <button
+            type="button"
+            onClick={() => onOpen("overview")}
+            className="inline-flex items-center justify-center gap-2 rounded-xl bg-slate-900 px-3.5 py-3 text-xs font-bold text-white hover:bg-slate-800"
+            style={{ minHeight: "44px" }}
+          >
+            <Eye size={15} />
+            Chi tiết
+          </button>
+          <button
+            type="button"
+            onClick={onRebook}
+            disabled={!customer.phone}
+            className="inline-flex items-center justify-center gap-2 rounded-xl bg-cyan-600 px-3.5 py-3 text-xs font-bold text-white hover:bg-cyan-700 disabled:opacity-55"
+            style={{ minHeight: "44px" }}
+          >
+            <CalendarPlus size={15} />
+            Đặt lịch lại
+          </button>
+        </div>
+        <div className="grid grid-cols-3 gap-1.5">
+          <button
+            type="button"
+            onClick={() => onOpen("notes")}
+            className="inline-flex items-center justify-center gap-1.5 rounded-lg border border-slate-250 bg-white px-2 py-2 text-[10px] font-semibold text-slate-700 hover:bg-slate-50"
+            style={{ minHeight: "38px" }}
+          >
+            <MessageSquarePlus size={13} />
+            Ghi chú
+          </button>
+          <button
+            type="button"
+            onClick={() => onOpen("formulas")}
+            className="inline-flex items-center justify-center gap-1.5 rounded-lg border border-slate-250 bg-white px-2 py-2 text-[10px] font-semibold text-slate-700 hover:bg-slate-50"
+            style={{ minHeight: "38px" }}
+          >
+            <FlaskConical size={13} />
+            Công thức
+          </button>
+          <button
+            type="button"
+            onClick={() => onOpen("history")}
+            className="inline-flex items-center justify-center gap-1.5 rounded-lg border border-slate-250 bg-white px-2 py-2 text-[10px] font-semibold text-slate-700 hover:bg-slate-50"
+            style={{ minHeight: "38px" }}
+          >
+            <FileClock size={13} />
+            Lịch sử
+          </button>
+        </div>
       </div>
     </article>
   );

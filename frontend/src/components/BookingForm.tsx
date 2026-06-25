@@ -24,19 +24,19 @@ const BookingForm = () => {
   };
 
   const inputClass =
-    "w-full rounded-2xl border border-rose-100 bg-white/70 px-4 py-3 text-sm text-slate-800 placeholder:text-slate-400 focus:border-rose-300 focus:outline-none focus:ring-2 focus:ring-rose-100";
+    "w-full mt-1.5 rounded-xl border border-neutral-200 bg-neutral-50/20 px-4 py-3 text-sm text-charcoal placeholder:text-slate-400 outline-none focus:border-taupe focus:ring-1 focus:ring-taupe transition-all duration-200 font-light";
 
   return (
     <motion.form
       onSubmit={handleSubmit}
-      className="space-y-4 rounded-3xl border border-rose-100 bg-white/70 p-6 shadow-lg shadow-rose-100 backdrop-blur-xl"
+      className="space-y-5 rounded-2xl border border-neutral-200/60 bg-white p-8 shadow-sm font-sans"
       initial={{ opacity: 0, y: 20 }}
       animate={{ opacity: 1, y: 0 }}
       transition={{ duration: 0.4 }}
     >
       <div className="grid gap-4 md:grid-cols-2">
         <div>
-          <label className="text-xs font-semibold text-slate-700">Họ và tên</label>
+          <label className="text-[10px] font-semibold text-charcoal uppercase tracking-wider">Họ và tên</label>
           <input
             required
             value={form.name}
@@ -46,7 +46,7 @@ const BookingForm = () => {
           />
         </div>
         <div>
-          <label className="text-xs font-semibold text-slate-700">Số điện thoại</label>
+          <label className="text-[10px] font-semibold text-charcoal uppercase tracking-wider">Số điện thoại</label>
           <input
             required
             value={form.phone}
@@ -58,7 +58,7 @@ const BookingForm = () => {
       </div>
       <div className="grid gap-4 md:grid-cols-2">
         <div>
-          <label className="text-xs font-semibold text-slate-700">Stylist</label>
+          <label className="text-[10px] font-semibold text-charcoal uppercase tracking-wider">Stylist</label>
           <select
             value={form.stylist}
             onChange={(e) => update("stylist", e.target.value)}
@@ -70,7 +70,7 @@ const BookingForm = () => {
           </select>
         </div>
         <div>
-          <label className="text-xs font-semibold text-slate-700">Dịch vụ</label>
+          <label className="text-[10px] font-semibold text-charcoal uppercase tracking-wider">Dịch vụ</label>
           <select
             value={form.service}
             onChange={(e) => update("service", e.target.value)}
@@ -84,7 +84,7 @@ const BookingForm = () => {
       </div>
       <div className="grid gap-4 md:grid-cols-2">
         <div>
-          <label className="text-xs font-semibold text-slate-700">Ngày</label>
+          <label className="text-[10px] font-semibold text-charcoal uppercase tracking-wider">Ngày</label>
           <input
             type="date"
             value={form.date}
@@ -94,7 +94,7 @@ const BookingForm = () => {
           />
         </div>
         <div>
-          <label className="text-xs font-semibold text-slate-700">Giờ</label>
+          <label className="text-[10px] font-semibold text-charcoal uppercase tracking-wider">Giờ</label>
           <input
             type="time"
             value={form.time}
@@ -105,7 +105,7 @@ const BookingForm = () => {
         </div>
       </div>
       <div>
-        <label className="text-xs font-semibold text-slate-700">Ghi chú</label>
+        <label className="text-[10px] font-semibold text-charcoal uppercase tracking-wider">Ghi chú</label>
         <textarea
           value={form.notes}
           onChange={(e) => update("notes", e.target.value)}
@@ -113,7 +113,7 @@ const BookingForm = () => {
           placeholder="Kiểu tóc mong muốn, tình trạng tóc, lịch trình..."
         />
       </div>
-      <Button variant="primary" fullWidth>
+      <Button variant="primary" fullWidth className="rounded-full py-3.5 uppercase tracking-wider text-xs">
         Đặt Lịch Ngay
       </Button>
     </motion.form>

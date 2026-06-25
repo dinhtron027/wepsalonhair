@@ -13,7 +13,7 @@ const MainLayout = ({ children }: MainLayoutProps) => {
   }, []);
 
   return (
-    <div className="min-h-screen bg-gradient-to-b from-rose-50 via-white to-pink-50 text-slate-900">
+    <div className="min-h-screen bg-cream text-charcoal font-sans selection:bg-slate-200 selection:text-charcoal">
       <Navbar />
       <main className="pt-20 lg:pt-24 overflow-hidden">{children}</main>
       <Footer />

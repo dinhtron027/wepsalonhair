@@ -9,6 +9,8 @@ const Customer = require('../models/Customer');
 const CustomerNote = require('../models/CustomerNote');
 const HairFormula = require('../models/HairFormula');
 const Order = require('../models/Order');
+const Cart = require('../models/Cart');
+const InventoryTransaction = require('../models/InventoryTransaction');
 const customerService = require('../services/customerService');
 
 const serviceSeeds = [
@@ -490,8 +492,8 @@ const crmCustomerSeeds = [
   {
     key: 'lan-anh',
     fullName: 'Nguyễn Lan Anh',
-    phone: '0911000001',
-    email: 'crm.lananh@example.com',
+    phone: env.DEFAULT_CUSTOMER_PHONE,
+    email: env.DEFAULT_CUSTOMER_EMAIL,
     bookings: [
       { serviceSlug: 'cat-layer-nu-premium', daysAgo: 220, stylist: 'Anh Minh' },
       {
@@ -549,222 +551,6 @@ const crmCustomerSeeds = [
       }
     ],
     orderProductIndexes: [0, 1]
-  },
-  {
-    key: 'minh-thu',
-    fullName: 'Trần Minh Thu',
-    phone: '0911000002',
-    email: 'crm.minhthu@example.com',
-    bookings: [
-      { serviceSlug: 'goi-dau-duong-sinh-dong-y', daysAgo: 190, stylist: 'Chị Hương' },
-      { serviceSlug: 'cat-bob-lob-thoi-thuong', daysAgo: 128, stylist: 'Anh Minh' }
-    ],
-    notes: [
-      {
-        type: 'follow_up',
-        note: 'Đã lâu chưa quay lại, nên gọi hỏi thăm và mời trải nghiệm gội dưỡng sinh.'
-      }
-    ]
-  },
-  {
-    key: 'ngoc-han',
-    fullName: 'Lê Ngọc Hân',
-    phone: '0911000003',
-    email: 'crm.ngochan@example.com',
-    bookings: [
-      { serviceSlug: 'tia-mai-bay-han-quoc', daysAgo: 8, stylist: 'Anh Minh' }
-    ],
-    notes: [
-      {
-        type: 'consultation',
-        note: 'Khách mới, thích kiểu nhẹ nhàng và cần hướng dẫn tự sấy mái tại nhà.'
-      }
-    ]
-  },
-  {
-    key: 'thanh-mai',
-    fullName: 'Phạm Thanh Mai',
-    phone: '0911000004',
-    email: 'crm.thanhmai@example.com',
-    bookings: [
-      { serviceSlug: 'duoi-cup-volume', daysAgo: 80, stylist: 'Anh Tuấn' },
-      {
-        serviceSlug: 'tai-cau-truc-keratin-thuy-phan',
-        daysAgo: 24,
-        stylist: 'Anh Tuấn'
-      }
-    ],
-    notes: [
-      {
-        type: 'service',
-        note: 'Tóc khô xơ và yếu phần ngọn; cần tiếp tục phục hồi trước khi làm hóa chất mới.'
-      }
-    ]
-  },
-  {
-    key: 'bao-tram',
-    fullName: 'Võ Bảo Trâm',
-    phone: '0911000005',
-    email: 'crm.baotram@example.com',
-    bookings: [
-      { serviceSlug: 'uon-setting-ky-thuat-so', daysAgo: 95, stylist: 'Anh Tuấn' },
-      { serviceSlug: 'uon-phuc-hoi-cao-cap', daysAgo: 32, stylist: 'Anh Tuấn' }
-    ],
-    notes: [
-      {
-        type: 'internal',
-        note: 'Khách ưu tiên chất lượng và thường chọn gói phục hồi cao cấp.'
-      }
-    ]
-  },
-  {
-    key: 'ha-vy',
-    fullName: 'Đỗ Hà Vy',
-    phone: '0911000006',
-    email: 'crm.havy@example.com',
-    bookings: [
-      {
-        serviceSlug: 'nhuom-mau-thoi-trang',
-        daysAgo: 200,
-        stylist: 'Chị Lan',
-        hairColorUsed: 'Đỏ cherry'
-      },
-      {
-        serviceSlug: 'nhuom-ombre-balayage-phap',
-        daysAgo: 120,
-        stylist: 'Chị Lan',
-        hairColorUsed: 'Balayage caramel'
-      },
-      {
-        serviceSlug: 'combo-uon-thiet-ke-phuc-hoi-keratin',
-        daysAgo: 48,
-        stylist: 'Anh Tuấn'
-      },
-      {
-        serviceSlug: 'nhuom-highlight-babylight',
-        daysAgo: 18,
-        stylist: 'Chị Lan',
-        hairColorUsed: 'Beige khói'
-      }
-    ],
-    notes: [
-      {
-        type: 'consultation',
-        note: 'Khách VIP, thích thay đổi màu theo mùa và chụp ảnh nhiều.'
-      }
-    ],
-    formulas: [
-      {
-        bookingIndex: 1,
-        serviceName: 'Nhuộm Ombre/Balayage Pháp',
-        colorName: 'Balayage caramel',
-        formula: '8.34 40g + 8.13 20g',
-        oxidant: 'Oxy 3%',
-        hairBaseLevel: 'Nền 8',
-        hairConditionBefore: 'Tóc đã tẩy, độ đàn hồi trung bình',
-        hairConditionAfter: 'Chuyển màu mịn, ngọn tóc mềm',
-        aftercareAdvice: 'Dùng mask bond 2 lần/tuần.'
-      },
-      {
-        bookingIndex: 3,
-        serviceName: 'Nhuộm Highlight/Babylight',
-        colorName: 'Beige khói',
-        formula: '9.13 30g + 9.1 20g + violet 0.5g',
-        oxidant: 'Oxy 3%',
-        hairBaseLevel: 'Nền 9',
-        hairConditionBefore: 'Tóc tẩy cũ, hơi rỗng ngọn',
-        hairConditionAfter: 'Màu sạch vàng, tóc bóng',
-        aftercareAdvice: 'Không gội 48 giờ, dùng xịt chống nhiệt.'
-      }
-    ],
-    orderProductIndexes: [1]
-  },
-  {
-    key: 'quynh-nhu',
-    fullName: 'Nguyễn Quỳnh Như',
-    phone: '0911000007',
-    email: 'crm.quynhnhu@example.com',
-    bookings: [
-      { serviceSlug: 'goi-thu-gian-standard', daysAgo: 210, stylist: 'Chị Hương' },
-      { serviceSlug: 'cat-layer-nu-premium', daysAgo: 154, stylist: 'Anh Minh' }
-    ],
-    notes: [
-      {
-        type: 'follow_up',
-        note: 'Khách lâu chưa quay lại, phù hợp chiến dịch chăm sóc khách cũ.'
-      }
-    ]
-  },
-  {
-    key: 'kim-oanh',
-    fullName: 'Bùi Kim Oanh',
-    phone: '0911000008',
-    email: 'crm.kimoanh@example.com',
-    bookings: [
-      { serviceSlug: 'goi-dau-duong-sinh-dong-y', daysAgo: 42, stylist: 'Chị Hương' },
-      {
-        serviceSlug: 'combo-cat-goi-say-kieu',
-        daysAgo: 10,
-        stylist: 'Anh Minh'
-      }
-    ],
-    notes: [
-      {
-        type: 'service',
-        note: 'Khách thích massage cổ vai gáy và thường đặt buổi tối.'
-      }
-    ]
-  },
-  {
-    key: 'my-linh',
-    fullName: 'Hoàng Mỹ Linh',
-    phone: '0911000009',
-    email: 'crm.mylinh@example.com',
-    bookings: [],
-    notes: [
-      {
-        type: 'consultation',
-        note: 'Khách đã đăng ký tài khoản và đang cân nhắc nhuộm nâu công sở.'
-      }
-    ]
-  },
-  {
-    key: 'thu-trang',
-    fullName: 'Đặng Thu Trang',
-    phone: '0911000010',
-    email: 'crm.thutrang@example.com',
-    bookings: [
-      {
-        serviceSlug: 'nhuom-nau-cong-so-thanh-lich',
-        daysAgo: 70,
-        stylist: 'Chị Lan',
-        hairColorUsed: 'Nâu hạt dẻ'
-      },
-      {
-        serviceSlug: 'tri-lieu-chuyen-sau-toc-kho-hu-ton',
-        daysAgo: 21,
-        stylist: 'Anh Tuấn'
-      }
-    ],
-    notes: [
-      {
-        type: 'service',
-        note: 'Phần đuôi tóc từng cháy nhẹ do tự kẹp nhiệt; cần phục hồi định kỳ.'
-      }
-    ],
-    formulas: [
-      {
-        bookingIndex: 0,
-        serviceName: 'Nhuộm Nâu Công Sở Thanh Lịch',
-        colorName: 'Nâu hạt dẻ',
-        formula: '5.35 50g + 6.0 20g',
-        oxidant: 'Oxy 6%',
-        hairBaseLevel: 'Nền 4',
-        hairConditionBefore: 'Ngọn tóc khô và xốp nhẹ',
-        hairConditionAfter: 'Màu phủ đều, tóc mềm hơn',
-        aftercareAdvice: 'Hạn chế kẹp nhiệt và dùng serum ngọn tóc mỗi ngày.'
-      }
-    ]
   }
 ];
 
@@ -971,8 +757,24 @@ const seedCrmCustomers = async ({ adminUser }) => {
 };
 
 const seed = async () => {
+  if (env.NODE_ENV === 'production' && !process.argv.includes('--force')) {
+    console.error('CRITICAL: Cannot run seed script in production environment to prevent data loss!');
+    console.error('If you really want to reset and seed the database, run: npm run seed -- --force');
+    process.exit(1);
+  }
+
   try {
     await connectDB();
+
+    console.log('Cleaning up existing database records...');
+    await Booking.deleteMany({});
+    await Customer.deleteMany({});
+    await CustomerNote.deleteMany({});
+    await HairFormula.deleteMany({});
+    await Order.deleteMany({});
+    await Cart.deleteMany({});
+    await InventoryTransaction.deleteMany({});
+    await User.deleteMany({});
 
     for (const service of serviceSeeds) {
       await Service.findOneAndUpdate({ name: service.name }, service, {
@@ -1006,13 +808,7 @@ const seed = async () => {
       role: 'staff'
     });
 
-    await ensureUser({
-      name: 'Sample Customer',
-      email: env.DEFAULT_CUSTOMER_EMAIL,
-      phone: env.DEFAULT_CUSTOMER_PHONE,
-      password: env.DEFAULT_CUSTOMER_PASSWORD,
-      role: 'customer'
-    });
+
 
     await seedCrmCustomers({ adminUser });
     await customerService.syncLegacyCustomerProfiles();

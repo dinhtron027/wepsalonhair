@@ -5,20 +5,20 @@ import styled, { css, keyframes } from "styled-components";
 // ─────────────────────────────────────────────────────────────────────────────
 
 export const tokens = {
-  brand: "#c2185b",       // Rose-700 — màu thương hiệu chính
-  brandLight: "#f48fb1",  // Rose nhạt
-  brandHover: "#ad1457",  // Hover state
-  text: "#1e293b",        // slate-800
+  brand: "#1a1a1a",       // charcoal
+  brandLight: "#e2e8f0",  // slate-200
+  brandHover: "#000000",  // black
+  text: "#1a1a1a",        // charcoal
   textMuted: "#64748b",   // slate-500
   textLight: "#94a3b8",   // slate-400
-  bg: "rgba(255,255,255,0.92)",
-  bgScrolled: "rgba(255,255,255,0.98)",
-  shadow: "0 4px 24px rgba(194,24,91,0.10)",
-  shadowHover: "0 8px 32px rgba(194,24,91,0.18)",
-  border: "rgba(194,24,91,0.12)",
-  radius: "12px",
-  radiusLg: "20px",
-  transition: "all 0.25s cubic-bezier(0.4, 0, 0.2, 1)",
+  bg: "rgba(250,250,250,0.85)", // cream/light gray with glass
+  bgScrolled: "rgba(250,250,250,0.95)",
+  shadow: "0 4px 24px rgba(0,0,0,0.04)",
+  shadowHover: "0 8px 32px rgba(0,0,0,0.08)",
+  border: "rgba(0,0,0,0.06)",
+  radius: "8px",
+  radiusLg: "16px",
+  transition: "all 0.2s ease-out",
   zNav: 1000,
   zDropdown: 1100,
 } as const;
@@ -96,11 +96,11 @@ export const LogoLink = styled.a`
   font-size: 1.375rem;
   font-weight: 700;
   letter-spacing: -0.02em;
-  color: ${tokens.brand};
+  color: #f43f5e;
   transition: ${tokens.transition};
 
   &:hover {
-    color: ${tokens.brandHover};
+    color: #e11d48;
     transform: scale(1.02);
   }
 `;
@@ -114,8 +114,12 @@ export const DesktopNav = styled.nav`
   align-items: center;
   gap: 0.25rem;
 
-  @media (min-width: 1024px) {
+  @media (min-width: 1280px) {
     display: flex;
+  }
+
+  @media (max-width: 1399px) {
+    gap: 0.1rem;
   }
 `;
 
@@ -139,6 +143,11 @@ export const NavLinkBase = styled.a<{ $active?: boolean }>`
   border: none;
   background: ${({ $active }) =>
     $active ? `rgba(194,24,91,0.08)` : "transparent"};
+
+  @media (max-width: 1399px) {
+    padding: 0.4rem 0.5rem;
+    font-size: 0.8125rem;
+  }
 
   &:hover {
     color: ${tokens.brand};
@@ -253,8 +262,12 @@ export const NavActions = styled.div`
   align-items: center;
   gap: 0.75rem;
 
-  @media (min-width: 1024px) {
+  @media (min-width: 1280px) {
     display: flex;
+  }
+
+  @media (max-width: 1399px) {
+    gap: 0.4rem;
   }
 `;
 
@@ -264,22 +277,27 @@ export const CTAButton = styled.a`
   gap: 0.4rem;
   padding: 0.6rem 1.25rem;
   border-radius: 999px;
-  background: linear-gradient(135deg, ${tokens.brand} 0%, #e91e63 100%);
+  background: ${tokens.brand};
   color: white;
   font-size: 0.8125rem;
-  font-weight: 700;
+  font-weight: 600;
   letter-spacing: 0.04em;
   text-decoration: none;
   text-transform: uppercase;
   cursor: pointer;
-  box-shadow: 0 4px 14px rgba(194, 24, 91, 0.35);
+  box-shadow: 0 4px 14px rgba(0, 0, 0, 0.1);
   transition: ${tokens.transition};
   white-space: nowrap;
   border: none;
 
+  @media (max-width: 1399px) {
+    padding: 0.5rem 0.875rem;
+    font-size: 0.75rem;
+  }
+
   &:hover {
-    background: linear-gradient(135deg, ${tokens.brandHover} 0%, #c2185b 100%);
-    box-shadow: 0 6px 20px rgba(194, 24, 91, 0.45);
+    background: ${tokens.brandHover};
+    box-shadow: 0 6px 20px rgba(0, 0, 0, 0.15);
     transform: translateY(-1px);
   }
 
@@ -336,7 +354,7 @@ export const MobileActions = styled.div`
   align-items: center;
   gap: 0.625rem;
 
-  @media (min-width: 1024px) {
+  @media (min-width: 1280px) {
     display: none;
   }
 `;
@@ -398,7 +416,7 @@ export const MobileOverlay = styled.div<{ $isOpen: boolean }>`
   pointer-events: ${({ $isOpen }) => ($isOpen ? "auto" : "none")};
   transition: opacity 0.25s ease;
 
-  @media (min-width: 1024px) {
+  @media (min-width: 1280px) {
     display: none;
   }
 `;
@@ -427,7 +445,31 @@ export const MobilePanel = styled.nav<{ $isOpen: boolean }>`
     opacity 0.25s ease,
     visibility 0.3s ease;
 
-  @media (min-width: 1024px) {
+  @media (min-width: 1280px) {
+    display: none;
+  }
+`;
+
+export const UserGreeting = styled.div`
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
+  font-size: 0.875rem;
+  font-weight: 500;
+  color: #1a1a1a;
+  max-width: 160px;
+  
+  @media (max-width: 1399px) {
+    gap: 0.2rem;
+  }
+`;
+
+export const UserGreetingText = styled.span`
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+
+  @media (max-width: 1399px) {
     display: none;
   }
 `;
@@ -508,18 +550,19 @@ export const MobileCTA = styled.a`
   width: 100%;
   padding: 0.875rem;
   border-radius: 999px;
-  background: linear-gradient(135deg, ${tokens.brand} 0%, #e91e63 100%);
+  background: ${tokens.brand};
   color: white;
   font-size: 0.9375rem;
-  font-weight: 700;
+  font-weight: 600;
   letter-spacing: 0.04em;
   text-decoration: none;
   text-transform: uppercase;
   margin-top: 0.5rem;
-  box-shadow: 0 4px 14px rgba(194, 24, 91, 0.3);
+  box-shadow: 0 4px 14px rgba(0, 0, 0, 0.1);
   transition: ${tokens.transition};
 
   &:hover {
-    box-shadow: 0 6px 20px rgba(194, 24, 91, 0.45);
+    background: ${tokens.brandHover};
+    box-shadow: 0 6px 20px rgba(0, 0, 0, 0.15);
   }
 `;

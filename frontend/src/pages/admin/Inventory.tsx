@@ -156,7 +156,8 @@ const InventoryPage = () => {
           </span>
         </div>
 
-        <div className="mt-4 overflow-x-auto">
+        {/* Desktop Table View */}
+        <div className="mt-4 hidden md:block overflow-x-auto">
           <table className="min-w-full text-left text-sm">
             <thead className="border-b border-slate-200 text-slate-500">
               <tr>
@@ -191,11 +192,47 @@ const InventoryPage = () => {
             </tbody>
           </table>
         </div>
+
+        {/* Mobile Card View */}
+        <div className="mt-4 block md:hidden space-y-3">
+          {(data?.products || []).map((product) => {
+            const isLowStock = product.stock <= (product.lowStockThreshold || 0);
+            return (
+              <div key={product._id} className="p-4 rounded-xl border border-slate-200 bg-slate-50/40 space-y-2 text-xs">
+                <div className="flex justify-between items-start gap-2">
+                  <h4 className="font-semibold text-slate-850 text-sm">{product.name}</h4>
+                  <span className="rounded bg-slate-100 px-1.5 py-0.5 text-[10px] font-medium text-slate-600">
+                    {product.category || "Không phân loại"}
+                  </span>
+                </div>
+                <div className="flex justify-between items-center pt-2 border-t border-slate-100">
+                  <div>
+                    <span className="text-slate-400 block text-[10px]">Tồn hiện tại</span>
+                    <span
+                      className={`inline-block rounded-full px-2 py-0.5 mt-0.5 text-xs font-bold ${
+                        isLowStock
+                          ? "bg-rose-100 text-rose-700"
+                          : "bg-emerald-100 text-emerald-700"
+                      }`}
+                    >
+                      {product.stock}
+                    </span>
+                  </div>
+                  <div className="text-right">
+                    <span className="text-slate-400 block text-[10px]">Ngưỡng cảnh báo</span>
+                    <span className="text-slate-800 font-semibold mt-0.5 block">{product.lowStockThreshold}</span>
+                  </div>
+                </div>
+              </div>
+            );
+          })}
+        </div>
       </section>
 
       <section className="rounded-2xl border border-slate-200 bg-white p-6 shadow-sm">
         <h3 className="text-lg font-semibold">Lịch sử nhập/xuất kho</h3>
-        <div className="mt-4 overflow-x-auto">
+        {/* Desktop Table View */}
+        <div className="mt-4 hidden md:block overflow-x-auto">
           <table className="min-w-full text-left text-sm">
             <thead className="border-b border-slate-200 text-slate-500">
               <tr>
@@ -234,13 +271,55 @@ const InventoryPage = () => {
               ))}
             </tbody>
           </table>
-
-          {(data?.transactions || []).length === 0 ? (
-            <p className="mt-4 rounded-xl border border-dashed border-slate-200 p-4 text-sm text-slate-500">
-              Chưa có giao dịch kho nào.
-            </p>
-          ) : null}
         </div>
+
+        {/* Mobile Card View */}
+        <div className="mt-4 block md:hidden space-y-3">
+          {(data?.transactions || []).map((transaction) => (
+            <div key={transaction._id} className="p-4 rounded-xl border border-slate-200 bg-slate-50/40 space-y-2 text-xs">
+              <div className="flex justify-between items-start gap-2">
+                <h4 className="font-semibold text-slate-850 text-sm">{transaction.productId?.name || "Sản phẩm đã bị xóa"}</h4>
+                <span
+                  className={`rounded-full px-2.5 py-0.5 text-[10px] font-bold ${
+                    transaction.type === "import"
+                      ? "bg-emerald-100 text-emerald-700"
+                      : "bg-amber-100 text-amber-700"
+                  }`}
+                >
+                  {transaction.type === "import" ? "Nhập" : "Xuất"}
+                </span>
+              </div>
+              <div className="grid grid-cols-2 gap-2 pt-2 border-t border-slate-100 text-slate-650">
+                <div>
+                  <span className="text-slate-400 block text-[10px]">Thời gian</span>
+                  <span className="text-slate-800 font-medium block mt-0.5">
+                    {new Date(transaction.createdAt).toLocaleString("vi-VN")}
+                  </span>
+                </div>
+                <div>
+                  <span className="text-slate-400 block text-[10px]">Người thao tác</span>
+                  <span className="text-slate-800 font-medium block mt-0.5">{transaction.createdBy?.name || "-"}</span>
+                </div>
+                <div>
+                  <span className="text-slate-400 block text-[10px]">Số lượng</span>
+                  <span className="text-slate-850 font-bold block mt-0.5">{transaction.quantity}</span>
+                </div>
+                <div>
+                  <span className="text-slate-400 block text-[10px]">Biến động tồn</span>
+                  <span className="text-slate-800 font-medium block mt-0.5">
+                    {transaction.previousStock} → {transaction.newStock}
+                  </span>
+                </div>
+              </div>
+            </div>
+          ))}
+        </div>
+
+        {(data?.transactions || []).length === 0 ? (
+          <p className="mt-4 rounded-xl border border-dashed border-slate-200 p-8 text-center text-xs text-slate-400">
+            Chưa có giao dịch kho nào.
+          </p>
+        ) : null}
       </section>
     </div>
   );

@@ -7,6 +7,7 @@ import ProtectedRoute from "./components/ProtectedRoute";
 import LoadingSpinner from "./components/LoadingSpinner";
 import { publicRoutes } from "./routes";
 import { useRealtimeSync } from "./hooks/useRealtimeSync";
+import ScrollToTop from "./components/ScrollToTop";
 import "./App.css";
 
 const DashboardPage = lazy(() => import("./pages/admin/Dashboard"));
@@ -75,10 +76,20 @@ function App() {
   );
 
   if (isAdminPath) {
-    return routesElement;
+    return (
+      <>
+        <ScrollToTop />
+        {routesElement}
+      </>
+    );
   }
 
-  return <MainLayout>{routesElement}</MainLayout>;
+  return (
+    <>
+      <ScrollToTop />
+      <MainLayout>{routesElement}</MainLayout>
+    </>
+  );
 }
 
 export default App;

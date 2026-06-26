@@ -196,16 +196,16 @@ export const useAuth = create<AuthState>((set, get) => ({
 
   hasRole: (roles) => {
     const user = get().getCurrentUser();
-    if (!user) {
+    if (!user || !user.role) {
       return false;
     }
 
-    const userRole = user.role.toLowerCase();
+    const userRole = String(user.role).toLowerCase();
     if (Array.isArray(roles)) {
-      return roles.map((role) => role.toLowerCase()).includes(userRole);
+      return roles.map((role) => String(role).toLowerCase()).includes(userRole);
     }
 
-    return userRole === roles.toLowerCase();
+    return userRole === String(roles).toLowerCase();
   },
 
   isAdmin: () => get().hasRole("admin"),

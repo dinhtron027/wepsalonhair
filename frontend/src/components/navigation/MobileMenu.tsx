@@ -34,11 +34,12 @@ const MobileMenu: React.FC<MobileMenuProps> = ({
   // Lấy display name giống Navbar
   const displayName = (() => {
     if (!user) return "";
-    const name = user.name?.trim();
+    const name = typeof user.name === "string" ? user.name.trim() : "";
     if (name) {
       return name.length > 16 ? name.split(" ")[0] : name;
     }
-    return user.email?.split("@")[0] ?? "";
+    const email = typeof user.email === "string" ? user.email.trim() : "";
+    return email.split("@")[0] || "";
   })();
 
   // State to track which dropdown items are expanded
@@ -158,7 +159,7 @@ const MobileMenu: React.FC<MobileMenuProps> = ({
                     flexShrink: 0,
                   }}
                 >
-                  {displayName.charAt(0).toUpperCase()}
+                  {displayName && displayName.charAt(0) ? displayName.charAt(0).toUpperCase() : ""}
                 </span>
               )}
               <span

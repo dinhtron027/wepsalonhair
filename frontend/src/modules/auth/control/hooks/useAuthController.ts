@@ -60,7 +60,7 @@ export const useAuthController = () => {
       const user = await login(credentials);
       toast.success("Đăng nhập thành công!");
 
-      if (user.role.toLowerCase() === "admin") {
+      if (user.role && user.role.toLowerCase() === "admin") {
         navigate("/admin", { replace: true });
         return true;
       }
@@ -84,7 +84,7 @@ export const useAuthController = () => {
       const user = await loginWithGoogle(idToken);
       toast.success("Đăng nhập bằng Google thành công!");
 
-      if (user.role.toLowerCase() === "admin") {
+      if (user.role && user.role.toLowerCase() === "admin") {
         navigate("/admin", { replace: true });
         return true;
       }
@@ -108,7 +108,7 @@ export const useAuthController = () => {
       const user = await loginWithFacebook(accessToken);
       toast.success("Đăng nhập bằng Facebook thành công!");
 
-      if (user.role.toLowerCase() === "admin") {
+      if (user.role && user.role.toLowerCase() === "admin") {
         navigate("/admin", { replace: true });
         return true;
       }

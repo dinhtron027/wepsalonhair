@@ -1,8 +1,11 @@
 import { useEffect, useMemo, useState } from "react";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
-import { addMinutes, format, getDay, parse, startOfWeek } from "date-fns";
-import { vi } from "date-fns/locale";
-import { dateFnsLocalizer, View, Calendar } from "react-big-calendar";
+import {
+  addDays,
+  subDays,
+  addMonths,
+  subMonths,
+} from "date-fns";
 import toast from "react-hot-toast";
 import LoadingSpinner from "../../components/LoadingSpinner";
 import {
@@ -15,16 +18,12 @@ import {
   updateAdminBooking,
 } from "../../services/adminApi";
 import { getApiErrorMessage } from "../../services/api";
-import { X } from "lucide-react";
-import "react-big-calendar/lib/css/react-big-calendar.css";
 
-type CalendarEvent = {
-  id: string;
-  title: string;
-  start: Date;
-  end: Date;
-  resource: BookingEntity;
-};
+// Import các component lịch mới
+import CalendarToolbar, { CalendarView } from "../../components/admin/bookings/CalendarToolbar";
+import BookingCalendar from "../../components/admin/bookings/BookingCalendar";
+import BookingList from "../../components/admin/bookings/BookingList";
+import BookingDetailModal from "../../components/admin/bookings/BookingDetailModal";
 
 type NewBookingForm = {
   customerName: string;
@@ -34,30 +33,6 @@ type NewBookingForm = {
   date: string;
   time: string;
   note: string;
-};
-
-const localizer = dateFnsLocalizer({
-  format,
-  parse,
-  startOfWeek: (date) => startOfWeek(date, { locale: vi }),
-  getDay,
-  locales: { vi },
-});
-
-const statusOptions: Array<{ value: BookingStatus; label: string }> = [
-  { value: "pending", label: "Chờ xác nhận" },
-  { value: "confirmed", label: "Đã xác nhận" },
-  { value: "in_service", label: "Đang phục vụ" },
-  { value: "completed", label: "Hoàn thành" },
-  { value: "cancelled", label: "Hủy" },
-];
-
-const statusColorMap: Record<BookingStatus, string> = {
-  pending: "#f59e0b",
-  confirmed: "#3b82f6",
-  in_service: "#14b8a6",
-  completed: "#22c55e",
-  cancelled: "#ef4444",
 };
 
 const defaultNewBooking: NewBookingForm = {
@@ -70,43 +45,32 @@ const defaultNewBooking: NewBookingForm = {
   note: "",
 };
 
-const parseBookingStart = (date: string, time: string) => {
-  const dateOnly = new Date(date).toISOString().slice(0, 10);
-  return new Date(`${dateOnly}T${time}:00`);
-};
-
 const BookingsPage = () => {
   const queryClient = useQueryClient();
-  const [calendarView, setCalendarView] = useState<View>("month");
+
+  // State điều khiển ngày hiển thị, chế độ xem, bộ lọc
+  const [currentDate, setCurrentDate] = useState<Date>(new Date());
+  const [calendarView, setCalendarView] = useState<CalendarView>("week");
+  const [filterStatus, setFilterStatus] = useState<BookingStatus | "all">("all");
+
   const [selectedBooking, setSelectedBooking] = useState<BookingEntity | null>(null);
   const [newBookingForm, setNewBookingForm] = useState<NewBookingForm>(defaultNewBooking);
-  const [updateForm, setUpdateForm] = useState<{
-    status: BookingStatus;
-    stylist: string;
-    hairColorUsed: string;
-    note: string;
-  }>({
-    status: "pending",
-    stylist: "",
-    hairColorUsed: "",
-    note: "",
-  });
-  const [activeTab, setActiveTab] = useState<"calendar" | "list">("calendar");
-  const [calendarHeight, setCalendarHeight] = useState(640);
 
+  // Responsive: Tự động đổi về view danh sách trên mobile
   useEffect(() => {
-    if (window.innerWidth < 768) {
-      setActiveTab("list");
-    }
-
     const handleResize = () => {
-      setCalendarHeight(window.innerWidth < 768 ? 480 : 640);
+      if (window.innerWidth < 768) {
+        setCalendarView("list");
+      } else {
+        setCalendarView("week");
+      }
     };
     handleResize();
     window.addEventListener("resize", handleResize);
     return () => window.removeEventListener("resize", handleResize);
   }, []);
 
+  // Fetch dữ liệu từ API
   const { data: bookings, isLoading: isBookingsLoading } = useQuery({
     queryKey: [...queryKeys.adminBookings],
     queryFn: fetchAdminBookings,
@@ -121,26 +85,13 @@ const BookingsPage = () => {
     if (!services || services.length === 0) {
       return;
     }
-
     setNewBookingForm((prev) => ({
       ...prev,
       serviceId: prev.serviceId || services[0]._id,
     }));
   }, [services]);
 
-  useEffect(() => {
-    if (!selectedBooking) {
-      return;
-    }
-
-    setUpdateForm({
-      status: selectedBooking.status,
-      stylist: selectedBooking.stylist || "",
-      hairColorUsed: selectedBooking.hairColorUsed || "",
-      note: selectedBooking.note || "",
-    });
-  }, [selectedBooking]);
-
+  // Mutation cập nhật lịch hẹn
   const updateMutation = useMutation({
     mutationFn: (payload: {
       bookingId: string;
@@ -161,6 +112,7 @@ const BookingsPage = () => {
     },
   });
 
+  // Mutation tạo lịch hẹn mới từ quầy
   const createMutation = useMutation({
     mutationFn: createBookingFromAdmin,
     onSuccess: () => {
@@ -176,202 +128,110 @@ const BookingsPage = () => {
     },
   });
 
-  const calendarEvents = useMemo<CalendarEvent[]>(() => {
-    const serviceDurationMap = new Map(
-      (services || []).map((service) => [service._id, service.durationMinutes || 60])
-    );
-
-    return (bookings || []).map((booking) => {
-      const bookingStart = parseBookingStart(booking.date, booking.time);
-      const serviceFromBooking =
-        typeof booking.serviceId === "string" ? null : booking.serviceId.durationMinutes || null;
-      const durationMinutes =
-        serviceFromBooking ||
-        serviceDurationMap.get(
-          typeof booking.serviceId === "string" ? booking.serviceId : booking.serviceId._id
-        ) ||
-        60;
-
-      return {
-        id: booking._id,
-        title: `${booking.customerName} - ${booking.serviceName}`,
-        start: bookingStart,
-        end: addMinutes(bookingStart, durationMinutes),
-        resource: booking,
-      };
-    });
-  }, [bookings, services]);
-
-  const sortedBookings = useMemo(() => {
-    return [...(bookings || [])].sort((a, b) => {
+  // Lọc và sắp xếp danh sách bookings hiển thị cho chế độ list
+  const displayBookings = useMemo(() => {
+    const list = bookings || [];
+    const filtered = filterStatus === "all" ? list : list.filter((b) => b.status === filterStatus);
+    
+    return [...filtered].sort((a, b) => {
       const dateA = new Date(`${a.date.slice(0, 10)}T${a.time}:00`).getTime();
       const dateB = new Date(`${b.date.slice(0, 10)}T${b.time}:00`).getTime();
       return dateB - dateA;
     });
-  }, [bookings]);
+  }, [bookings, filterStatus]);
+
+  // Điều hướng thời gian (Lui, Tiến, Hôm nay)
+  const handleNavigate = (action: "prev" | "next" | "today") => {
+    if (action === "today") {
+      setCurrentDate(new Date());
+      return;
+    }
+
+    const direction = action === "next" ? 1 : -1;
+
+    if (calendarView === "month") {
+      setCurrentDate((prev) => (direction === 1 ? addMonths(prev, 1) : subMonths(prev, 1)));
+    } else if (calendarView === "week" || calendarView === "list") {
+      setCurrentDate((prev) => (direction === 1 ? addDays(prev, 7) : subDays(prev, 7)));
+    } else if (calendarView === "day") {
+      setCurrentDate((prev) => (direction === 1 ? addDays(prev, 1) : subDays(prev, 1)));
+    }
+  };
 
   const handleCreateBooking = (e: React.FormEvent) => {
     e.preventDefault();
     createMutation.mutate(newBookingForm);
   };
 
-  const handleUpdateBooking = (e: React.FormEvent) => {
-    e.preventDefault();
-    if (!selectedBooking) {
-      return;
-    }
-
+  const handleUpdateBooking = (data: {
+    status: BookingStatus;
+    stylist?: string;
+    hairColorUsed?: string;
+    note?: string;
+  }) => {
+    if (!selectedBooking) return;
     updateMutation.mutate({
       bookingId: selectedBooking._id,
-      data: updateForm,
+      data,
     });
   };
 
   if (isBookingsLoading) {
     return (
-      <div className="rounded-2xl border border-slate-200 bg-white p-10">
-        <LoadingSpinner size="lg" label="Đang tải lịch hẹn..." />
+      <div className="rounded-2xl border border-slate-200 bg-white p-10 shadow-sm flex items-center justify-center">
+        <LoadingSpinner size="lg" label="Đang tải danh sách đặt lịch..." />
       </div>
     );
   }
 
-  const renderDetailForm = () => {
-    if (!selectedBooking) {
-      return (
-        <p className="mt-4 text-sm text-slate-500">
-          Chọn một lịch hẹn trên lịch hoặc danh sách để xem chi tiết và cập nhật trạng thái.
-        </p>
-      );
-    }
-
-    return (
-      <form onSubmit={handleUpdateBooking} className="mt-4 space-y-3">
-        <div>
-          <p className="text-sm text-slate-500">Khách hàng</p>
-          <p className="font-semibold text-slate-800">{selectedBooking.customerName}</p>
-          <p className="text-sm text-slate-600">{selectedBooking.phone}</p>
-        </div>
-
-        <div className="rounded-xl bg-slate-50 p-3 text-sm space-y-1">
-          <p className="text-slate-650">Dịch vụ: <span className="font-semibold text-slate-800">{selectedBooking.serviceName}</span></p>
-          <p className="text-slate-650">
-            Thời gian: <span className="font-semibold text-slate-800">{new Date(selectedBooking.date).toLocaleDateString("vi-VN")} - {selectedBooking.time}</span>
-          </p>
-        </div>
-
-        <label className="block text-sm">
-          <span className="mb-1 block font-medium text-slate-600">Trạng thái</span>
-          <select
-            value={updateForm.status}
-            onChange={(event) =>
-              setUpdateForm((prev) => ({
-                ...prev,
-                status: event.target.value as BookingStatus,
-              }))
-            }
-            className="w-full rounded-xl border border-slate-300 px-3 py-2.5 text-sm"
-          >
-            {statusOptions.map((status) => (
-              <option key={status.value} value={status.value}>
-                {status.label}
-              </option>
-            ))}
-          </select>
-        </label>
-
-        <label className="block text-sm">
-          <span className="mb-1 block font-medium text-slate-600">Thợ phục vụ</span>
-          <input
-            value={updateForm.stylist}
-            onChange={(event) =>
-              setUpdateForm((prev) => ({ ...prev, stylist: event.target.value }))
-            }
-            className="w-full rounded-xl border border-slate-300 px-3 py-2.5 text-sm"
-            placeholder="Tên thợ"
-          />
-        </label>
-
-        <label className="block text-sm">
-          <span className="mb-1 block font-medium text-slate-600">Màu nhuộm đã dùng</span>
-          <input
-            value={updateForm.hairColorUsed}
-            onChange={(event) =>
-              setUpdateForm((prev) => ({ ...prev, hairColorUsed: event.target.value }))
-            }
-            className="w-full rounded-xl border border-slate-300 px-3 py-2.5 text-sm"
-            placeholder="Ví dụ: Nâu lạnh 6.11"
-          />
-        </label>
-
-        <label className="block text-sm">
-          <span className="mb-1 block font-medium text-slate-600">Ghi chú</span>
-          <textarea
-            value={updateForm.note}
-            onChange={(event) => setUpdateForm((prev) => ({ ...prev, note: event.target.value }))}
-            className="w-full rounded-xl border border-slate-300 px-3 py-2 text-sm"
-            rows={4}
-            placeholder="Ghi chú dịch vụ..."
-          />
-        </label>
-
-        <button
-          type="submit"
-          disabled={updateMutation.isPending}
-          className="w-full rounded-xl bg-slate-900 py-3 text-sm font-semibold text-white hover:bg-slate-800 disabled:opacity-70 transition flex items-center justify-center"
-          style={{ minHeight: "44px" }}
-        >
-          {updateMutation.isPending ? "Đang cập nhật..." : "Lưu thay đổi"}
-        </button>
-      </form>
-    );
-  };
-
   return (
-    <div className="space-y-6 animate-fadeIn">
-      <section className="rounded-2xl border border-slate-200 bg-white p-6 shadow-sm">
-        <h3 className="text-lg font-semibold">Tạo lịch hẹn mới</h3>
-        <p className="mt-1 text-sm text-slate-500">
-          Đặt lịch nhanh cho khách tại quầy, hệ thống sẽ tự kiểm tra trùng lịch.
+    <div className="space-y-6 animate-fadeIn pb-12">
+      {/* 1. Panel Tạo lịch hẹn mới từ admin */}
+      <section className="rounded-3xl border border-slate-150 bg-white p-6 shadow-xs relative overflow-hidden">
+        <div className="absolute top-0 left-0 w-1.5 h-full bg-cyan-600" />
+        <h3 className="text-lg font-bold text-slate-800">Đặt lịch tại quầy</h3>
+        <p className="mt-1 text-xs text-slate-500">
+          Đặt lịch nhanh cho khách hàng vãng lai. Hệ thống tự động kiểm tra trùng lịch.
         </p>
 
-        <form onSubmit={handleCreateBooking} className="mt-5 grid gap-3 md:grid-cols-2 lg:grid-cols-4">
+        <form onSubmit={handleCreateBooking} className="mt-5 grid gap-3.5 sm:grid-cols-2 lg:grid-cols-4">
           <input
             required
             value={newBookingForm.customerName}
-            onChange={(event) =>
-              setNewBookingForm((prev) => ({ ...prev, customerName: event.target.value }))
+            onChange={(e) =>
+              setNewBookingForm((prev) => ({ ...prev, customerName: e.target.value }))
             }
             placeholder="Tên khách hàng"
-            className="rounded-xl border border-slate-300 px-3 py-2.5 text-sm"
+            className="rounded-xl border border-slate-250 bg-white px-3.5 py-2.5 text-xs text-slate-800 outline-none focus:border-cyan-600 focus:ring-1 focus:ring-cyan-600 transition"
             style={{ minHeight: "42px" }}
           />
           <input
             required
             value={newBookingForm.phone}
-            onChange={(event) => setNewBookingForm((prev) => ({ ...prev, phone: event.target.value }))}
+            onChange={(e) => setNewBookingForm((prev) => ({ ...prev, phone: e.target.value }))}
             placeholder="Số điện thoại"
-            className="rounded-xl border border-slate-300 px-3 py-2.5 text-sm"
+            className="rounded-xl border border-slate-250 bg-white px-3.5 py-2.5 text-xs text-slate-800 outline-none focus:border-cyan-600 focus:ring-1 focus:ring-cyan-600 transition"
             style={{ minHeight: "42px" }}
           />
           <input
             value={newBookingForm.email}
-            onChange={(event) => setNewBookingForm((prev) => ({ ...prev, email: event.target.value }))}
+            onChange={(e) => setNewBookingForm((prev) => ({ ...prev, email: e.target.value }))}
             placeholder="Email (không bắt buộc)"
-            className="rounded-xl border border-slate-300 px-3 py-2.5 text-sm"
+            className="rounded-xl border border-slate-250 bg-white px-3.5 py-2.5 text-xs text-slate-800 outline-none focus:border-cyan-600 focus:ring-1 focus:ring-cyan-600 transition"
             style={{ minHeight: "42px" }}
           />
           <select
             required
             value={newBookingForm.serviceId}
-            onChange={(event) =>
-              setNewBookingForm((prev) => ({ ...prev, serviceId: event.target.value }))
+            onChange={(e) =>
+              setNewBookingForm((prev) => ({ ...prev, serviceId: e.target.value }))
             }
-            className="rounded-xl border border-slate-300 px-3 py-2.5 text-sm"
+            className="rounded-xl border border-slate-250 bg-white px-3.5 py-2.5 text-xs text-slate-800 outline-none focus:border-cyan-600 focus:ring-1 focus:ring-cyan-600 transition cursor-pointer"
             style={{ minHeight: "42px" }}
           >
             {(services || []).map((service) => (
               <option key={service._id} value={service._id}>
-                {service.name}
+                {service.name} ({(service.price || 0).toLocaleString("vi-VN")}đ)
               </option>
             ))}
           </select>
@@ -379,185 +239,81 @@ const BookingsPage = () => {
             required
             type="date"
             value={newBookingForm.date}
-            onChange={(event) => setNewBookingForm((prev) => ({ ...prev, date: event.target.value }))}
-            className="rounded-xl border border-slate-300 px-3 py-2.5 text-sm"
+            onChange={(e) => setNewBookingForm((prev) => ({ ...prev, date: e.target.value }))}
+            className="rounded-xl border border-slate-250 bg-white px-3.5 py-2.5 text-xs text-slate-800 outline-none focus:border-cyan-600 focus:ring-1 focus:ring-cyan-600 transition cursor-pointer"
             style={{ minHeight: "42px" }}
           />
           <input
             required
             type="time"
             value={newBookingForm.time}
-            onChange={(event) => setNewBookingForm((prev) => ({ ...prev, time: event.target.value }))}
-            className="rounded-xl border border-slate-300 px-3 py-2.5 text-sm"
+            onChange={(e) => setNewBookingForm((prev) => ({ ...prev, time: e.target.value }))}
+            className="rounded-xl border border-slate-250 bg-white px-3.5 py-2.5 text-xs text-slate-800 outline-none focus:border-cyan-600 focus:ring-1 focus:ring-cyan-600 transition cursor-pointer"
             style={{ minHeight: "42px" }}
           />
           <input
             value={newBookingForm.note}
-            onChange={(event) => setNewBookingForm((prev) => ({ ...prev, note: event.target.value }))}
-            placeholder="Ghi chú"
-            className="rounded-xl border border-slate-300 px-3 py-2.5 text-sm md:col-span-2"
+            onChange={(e) => setNewBookingForm((prev) => ({ ...prev, note: e.target.value }))}
+            placeholder="Ghi chú thêm về tóc khách hàng..."
+            className="rounded-xl border border-slate-250 bg-white px-3.5 py-2.5 text-xs text-slate-800 outline-none focus:border-cyan-600 focus:ring-1 focus:ring-cyan-600 transition sm:col-span-2"
             style={{ minHeight: "42px" }}
           />
 
           <button
             type="submit"
             disabled={createMutation.isPending}
-            className="rounded-xl bg-cyan-600 px-4 py-2.5 text-sm font-semibold text-white hover:bg-cyan-700 disabled:opacity-70 transition flex items-center justify-center"
+            className="rounded-xl bg-cyan-600 px-4 py-2.5 text-xs font-bold text-white hover:bg-cyan-700 disabled:opacity-75 transition active:scale-95 flex items-center justify-center cursor-pointer shadow-xs"
             style={{ minHeight: "44px" }}
           >
-            {createMutation.isPending ? "Đang xử lý..." : "Tạo lịch hẹn"}
+            {createMutation.isPending ? "Đang đặt..." : "Xác nhận Đặt"}
           </button>
         </form>
       </section>
 
-      <section className="grid gap-6 xl:grid-cols-3">
-        <div className="rounded-2xl border border-slate-200 bg-white p-4 shadow-sm xl:col-span-2">
-          {/* Tab Selector and Status Badges */}
-          <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between border-b border-slate-100 pb-3 mb-4 flex-wrap">
-            <div className="flex flex-wrap gap-1.5">
-              {statusOptions.map((status) => (
-                <span
-                  key={status.value}
-                  className="rounded-full px-2.5 py-0.5 text-xs font-semibold text-white"
-                  style={{ backgroundColor: statusColorMap[status.value] }}
-                >
-                  {status.label}
-                </span>
-              ))}
-            </div>
-            <div className="flex rounded-xl bg-slate-100 p-1 self-end sm:self-auto">
-              <button
-                type="button"
-                onClick={() => setActiveTab("calendar")}
-                className={`rounded-lg px-3 py-1.5 text-xs font-semibold transition ${
-                  activeTab === "calendar"
-                    ? "bg-white text-slate-800 shadow-sm"
-                    : "text-slate-500 hover:text-slate-800"
-                }`}
-              >
-                Lịch biểu
-              </button>
-              <button
-                type="button"
-                onClick={() => setActiveTab("list")}
-                className={`rounded-lg px-3 py-1.5 text-xs font-semibold transition ${
-                  activeTab === "list"
-                    ? "bg-white text-slate-800 shadow-sm"
-                    : "text-slate-500 hover:text-slate-800"
-                }`}
-              >
-                Danh sách
-              </button>
-            </div>
-          </div>
+      {/* 2. Phần Lịch biểu chính */}
+      <section className="rounded-3xl border border-slate-150 bg-white p-5 shadow-xs">
+        {/* Thanh công cụ (Toolbar) điều hướng ngày, chế độ view và status filter */}
+        <CalendarToolbar
+          currentDate={currentDate}
+          view={calendarView}
+          onViewChange={setCalendarView}
+          onNavigate={handleNavigate}
+          filterStatus={filterStatus}
+          onFilterStatusChange={setFilterStatus}
+        />
 
-          {activeTab === "calendar" ? (
-            <Calendar
-              localizer={localizer}
-              events={calendarEvents}
-              startAccessor="start"
-              endAccessor="end"
-              view={calendarView}
-              onView={(view) => setCalendarView(view)}
-              views={["month", "week", "day"]}
-              onSelectEvent={(event) => setSelectedBooking(event.resource)}
-              style={{ height: calendarHeight }}
-              messages={{
-                today: "Hôm nay",
-                previous: "Trước",
-                next: "Sau",
-                month: "Tháng",
-                week: "Tuần",
-                day: "Ngày",
-                agenda: "Lịch biểu",
-                date: "Ngày",
-                time: "Giờ",
-                event: "Lịch hẹn",
-                noEventsInRange: "Không có lịch hẹn trong khoảng này",
-              }}
-              eventPropGetter={(event) => {
-                const status = event.resource.status;
-                return {
-                  style: {
-                    backgroundColor: statusColorMap[status],
-                    color: "white",
-                    borderRadius: "8px",
-                    border: "none",
-                    opacity: 0.95,
-                  },
-                };
-              }}
-            />
+        <div className="mt-5">
+          {calendarView === "list" ? (
+            /* Chế độ hiển thị danh sách */
+            <div className="max-w-2xl mx-auto">
+              <BookingList
+                bookings={displayBookings}
+                onSelectBooking={setSelectedBooking}
+                selectedBooking={selectedBooking}
+              />
+            </div>
           ) : (
-            <div className="space-y-3 max-h-[640px] overflow-y-auto pr-1">
-              {sortedBookings.map((booking) => (
-                <div
-                  key={booking._id}
-                  onClick={() => setSelectedBooking(booking)}
-                  className={`rounded-xl border p-4 space-y-3 cursor-pointer transition hover:bg-slate-50/50 ${
-                    selectedBooking?._id === booking._id
-                      ? "border-cyan-500 bg-cyan-50/10"
-                      : "border-slate-200 bg-white"
-                  }`}
-                >
-                  <div className="flex items-start justify-between gap-3">
-                    <div>
-                      <p className="font-semibold text-slate-800 text-base">{booking.customerName}</p>
-                      <p className="text-xs text-slate-500 mt-1">
-                        SĐT: <span className="font-medium text-slate-700">{booking.phone}</span>
-                      </p>
-                    </div>
-                    <span
-                      className="rounded-full px-2.5 py-0.5 text-xs font-semibold text-white"
-                      style={{ backgroundColor: statusColorMap[booking.status] }}
-                    >
-                      {statusOptions.find((o) => o.value === booking.status)?.label || booking.status}
-                    </span>
-                  </div>
-
-                  <div className="text-xs text-slate-650 space-y-1.5 bg-slate-50 p-2.5 rounded-lg">
-                    <p>Dịch vụ: <span className="font-semibold text-slate-800">{booking.serviceName}</span></p>
-                    <p>Thời gian: <span className="font-semibold text-slate-800">{new Date(booking.date).toLocaleDateString("vi-VN")} - {booking.time}</span></p>
-                    {booking.stylist && <p>Thợ phục vụ: <span className="font-semibold text-slate-800">{booking.stylist}</span></p>}
-                    {booking.note && <p>Ghi chú: <span className="text-slate-500 italic">{booking.note}</span></p>}
-                  </div>
-                </div>
-              ))}
-
-              {sortedBookings.length === 0 ? (
-                <p className="rounded-xl border border-dashed border-slate-200 p-4 text-sm text-slate-500 text-center">
-                  Chưa có lịch hẹn nào.
-                </p>
-              ) : null}
+            /* Chế độ hiển thị Lịch lưới (Month / Week / Day) */
+            <div className="overflow-x-auto rounded-2xl border border-slate-100 bg-slate-50/10 p-1">
+              <BookingCalendar
+                bookings={bookings || []}
+                currentDate={currentDate}
+                view={calendarView}
+                filterStatus={filterStatus}
+                onSelectBooking={setSelectedBooking}
+              />
             </div>
           )}
         </div>
-
-        {/* Desktop Detail View (Hidden on mobile) */}
-        <div className="hidden md:block rounded-2xl border border-slate-200 bg-white p-5 shadow-sm">
-          <h3 className="text-lg font-semibold">Chi tiết lịch hẹn</h3>
-          {renderDetailForm()}
-        </div>
       </section>
 
-      {/* Mobile Detail Modal (Hidden on desktop, shown when selectedBooking is active on mobile) */}
-      {selectedBooking && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center bg-slate-950/50 p-4 md:hidden">
-          <div className="w-full max-w-lg rounded-2xl bg-white p-5 shadow-xl max-h-[90vh] overflow-y-auto relative">
-            <button
-              type="button"
-              onClick={() => setSelectedBooking(null)}
-              className="absolute top-4 right-4 rounded-lg p-2 text-slate-400 hover:bg-slate-100 hover:text-slate-800 transition flex items-center justify-center"
-              style={{ minHeight: "40px", minWidth: "40px" }}
-              aria-label="Đóng chi tiết"
-            >
-              <X size={20} />
-            </button>
-            <h3 className="text-lg font-semibold text-slate-900 border-b border-slate-100 pb-3">Chi tiết lịch hẹn</h3>
-            {renderDetailForm()}
-          </div>
-        </div>
-      )}
+      {/* 3. Modal xem và cập nhật chi tiết booking */}
+      <BookingDetailModal
+        booking={selectedBooking}
+        onClose={() => setSelectedBooking(null)}
+        onUpdate={handleUpdateBooking}
+        isUpdating={updateMutation.isPending}
+      />
     </div>
   );
 };

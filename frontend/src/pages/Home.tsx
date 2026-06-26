@@ -139,14 +139,14 @@ const Home = () => {
       {/* Featured Products Section */}
       {(isLoadingProducts || featuredProducts.length > 0) && (
         <section className="mx-auto max-w-7xl px-6">
-          <div className="mb-10 flex items-end justify-between">
+          <div className="relative mb-10 flex items-center justify-center">
             <SectionTitle
               title="Sản Phẩm Khuyên Dùng"
               description="Những sản phẩm chăm sóc tóc được chuyên gia lựa chọn, giúp duy trì vẻ đẹp tinh tế mỗi ngày."
             />
             <Link
               to="/products"
-              className="mb-2 hidden shrink-0 items-center gap-1.5 text-sm font-medium text-slate-900 transition-colors hover:text-slate-600 md:flex"
+              className="absolute right-0 bottom-2 hidden shrink-0 items-center gap-1.5 text-sm font-medium text-slate-900 transition-colors hover:text-slate-600 md:flex"
             >
               Xem tất cả <ArrowRight size={15} strokeWidth={1.5} />
             </Link>

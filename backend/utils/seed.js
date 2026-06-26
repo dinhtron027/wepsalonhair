@@ -495,25 +495,31 @@ const crmCustomerSeeds = [
     phone: env.DEFAULT_CUSTOMER_PHONE,
     email: env.DEFAULT_CUSTOMER_EMAIL,
     bookings: [
-      { serviceSlug: 'cat-layer-nu-premium', daysAgo: 220, stylist: 'Anh Minh' },
+      { serviceSlug: 'cat-layer-nu-premium', daysAgo: 12, stylist: 'Anh Minh', status: 'completed', time: '09:00' },
       {
         serviceSlug: 'nhuom-nau-cong-so-thanh-lich',
-        daysAgo: 170,
+        daysAgo: 1,
         stylist: 'Chị Lan',
-        hairColorUsed: 'Nâu trà sữa'
+        hairColorUsed: 'Nâu trà sữa',
+        status: 'completed',
+        time: '14:00'
       },
-      { serviceSlug: 'uon-song-loi-han-quoc', daysAgo: 110, stylist: 'Anh Tuấn' },
+      { serviceSlug: 'uon-song-loi-han-quoc', daysAgo: 0, stylist: 'Anh Tuấn', status: 'confirmed', time: '10:00' },
       {
         serviceSlug: 'nhuom-highlight-babylight',
-        daysAgo: 55,
+        daysAgo: -1,
         stylist: 'Chị Lan',
-        hairColorUsed: 'Nâu beige highlight'
+        hairColorUsed: 'Nâu beige highlight',
+        status: 'pending',
+        time: '15:00'
       },
       {
         serviceSlug: 'combo-nhuom-thoi-trang-phuc-hoi-collagen',
-        daysAgo: 12,
+        daysAgo: -2,
         stylist: 'Chị Lan',
-        hairColorUsed: 'Nâu lạnh ánh khói'
+        hairColorUsed: 'Nâu lạnh ánh khói',
+        status: 'pending',
+        time: '11:00'
       }
     ],
     notes: [

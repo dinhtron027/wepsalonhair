@@ -2,14 +2,27 @@ import type { IStoragePort } from "./IStoragePort";
 
 export class LocalStorageAdapter implements IStoragePort {
   public get(key: string): string | null {
-    return window.localStorage.getItem(key);
+    try {
+      return window.localStorage.getItem(key);
+    } catch (e) {
+      console.warn("localStorage.getItem is not available:", e);
+      return null;
+    }
   }
 
   public set(key: string, value: string): void {
-    window.localStorage.setItem(key, value);
+    try {
+      window.localStorage.setItem(key, value);
+    } catch (e) {
+      console.warn("localStorage.setItem is not available:", e);
+    }
   }
 
   public remove(key: string): void {
-    window.localStorage.removeItem(key);
+    try {
+      window.localStorage.removeItem(key);
+    } catch (e) {
+      console.warn("localStorage.removeItem is not available:", e);
+    }
   }
 }

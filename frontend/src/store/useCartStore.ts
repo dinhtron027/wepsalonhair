@@ -1,5 +1,30 @@
 import { create } from "zustand";
-import { persist } from "zustand/middleware";
+import { persist, createJSONStorage, StateStorage } from "zustand/middleware";
+
+const safeStorage: StateStorage = {
+  getItem: (name: string): string | null => {
+    try {
+      return localStorage.getItem(name);
+    } catch (e) {
+      console.warn("localStorage.getItem is not available for cart:", e);
+      return null;
+    }
+  },
+  setItem: (name: string, value: string): void => {
+    try {
+      localStorage.setItem(name, value);
+    } catch (e) {
+      console.warn("localStorage.setItem is not available for cart:", e);
+    }
+  },
+  removeItem: (name: string): void => {
+    try {
+      localStorage.removeItem(name);
+    } catch (e) {
+      console.warn("localStorage.removeItem is not available for cart:", e);
+    }
+  },
+};
 
 export type ProductEntity = {
   _id: string;
@@ -129,6 +154,7 @@ const useCartStore = create<CartState>()(
     }),
     {
       name: "salon-cart-storage",
+      storage: createJSONStorage(() => safeStorage),
     }
   )
 );

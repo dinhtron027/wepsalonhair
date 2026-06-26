@@ -56,22 +56,34 @@ const Navbar: React.FC = () => {
   // Lấy first name (tên đầu tiên) để hiển thị gọn trên navbar
   const displayName = (() => {
     if (!user) return "";
-    const name = user.name?.trim();
+    const name = typeof user.name === "string" ? user.name.trim() : "";
     if (name) {
       // Chỉ lấy từ đầu tiên nếu tên quá dài (> 12 ký tự)
       return name.length > 12 ? name.split(" ")[0] : name;
     }
     // Fallback sang phần trước @ của email
-    return user.email?.split("@")[0] ?? "";
+    const email = typeof user.email === "string" ? user.email.trim() : "";
+    return email.split("@")[0] || "";
   })();
 
-  // Close menus when route changes
+  const checkIsTouch = () => {
+    if (typeof window !== "undefined" && window.matchMedia) {
+      try {
+        return window.matchMedia("(hover: none)").matches;
+      } catch (e) {
+        console.warn("window.matchMedia failed:", e);
+      }
+    }
+    return false;
+  };
+
+  // Close menus when route or hash changes
   useEffect(() => {
     setOpenDropdownId(null);
     setClickedDropdownId(null);
     setMobileMenuOpen(false);
     setCartOpen(false);
-  }, [location.pathname]);
+  }, [location.pathname, location.hash]);
 
   // Track window scroll to change background opacity/blur
   useEffect(() => {
@@ -96,7 +108,7 @@ const Navbar: React.FC = () => {
   const handleNavItemClick = (item: MenuItem, event: React.MouseEvent) => {
     if (menuManager.hasDropdown(item)) {
       event.preventDefault(); // Ngăn điều hướng lập tức trên cả Desktop để giữ dropdown mở rộng
-      const isTouch = window.matchMedia("(hover: none)").matches;
+      const isTouch = checkIsTouch();
       if (isTouch) {
         setOpenDropdownId((prev) => (prev === item.id ? null : item.id));
       } else {
@@ -141,13 +153,13 @@ const Navbar: React.FC = () => {
                 <NavItemWrapper
                   key={item.id}
                   onMouseEnter={() => {
-                    const isTouch = window.matchMedia("(hover: none)").matches;
+                    const isTouch = checkIsTouch();
                     if (!isTouch && hasDropdown) {
                       setOpenDropdownId(item.id);
                     }
                   }}
                   onMouseLeave={() => {
-                    const isTouch = window.matchMedia("(hover: none)").matches;
+                    const isTouch = checkIsTouch();
                     if (!isTouch && hasDropdown) {
                       // Chỉ đóng menu khi di chuột ra ngoài nếu nó không ở trạng thái click giữ cố định
                       if (clickedDropdownId !== item.id) {
@@ -221,7 +233,7 @@ const Navbar: React.FC = () => {
                         flexShrink: 0,
                       }}
                     >
-                      {displayName.charAt(0).toUpperCase()}
+                      {displayName && displayName.charAt(0) ? displayName.charAt(0).toUpperCase() : ""}
                     </span>
                   )}
                   <UserGreetingText>

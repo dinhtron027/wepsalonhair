@@ -75,7 +75,12 @@ export const extractApiData = <T>(response: AxiosResponse<ApiEnvelope<T> | T>) =
 
 api.interceptors.request.use(
   (config) => {
-    const token = localStorage.getItem("token");
+    let token = null;
+    try {
+      token = localStorage.getItem("token");
+    } catch (e) {
+      console.warn("localStorage.getItem is not available in api interceptor:", e);
+    }
     if (token) {
       config.headers.Authorization = `Bearer ${token}`;
     }

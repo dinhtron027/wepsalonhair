@@ -1,6 +1,8 @@
 import { motion } from "framer-motion";
 import { Coffee, ShieldCheck, HeartHandshake, Smile, ClipboardList, Sparkles } from "lucide-react";
 import Button from "../components/Button";
+import useSEO from "../hooks/useSEO";
+
 
 const steps = [
   {
@@ -42,8 +44,16 @@ const steps = [
 ];
 
 const ExperiencePage = () => {
+  useSEO({
+    title: "Trải Nghiệm Dịch Vụ 5 Sao — Salon Dương Chi",
+    description:
+      "Khám phá hành trình trải nghiệm khách hàng tại Salon Dương Chi: từ chào đón, tư vấn chuyên sâu, thực hiện dịch vụ đến chăm sóc sau cùng.",
+    canonical: "/services/experience",
+    ogUrl: "/services/experience",
+  });
   return (
     <div className="mx-auto max-w-5xl px-4 py-12 space-y-16">
+
       {/* Header Section */}
       <section className="text-center space-y-4">
         <motion.p

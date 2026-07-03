@@ -12,6 +12,7 @@ import {
 import { getApiErrorMessage } from "../services/api";
 import SectionTitle from "../components/SectionTitle";
 import ServiceImage from "../components/ServiceImage";
+import useSEO from "../hooks/useSEO";
 
 type BookingFormData = {
   customerName: string;
@@ -47,6 +48,13 @@ const buildTimeSlots = () => {
 const timeSlots = buildTimeSlots();
 
 const BookingPage = () => {
+  useSEO({
+    title: "Đặt Lịch Dịch Vụ Tóc — Salon Dương Chi",
+    description:
+      "Đặt lịch làm tóc trực tuyến tại Salon Dương Chi, Lộc Ninh, Bình Phước. Chọn dịch vụ, ngày giờ và nhận xác nhận ngay. Phục vụ từ 9:00 – 21:00 hằng ngày.",
+    canonical: "/booking",
+    ogUrl: "/booking",
+  });
   const [searchParams] = useSearchParams();
   const [bookingData, setBookingData] = useState<BookingFormData>(defaultFormState);
 

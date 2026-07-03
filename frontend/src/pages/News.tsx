@@ -3,6 +3,8 @@ import SectionTitle from "../components/SectionTitle";
 import AnimatedContainer from "../components/AnimatedContainer";
 import Button from "../components/Button";
 import { newsPosts } from "../data/newsPosts";
+import useSEO from "../hooks/useSEO";
+
 
 // Sub-component to handle image load errors gracefully
 const BlogImage = ({ src, alt }: { src: string; alt: string }) => {
@@ -43,8 +45,16 @@ const BlogImage = ({ src, alt }: { src: string; alt: string }) => {
 };
 
 const News = () => {
+  useSEO({
+    title: "Blog & Cảm Hứng Tóc — Salon Dương Chi",
+    description:
+      "Khám phá các bài viết xu hướng tóc, mẹo chăm sóc tóc và cảm hứng làm đẹp từ Salon Dương Chi, Lộc Ninh, Bình Phước.",
+    canonical: "/news",
+    ogUrl: "/news",
+  });
   return (
     <div className="mx-auto max-w-6xl px-6 pb-24 space-y-16 pt-8">
+
       {/* Header */}
       <SectionTitle
         eyebrow="Tin tức & cảm hứng"

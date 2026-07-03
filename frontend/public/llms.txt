@@ -1,0 +1,36 @@
+# Salon Dương Chi
+
+> Salon tóc nữ cao cấp tại Lộc Ninh, Bình Phước, Việt Nam. Chuyên cắt, uốn, nhuộm, duỗi, phục hồi tóc và gội đầu dưỡng sinh theo phong cách Á Đông.
+
+Salon Dương Chi là địa chỉ làm tóc chuyên nghiệp cho phái nữ, với đội ngũ Master Stylist giàu kinh nghiệm và không gian thư giãn đẳng cấp.
+
+## Địa chỉ & Liên hệ
+
+- **Địa chỉ:** 9 Hùng Vương, Thị trấn Lộc Ninh, Bình Phước 832500, Việt Nam
+- **Giờ mở cửa:** 9:00 – 21:00 hằng ngày
+- **Điện thoại:** 0988 046 664
+- **Website:** https://salonduongchi.website
+
+## Các Trang Chính
+
+- [Trang chủ](https://salonduongchi.website/)
+- [Dịch vụ](https://salonduongchi.website/services)
+- [Bảng giá](https://salonduongchi.website/pricing)
+- [Đặt lịch](https://salonduongchi.website/booking)
+- [Sản phẩm](https://salonduongchi.website/products)
+- [Bộ sưu tập](https://salonduongchi.website/gallery)
+- [Blog / Cảm hứng](https://salonduongchi.website/news)
+- [Về chúng tôi](https://salonduongchi.website/about)
+- [Liên hệ](https://salonduongchi.website/contact)
+
+## Danh Mục Dịch Vụ
+
+- [Cắt & Tạo Kiểu Nữ](https://salonduongchi.website/services/category/haircut)
+- [Uốn Tóc Nữ](https://salonduongchi.website/services/category/perm)
+- [Duỗi Tóc Nữ](https://salonduongchi.website/services/category/straightening)
+- [Nhuộm Tóc Nữ](https://salonduongchi.website/services/category/color)
+- [Phục Hồi Tóc](https://salonduongchi.website/services/category/treatment)
+- [Gội Đầu Dưỡng Sinh](https://salonduongchi.website/services/category/shampoo)
+- [Combo Làm Đẹp](https://salonduongchi.website/services/category/combo)
+- [Trải Nghiệm Dịch Vụ](https://salonduongchi.website/services/experience)
+- [Chăm Dưỡng Tóc](https://salonduongchi.website/services/care)

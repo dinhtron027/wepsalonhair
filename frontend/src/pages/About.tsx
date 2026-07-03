@@ -1,7 +1,15 @@
 import SectionTitle from "../components/SectionTitle";
 import AnimatedContainer from "../components/AnimatedContainer";
+import useSEO from "../hooks/useSEO";
 
 const About = () => {
+  useSEO({
+    title: "Về Chúng Tôi — Câu Chuyện Thương Hiệu Salon Dương Chi",
+    description:
+      "Salon Dương Chi là địa điểm làm tóc nữ chuyên nghiệp tại Lộc Ninh, Bình Phước. Tìm hiểu câu chuyện thương hiệu, triết lý phục vụ và đội ngũ stylist của chúng tôi.",
+    canonical: "/about",
+    ogUrl: "/about",
+  });
   return (
     <div className="mx-auto max-w-5xl px-4 pb-24 pt-8 space-y-16">
 

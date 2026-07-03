@@ -7,9 +7,18 @@ import GalleryCard from "../components/GalleryCard";
 import AnimatedContainer from "../components/AnimatedContainer";
 import { beforeAfter, galleryItems } from "../constant/data";
 import useSalonStore from "../store";
+import useSEO from "../hooks/useSEO";
 
 const Gallery = () => {
+  useSEO({
+    title: "Bộ Sưu Tập Tóc — Salon Dương Chi",
+    description:
+      "Khám phá bộ sưu tập tóc đẹp tại Salon Dương Chi: tóc ngắn, tóc dài, tóc nhuộm, tóc uốn. Hình ảnh thực tế từ khách hàng tại Lộc Ninh, Bình Phước.",
+    canonical: "/gallery",
+    ogUrl: "/gallery",
+  });
   const { filter, setFilter } = useSalonStore();
+
   const [active, setActive] = useState(filter);
 
   const categories = useMemo(

@@ -1,0 +1,1812 @@
+Nội Dung Bài Học
+Bài 1 : DevOps là gì và tại sao chúng ta sử dụng nó ?5
+1. Mục tiêu bài học5
+2. Khái niệm chính5
+2.1. DevOps là gì?5
+2.2. DevOps không chỉ là công cụ5
+2.3. Công cụ thường gặp trong DevOps5
+2.4. Lộ trình học gợi ý6
+3. Bản chất vấn đề6
+3.1. DevOps giải quyết vấn đề gì?6
+3.2. Luồng tư duy của DevOps7
+4. Quy trình hoặc cách hoạt động7
+4.1. Quy trình DevOps tổng quát7
+4.1.1. Từ code đến kiểm tra tự động7
+4.1.2. Đóng gói và deploy lên server7
+4.1.3. Đưa ứng dụng ra Internet và vận hành7
+4.2. Các khối kiến thức trong lộ trình8
+5. Các lệnh / cú pháp / thao tác quan trọng9
+5.1. Linux/WSL: thư mục, file và quyền9
+BÀI 2: DÒNG CHẢY DỮ LIỆU (PIPE & REDIRECT) & CÔNG CỤ TÌM KIẾM THẦN THÁNH11
+1. Bản chất của Stream (Dòng dữ liệu)11
+2. Kỹ thuật điều hướng (Redirect) và Kết nối (Pipe)11
+3. Hai "Thám tử" tìm kiếm: grep và find11
+Bài 3 : Lệnh Vim — Trình soạn thảo file trong Terminal13
+1. Vim là gì?13
+2. Điểm quan trọng nhất của Vim13
+3. Quy trình dùng Vim cơ bản13
+4. Các phím sống còn trong Vim14
+5. Di chuyển trong Vim14
+6. Chèn nội dung trong Vim14
+7. Xóa, copy, dán trong Vim15
+8. Tìm kiếm trong Vim15
+9. Hiện số dòng trong Vim16
+10. Đi đến dòng cụ thể16
+11. Tìm và thay thế16
+12. Lỗi thường gặp khi dùng Vim17
+BÀI 4 : NHẬP MÔN BASH SCRIPTING - TỰ ĐỘNG HÓA CHO DEVOPS18
+1. Bash Script là gì18
+1.1 Các quy tắc "vàng" khi viết Script18
+2. Ý tưởng của script backup18
+3. Lệnh tar dùng để backup19
+4. Giải thích script19
+5. Script backup có log và xóa file cũ20
+6. Tự động backup bằng cron20
+7. Lệnh cần nhớ21
+8. Quy trình hoạt động tổng quát21
+BÀI 5: QUẢN LÝ MÃ NGUỒN VỚI GIT & GITHUB (Công cụ quan trọng)22
+1. Bản chất của Git là gì?22
+2. Các câu lệnh Git sinh tồn22
+BÀI 6 : COMPUTER NETWORKING - BẢN CHẤT CỦA MẠNG MÁY TÍNH (PHẦN 1)24
+1. Bản chất của IP Address và Port (Cổng)24
+2. Các câu lệnh "Bác sĩ khám mạng"24
+3. Quy trình cách hoạt động25
+BÀI 7 : SSH - "CHÌA KHÓA VẠN NĂNG" ĐIỀU KHIỂN SERVER TỪ XA26
+1. Bản chất của SSH26
+2. Cú pháp kết nối SSH26
+3. Bản chất của SSH Key (Ổ khóa và Chìa khóa)26
+4. Các lệnh tạo và quản lý Key27
+BÀI 8 : DOCKER THỰC HÀNH - IMAGE, CONTAINER, DOCKERFILE, VOLUME, NETWORK VÀ DOCKER COMPOSE28
+1. Mục tiêu bài học28
+2. Bảng khái niệm Docker quan trọng28
+3. Công thức cốt lõi cần nhớ29
+4. Phân biệt Image và Container30
+5. Các lệnh Docker quan trọng30
+5.1. Kiểm tra Docker30
+5.2. Xem danh sách image30
+5.3. Tải image từ Docker Hub31
+5.4. Chạy container31
+5.5. Xem container đang chạy31
+5.6. Dừng container32
+5.7. Xóa container32
+5.8. Xóa image32
+5.9. Xem log container32
+5.10. Vào bên trong container33
+5.11. Kiểm tra chi tiết container hoặc image33
+5.12. Đăng nhập Docker Hub33
+5.13. Build image từ Dockerfile33
+5.14. Push image lên Docker Hub34
+6. Dockerfile cơ bản34
+7. Port Mapping trong Docker35
+8. Vì sao không nên để Docker chiếm port 80 khi dùng Nginx ngoài server?36
+9. Docker Volume37
+9.1. Volume là gì?37
+9.2. Các lệnh volume quan trọng38
+10. Docker Network38
+10.1. Network là gì?38
+10.2. Các lệnh network quan trọng39
+11. Docker Compose39
+11.1. Docker Compose là gì?39
+11.2. Ví dụ Docker Compose cho website tĩnh40
+11.3. Ví dụ Docker Compose có network và volume40
+12. Quy trình Docker trong CI/CD41
+13. Bảng lệnh Docker ôn nhanh43
+14. Lỗi Docker thường gặp44
+15. Bài tập thực hành45
+BÀI 9 : NGINX VÀ REVERSE PROXY50
+1. Nginx là gì?50
+2. Kiến trúc không sử dụng Nginx50
+3. Kiến trúc sử dụng Nginx50
+4. Reverse Proxy là gì?51
+5. Vai trò của Nginx51
+6. Ví dụ cấu hình Reverse Proxy53
+7. Cách ghi nhớ54
+Bài 10 : CI/CD Production Mini Project55
+GitHub Actions + Docker + AWS EC2 + Nginx + Domain + HTTPS55
+1. Mục tiêu bài học55
+2. Kiến trúc tổng thể55
+3. Các thành phần cần chuẩn bị57
+3.1. GitHub Repository57
+3.2. Dockerfile57
+3.3. Docker Hub Repository57
+3.4. AWS EC257
+3.5. Security Group58
+4. Domain, DNS và Elastic IP58
+5. Chạy website bằng Docker trên EC259
+6. Nginx Reverse Proxy và HTTPS59
+6.1. Vì sao Docker chạy port 8080?59
+6.2. Cấu hình Nginx Reverse Proxy60
+6.3. Cấu hình HTTPS bằng Certbot61
+6.4. Cấu hình Nginx HTTPS hoàn chỉnh61
+7. GitHub Secrets và file ci.yml62
+7.1. GitHub Secrets cần tạo62
+7.2. File GitHub Actions CI/CD63
+8. Quy trình CI/CD hoạt động65
+9. Các lệnh kiểm tra quan trọng66
+10. Lỗi thường gặp67
+11. Tóm tắt cần nhớ68
+Bài 1 : DevOps là gì và tại sao chúng ta sử dụng nó ?
+1. Mục tiêu bài học
+Sau bài này, người học cần hiểu được:
++ DevOps là gì, vì sao DevOps không chỉ là Docker, Kubernetes hay AWS.
++ Vì sao cần tự động hóa build, test, deploy, rollback và monitoring.
++ Các nhóm kiến thức nền tảng: Linux/WSL, Git/GitHub, networking, SSH, Bash Script, Docker, Nginx và CI/CD.
++ Cách một website đi từ code local đến GitHub Actions, Docker Hub, AWS EC2, Nginx, domain và HTTPS.
++ Các lệnh quan trọng thường gặp trong môi trường DevOps cơ bản.
++ Những lỗi người mới dễ mắc và cách tự kiểm tra khi gặp sự cố.
+2. Khái niệm chính
+2.1. DevOps là gì?
+DevOps là cách kết hợp giữa phát triển phần mềm và vận hành hệ thống để phần mềm được build, test, deploy và theo dõi một cách tự động, ổn định và có kiểm soát.
+Trong đó:
++ Development: viết code, phát triển tính năng, sửa lỗi.
++ Operations: vận hành server, cloud, mạng, bảo mật, log và hiệu năng.
++ DevOps: nối hai phần trên bằng quy trình, tự động hóa và công cụ phù hợp.
+2.2. DevOps không chỉ là công cụ
+Một hiểu lầm phổ biến là DevOps = Docker + Kubernetes + AWS.
+Cách hiểu đúng hơn: DevOps = tư duy + quy trình + công cụ. Công cụ chỉ hỗ trợ; điều quan trọng là tổ chức quy trình làm phần mềm sao cho lặp lại được, ít lỗi hơn và dễ kiểm soát hơn.
+2.3. Công cụ thường gặp trong DevOps
+Mảng
+Công cụ thường gặp
+Vai trò chính
+Quản lý mã nguồn
+Git, GitHub, GitLab
+Lưu lịch sử thay đổi, review code, phối hợp nhóm
+Build/test/deploy tự động
+GitHub Actions, GitLab CI/CD, Jenkins
+Chạy pipeline sau mỗi lần push code
+Đóng gói ứng dụng
+Docker
+Đưa app và môi trường chạy vào image/container
+Quản lý container
+Docker Compose, Kubernetes
+Chạy nhiều service và mở rộng hệ thống
+Web server / reverse proxy
+Nginx
+Nhận request, chuyển tiếp vào app, cấu hình HTTPS
+Cloud server
+AWS, Azure, GCP, DigitalOcean
+Cung cấp server public để deploy thật
+Infrastructure as Code
+Terraform, Ansible
+Quản lý hạ tầng bằng code
+Monitoring/logging
+Prometheus, Grafana, ELK
+Theo dõi log, tài nguyên, lỗi và cảnh báo
+2.4. Lộ trình học gợi ý
+Người mới không nên học tất cả cùng lúc. Lộ trình hợp lý là đi từ nền tảng đến công cụ nâng cao:
++ Linux/WSL -> Git/GitHub -> Bash Script -> Networking -> SSH.
++ Docker -> Nginx -> CI/CD -> AWS EC2 -> Domain/HTTPS.
++ Monitoring -> Kubernetes -> Terraform.
+Lưu ý: Không nên học Kubernetes quá sớm nếu chưa vững Linux, networking, Docker, CI/CD và cloud cơ bản. Nếu học quá sớm, người học dễ chỉ nhớ lệnh nhưng không hiểu bản chất.
+3. Bản chất vấn đề
+3.1. DevOps giải quyết vấn đề gì?
+Vấn đề thường gặp
+Bản chất
+DevOps giúp gì
+Deploy thủ công mất thời gian
+Mỗi lần đưa code lên server phải SSH, copy file, restart bằng tay
+Dùng pipeline CI/CD để build, test và deploy tự động
+Máy local chạy được, server lại lỗi
+Môi trường dev và production khác nhau
+Docker hóa môi trường để app chạy nhất quán
+Không biết lỗi nằm ở đâu
+Thiếu log, thiếu monitoring, không có quy trình debug
+Theo dõi log, metric và trạng thái service
+Server cấu hình lộn xộn
+Cài đặt thủ công khiến mỗi server một kiểu
+Dùng script và Infrastructure as Code
+Sợ deploy vì dễ hỏng
+Không có test, staging hoặc rollback
+Thêm test tự động, rollback và quy trình release rõ ràng
+Team phụ thuộc vào một người biết deploy
+Kiến thức vận hành nằm trong đầu cá nhân
+Chuẩn hóa pipeline, tài liệu hóa thao tác, phân quyền rõ ràng
+3.2. Luồng tư duy của DevOps
++ Mọi thay đổi nên đi qua Git để có lịch sử và khả năng quay lại.
++ Build và test nên chạy tự động để phát hiện lỗi sớm.
++ Ứng dụng nên được đóng gói để môi trường chạy nhất quán.
++ Deploy nên có script hoặc pipeline để tránh thao tác thủ công lặp lại.
++ Sau deploy phải theo dõi log, tài nguyên và lỗi người dùng gặp.
+4. Quy trình hoặc cách hoạt động
+4.1. Quy trình DevOps tổng quát
+4.1.1. Từ code đến kiểm tra tự động
+Bước 1: Developer viết code và kiểm tra trên máy local.
+Bước 2: Đẩy code lên GitHub bằng Git.
+Bước 3: GitHub Actions tự động chạy test và build.
+4.1.2. Đóng gói và deploy lên server
+Bước 4: Docker đóng gói ứng dụng thành image.
+Bước 5: Image được push lên Docker Hub hoặc registry tương tự.
+Bước 6: Pipeline SSH vào server cloud như AWS EC2.
+Bước 7: Server pull image mới, dừng container cũ và chạy container mới.
+4.1.3. Đưa ứng dụng ra Internet và vận hành
+Bước 8: Nginx nhận request từ domain, chuyển tiếp vào container và xử lý HTTPS.
+Bước 9: Team theo dõi log, metric và rollback nếu bản mới có lỗi.
+4.2. Các khối kiến thức trong lộ trình
+Khối kiến thức
+Cần hiểu gì?
+Dùng khi nào trong DevOps?
+Linux/WSL
+Điều hướng thư mục, quản lý file, quyền, process, network
+Khi thao tác server và debug lỗi hệ thống
+Pipe & Redirect
+stdin, stdout, stderr, >, >>, |, grep, find
+Khi đọc log, lọc dữ liệu và tự động hóa command line
+Vim
+Normal/Insert/Command mode, lưu, thoát, tìm kiếm
+Khi SSH vào server và sửa file cấu hình
+Bash Script
+Shebang, biến, tar, cron, log, exit code
+Khi tự động backup, cài đặt, kiểm tra hệ thống
+Git/GitHub
+Working directory, staging area, commit, push
+Khi quản lý mã nguồn và kích hoạt CI/CD
+Networking/SSH
+IP, port, public/private IP, SSH key
+Khi truy cập server và mở dịch vụ ra Internet
+Nginx
+Web server, reverse proxy, HTTPS, domain routing
+Khi đưa ứng dụng Docker ra production
+Docker
+Image, container, run, logs, exec, port mapping
+Khi đóng gói và chạy app nhất quán
+CI/CD
+Pipeline tự động sau git push
+Khi build, push image và deploy lên server
+AWS/Domain/HTTPS
+EC2, Security Group, Elastic IP, DNS, Certbot
+Khi triển khai website thật với domain
+5. Các lệnh / cú pháp / thao tác quan trọng
+5.1. Linux/WSL: thư mục, file và quyền
+Lệnh / cú pháp
+Ý nghĩa
+Ví dụ sử dụng
+Ghi chú
+pwd
+Xem thư mục hiện tại
+pwd
+Dùng khi cần biết mình đang đứng ở đâu
+ls, ls -l, ls -la
+Liệt kê file/thư mục
+ls -la
+ls -la hiển thị cả file ẩn
+cd <thu_muc>
+Di chuyển thư mục
+cd Documents
+cd .. về thư mục cha, cd ~ về home
+touch <file>
+Tạo file rỗng
+touch index.html
+Thường dùng khi tạo file nhanh
+cat, less, head, tail
+Xem nội dung file
+tail -f app.log
+tail -f dùng để xem log realtime
+cp, mv, rm
+Copy, di chuyển/đổi tên, xóa file
+mv old.txt new.txt
+rm xóa thật, không vào Recycle Bin
+mkdir, mkdir -p
+Tạo thư mục
+mkdir -p app/src/components
+-p tạo nhiều cấp nếu chưa tồn tại
+rm -r <thu_muc>
+Xóa thư mục và nội dung
+rm -r old-project
+Rất cẩn thận với thư mục đích
+du -sh <thu_muc>
+Xem dung lượng thư mục
+du -sh node_modules
+Hữu ích khi disk đầy
+tree
+Hiển thị cây thư mục
+tree
+Nếu chưa có: sudo apt install tree
+ls -l
+Xem quyền file
+ls -l script.sh
+Ví dụ -rwxr-xr--
+chmod +x <file>
+Cấp quyền chạy
+chmod +x deploy.sh
+Dùng cho script
+chmod 755 <file>
+Quyền phổ biến cho script
+chmod 755 deploy.sh
+User rwx, group rx, others rx
+chmod 644 <file>
+Quyền phổ biến cho file thường
+chmod 644 config.txt
+User đọc/ghi, người khác chỉ đọc
+chown user:user <file>
+Đổi chủ sở hữu
+sudo chown ubuntu:ubuntu app.log
+Cần sudo khi đổi file hệ thống
+BÀI 2: DÒNG CHẢY DỮ LIỆU (PIPE & REDIRECT) & CÔNG CỤ TÌM KIẾM THẦN THÁNH
+Linux: "Mọi thứ trong Linux đều là File" và cách chúng ta điều hướng dòng chảy của dữ liệu “
+1. Bản chất của Stream (Dòng dữ liệu)
+Khi một lệnh Linux chạy, nó luôn mở ra 3 "đường ống" dữ liệu:
+Stream
+Số
+Ý nghĩa
+Stdin 
+0
+Dữ liệu đi vào 
+Stdout 
+1
+Kết Quả Bình Thường
+Stderr 
+2
+Thông Báo Lỗi
+2. Kỹ thuật điều hướng (Redirect) và Kết nối (Pipe)
+Kỹ thuật 1: Ghi đè (>) và Ghi nối đuôi (>>)
+Thay vì in kết quả của một lệnh ra màn hình (stdout), ta có thể "bẻ lái" đường ống đó, bắt nó chui vào một file text để lưu lại.
+> : Ghi đè. Nếu file đã có dữ liệu, nó sẽ xóa sạch đi và ghi mới.
+Ví dụ: echo "Hello" > hello.txt (Tạo file hello.txt chứa chữ Hello).
+>> : Ghi nối đuôi. Giữ lại dữ liệu cũ, ghi thêm vào cuối file.
+Ví dụ: echo "World" >> hello.txt (File bây giờ sẽ có 2 dòng: Hello và World).
+Ta dùng khi nào: Để gom log của ứng dụng. Ví dụ: chay_script.sh >> /var/log/my_app.log.
+Kỹ thuật 2: Đường ống thần kỳ Pipe (|)
+Dấu gạch đứng | (nằm trên phím Enter) dùng để lấy đầu ra (stdout) của lệnh phía trước làm đầu vào (stdin) cho lệnh phía sau. Nó cho phép em kết hợp nhiều lệnh đơn giản thành một bộ lọc cực kỳ mạnh mẽ.
++ Ví dụ sơ khai: Lệnh_A | Lệnh_B
+3. Hai "Thám tử" tìm kiếm: grep và find
+Lệnh 1: grep (Global Regular Expression Print)
+- Dùng để làm gì: Tìm kiếm một từ khóa hoặc một chuỗi cụ thể bên trong file hoặc bên trong một luồng dữ liệu.
+- Syntax: grep "từ_khóa" ten_file
+- Options quan trọng:
+-i (Ignore case): Tìm kiếm không phân biệt chữ hoa chữ thường.
+-n (Line number): Hiển thị số dòng chứa từ khóa đó để dễ tìm.
+ví dụ thực chiến với Pipe: Tưởng tượng file log của em dài 1 triệu dòng, em không thể mở nano lên đọc được. Em dùng Pipe kết hợp với grep:
+Bash
+cat /var/log/nginx/error.log | grep -i "critical"
+Ý nghĩa: Lệnh cat sẽ đọc toàn bộ file log ra, nhưng thay vì xả 1 triệu dòng lên màn hình, dấu | sẽ chặn lại và đẩy đống chữ đó sang cho lệnh grep. Lệnh grep lọc đúng những dòng có chữ "critical" (bất kể hoa thường) để in ra cho em xem.
+Lệnh 2: find
+- Dùng để làm gì: Tìm kiếm vị trí của file hoặc thư mục dựa trên tên, kích thước, hoặc ngày tạo (Khác với grep là tìm chữ bên trong file).
+- Syntax: find [nơi_muốn_tìm] -name "tên_file"
+- Ví dụ: find /home -name "*.conf" (Tìm tất cả các file có đuôi .conf nằm trong thư mục /home).
+Bài 3 : Lệnh Vim — Trình soạn thảo file trong Terminal
+1. Vim là gì?
+- Vim là trình soạn thảo văn bản chạy trong terminal Linux/WSL.
+Dùng để sửa các file như:
+vim note.txtvim deploy.shvim ~/.bashrcsudo vim /etc/nginx/nginx.conf
+Trong DevOps, Vim hay dùng khi SSH vào server và cần sửa file cấu hình trực tiếp.
+2. Điểm quan trọng nhất của Vim
+- Vim khác Notepad/Nano vì nó có nhiều chế độ làm việc.
+Có 3 chế độ cần nhớ:
+Chế độ
+Dùng để làm gì
+Normal Mode
+Di chuyển, xóa, copy, dán, chạy lệnh
+Insert Mode
+Gõ và sửa nội dung
+Command Mode
+Lưu, thoát, tìm kiếm, thay thế
+Khi vừa mở Vim, mặc định bạn đang ở Normal Mode, nên chưa gõ chữ được ngay.
+3. Quy trình dùng Vim cơ bản
+Mở file → nhấn i → gõ nội dung → nhấn Esc → gõ :wq → Enter
+Ví dụ:
+vim note.txt
+Trong Vim:
+1. Nhấn i để bắt đầu gõ2. Gõ nội dung3. Nhấn Esc để thoát chế độ gõ4. Gõ :wq để lưu và thoát5. Nhấn Enter
+4. Các phím sống còn trong Vim
+Phím/Lệnh
+Ý nghĩa
+i    = gõ chữEsc  = dừng gõ:w   = lưu:q   = thoát:wq  = lưu + thoát:q!  = thoát không lưu
+5. Di chuyển trong Vim
+Trong Normal Mode, có thể dùng phím mũi tên hoặc các phím sau:
+Phím
+Ý nghĩa
+h
+Sang trái
+j
+Xuống
+k
+Lên
+l
+Sang phải
+gg
+Về đầu file
+G
+Xuống cuối file
+0
+Về đầu dòng
+$
+Về cuối dòng
+Người mới có thể dùng phím mũi tên cho dễ.
+6. Chèn nội dung trong Vim
+Phím
+Ý nghĩa
+i
+Gõ trước vị trí con trỏ
+a
+Gõ sau vị trí con trỏ
+o
+Tạo dòng mới bên dưới
+O
+Tạo dòng mới bên trên
+Cần nhớ nhất:
+i = bắt đầu gõo = tạo dòng mới bên dướiEsc = dừng gõ
+7. Xóa, copy, dán trong Vim
+Các lệnh này dùng trong Normal Mode.
+Lệnh
+Ý nghĩa
+x
+Xóa 1 ký tự
+dd
+Xóa/cắt dòng hiện tại
+3dd
+Xóa 3 dòng
+yy
+Copy dòng hiện tại
+3yy
+Copy 3 dòng
+p
+Dán xuống dưới
+u
+Hoàn tác / undo
+Ví dụ:
+dd = xóa dòngu  = khôi phục lại dòng vừa xóa
+8. Tìm kiếm trong Vim
+Cú pháp:
+/từ_khóa
+Ví dụ tìm chữ server_name:
+/server_name
+Sau đó:
+Phím
+Ý nghĩa
+n
+Tới kết quả tiếp theo
+N
+Quay lại kết quả trước
+9. Hiện số dòng trong Vim
+Khi sửa file cấu hình, nên bật số dòng:
+:set number
+Hoặc viết ngắn:
+:set nu
+Tắt số dòng:
+:set nonumber
+10. Đi đến dòng cụ thể
+Trong Vim, muốn tới dòng số 20:
+:20
+Mở file từ terminal tại dòng 20:
+vim +20 file.txt
+Ví dụ:
+sudo vim +17 /etc/nginx/sites-available/app.trongdev.me
+11. Tìm và thay thế
+Cú pháp:
+:%s/từ_cũ/từ_mới/g
+Ví dụ:
+:%s/localhost/app.trongdev.me/g
+Ý nghĩa:
+Thay toàn bộ localhost thành app.trongdev.me trong file
+Nếu muốn xác nhận từng chỗ trước khi thay:
+:%s/localhost/app.trongdev.me/gc
+12. Lỗi thường gặp khi dùng Vim
+Lỗi
+Nguyên nhân
+Cách xử lý
+Mở Vim nhưng không gõ được
+Đang ở Normal Mode
+Nhấn i
+Gõ :wq nhưng hiện vào file
+Đang ở Insert Mode
+Nhấn Esc rồi gõ lại
+Không biết thoát Vim
+Chưa biết lệnh thoát
+Esc → :q! → Enter
+Lưu bị Permission denied
+Thiếu quyền root
+Mở bằng sudo vim file
+Sửa nhầm file
+Chưa muốn lưu
+Esc → :q!
+BÀI 4 : NHẬP MÔN BASH SCRIPTING - TỰ ĐỘNG HÓA CHO DEVOPS
+1. Bash Script là gì 
+Bình thường,  gõ từng lệnh (cd, mkdir, cp) rồi gõ Enter, máy chạy xong mình mới gõ lệnh tiếp theo. Bash Script đơn giản là một file văn bản chứa một loạt các câu lệnh Linux được xếp hàng từ trên xuống dưới. Khi em "châm ngòi" chạy file đó, Linux sẽ tự động quét từ dòng 1 đến dòng cuối cùng và thực thi liên tục mà không cần em phải ngồi gõ tay nữa.
+DevOps dùng Bash Script để: Tự động backup dữ liệu mỗi đêm, tự động cài phần mềm khi có server mới, tự động kiểm tra xem server có bị hết RAM không,...
+1.1 Các quy tắc "vàng" khi viết Script
+Mở nano biến_thành_script.sh lên, hai dòng đầu tiên luôn phải tuân theo quy tắc:
+Quy tắc 1: Shebang (#!/bin/bash)
+Dòng đầu tiên của MỌI file script luôn luôn phải là #!/bin/bash.
++ Bản chất: Nó báo cho Linux biết: "Ê hệ điều hành, đây không phải file văn bản thường đâu nha. Hãy lôi trình dịch Bash trong thư mục /bin/bash ra để chạy đống lệnh phía dưới này cho tao!".
+Quy tắc 2: Biến số (Variables) trong Bash
+Cách tạo biến: TEN_BIEN="Giá trị" (Lưu ý: KHÔNG ĐƯỢC CÓ DẤU CÁCH ở hai bên dấu =). Cách gọi biến: Dùng dấu $ trước tên biến.
+Ví dụ: ```bash 
+NAME="Trong" 
+echo "Chao em, $NAME"
+2. Ý tưởng của script backup
+Một script backup thường làm các việc sau:
+1. Chọn thư mục cần backup2. Chọn nơi lưu backup3. Tạo tên file theo ngày giờ4. Nén dữ liệu thành file .tar.gz5. Ghi log6. Xóa backup cũ nếu cần
+3. Lệnh tar dùng để backup
+Cú pháp:
+tar -czf ten_file_backup.tar.gz thu_muc_can_backup
+Ý nghĩa:
+Tùy chọn
+Ý nghĩa
+-c
+Tạo file nén
+-z
+Nén bằng gzip
+-f
+Chỉ định tên file
+Ví dụ:
+tar -czf devops-lab.tar.gz ~/devops-lab
+4. Giải thích script
+Lệnh / cú pháp
+Ý nghĩa
+Ví dụ sử dụng
+Ghi chú
+#!/bin/bash
+Khai báo script chạy bằng Bash.
+#!/bin/bash
+Luôn đặt ở dòng đầu.
+TEN_BIEN="giá trị"
+Tạo biến trong Bash.
+NAME="Trong"
+Không có dấu cách quanh =.
+echo "$BIEN"
+In hoặc dùng giá trị biến.
+echo "Chao em, $NAME"
+Dùng $ trước tên biến.
+chmod +x script.sh
+Cấp quyền chạy.
+chmod +x backup.sh
+Cần trước khi ./backup.sh.
+./script.sh
+Chạy script trong thư mục hiện tại.
+./backup.sh
+Dấu ./ rất quan trọng.
+tar -czf
+Nén thư mục thành file .tar.gz.
+tar -czf devops-lab.tar.gz ~/devops-lab
+-c tạo, -z gzip, -f tên file.
+crontab -e
+Mở lịch cron.
+crontab -e
+Dùng để chạy tự động theo giờ.
+0 23 * * *
+Chạy lúc 23:00 mỗi ngày.
+0 23 * * * /home/user/backup.sh
+WSL chỉ chạy khi WSL hoạt động.
+5. Script backup có log và xóa file cũ
+#!/bin/bash
+SOURCE_DIR="$HOME/devops-lab"
+BACKUP_DIR="$HOME/backups"
+LOG_FILE="$BACKUP_DIR/backup.log"
+DATE=$(date +"%Y-%m-%d_%H-%M-%S")
+BACKUP_FILE="devops-lab-$DATE.tar.gz"
+KEEP_DAYS=7
+mkdir -p "$BACKUP_DIR"
+echo "===== Backup started at $(date) =====" >> "$LOG_FILE"
+if [ ! -d "$SOURCE_DIR" ]; then
+    echo "ERROR: Source directory not found: $SOURCE_DIR" >> "$LOG_FILE"
+    exit 1
+fi
+tar -czf "$BACKUP_DIR/$BACKUP_FILE" "$SOURCE_DIR"
+if [ $? -eq 0 ]; then
+    echo "SUCCESS: $BACKUP_FILE" >> "$LOG_FILE"
+else
+    echo "ERROR: Backup failed" >> "$LOG_FILE"
+    exit 1
+fi
+find "$BACKUP_DIR" -name "devops-lab-*.tar.gz" -type f -mtime +$KEEP_DAYS -delete
+echo "===== Backup finished at $(date) =====" >> "$LOG_FILE"
+echo "" >> "$LOG_FILE"
+6. Tự động backup bằng cron
+Mở cron:
+crontab -e
+Chạy backup mỗi ngày lúc 23:00:
+0 23 * * * /home/dinh_trong/backup.sh
+Cấu trúc cron:
+phút giờ ngày tháng thứ command
+Ví dụ:
+Cron
+Ý nghĩa
+0 23 * * *
+23:00 mỗi ngày
+*/30 * * * *
+Mỗi 30 phút
+0 0 * * 0
+00:00 Chủ nhật
+Lưu ý: Trên WSL, cron chỉ chạy khi WSL đang hoạt động. Trên server Linux thật thì cron ổn định hơn.
+7. Lệnh cần nhớ
+chmod +x backup.sh./backup.shls -lh ~/backupscat ~/backups/backup.logtar -xzf file-backup.tar.gzfind ~/backups -name "*.tar.gz" -mtime +7
+8. Quy trình hoạt động tổng quát
+Script hoạt động theo thứ tự:
+Khai báo thư mục cần backup, thư mục lưu backup và file log.
+Tạo thư mục backup nếu chưa có.
+Ghi log thời gian bắt đầu.
+Kiểm tra thư mục nguồn có tồn tại không.
+Nếu tồn tại, tiến hành nén thư mục thành file .tar.gz.
+Kiểm tra quá trình backup thành công hay thất bại.
+Xóa các file backup cũ hơn 7 ngày.
+Ghi log thời gian kết thúc.
+BÀI 5: QUẢN LÝ MÃ NGUỒN VỚI GIT & GITHUB (Công cụ quan trọng)
+đã biết viết Script. Nhưng nếu vô tình em sửa nhầm làm hỏng file script đang chạy ngon lành, hoặc ổ cứng máy em bị hỏng thì sao? Đó là lý do Git ra đời.
+1. Bản chất của Git là gì?
+Hãy tưởng tượng Git giống như một "Cỗ máy thời gian". Nó chụp lại ảnh (Snapshot) toàn bộ mã nguồn của em tại một thời điểm. Nếu sau này em sửa code bị lỗi, em chỉ cần 1 lệnh là có thể "quay du hành thời gian" về trạng thái hoàn hảo trước đó.
+Có 3 khu vực (Môi trường) trong Git mà em bắt buộc phải hiểu bản chất:
+Working Directory (Thư mục làm việc): Nơi em đang gõ gõ sửa sửa file (thư mục devops_lab2 của em).
+Staging Area (Sân chờ): Nơi em "nhặt" những file đã sửa xong xuôi, chuẩn bị đem đi lưu trữ. (Giống như em cho hàng vào giỏ siêu thị nhưng chưa ra quầy thanh toán).
+Local Repository (Kho lưu trữ trên máy): Nơi Git chính thức đóng băng và lưu trữ lịch sử các file đó vào ổ cứng.
+2. Các câu lệnh Git sinh tồn
+Trước khi dùng Git, em phải khai báo "Danh tính" của mình với nó (chỉ cần làm 1 lần duy nhất trên máy):
+Bash
+git config --global user.name "Tên Của Em"
+git config --global user.email "email_cua_em@gmail.com"
+Command 1: git init
+Dùng để làm gì: Biến một thư mục bình thường thành một "Kho chứa của Git" (Git Repository). Nó sẽ tạo ra một thư mục ẩn .git bên trong để âm thầm theo dõi mọi hành động của em.
+Command 2: git status
+Dùng để làm gì: "Hỏi thăm" xem Git đang thấy những file nào bị thay đổi, file nào chưa được lưu. DevOps luôn gõ lệnh này trước và sau khi làm bất cứ trò gì với Git.
+Command 3: git add [ten_file]
+Dùng để làm gì: Đưa file từ Thư mục làm việc vào Sân chờ (Staging Area).
+Mẹo: git add . (Thêm TẤT CẢ các file có thay đổi vào sân chờ).
+Command 4: git commit -m "Lời nhắn"
+Dùng để làm gì: Chính thức bấm nút "Chụp ảnh lưu trữ" các file ở Sân chờ vào Kho lưu trữ. Lời nhắn (-m) phải ghi rõ em đã làm gì (Ví dụ: git commit -m "feat: add auto backup script").
+BÀI 6 : COMPUTER NETWORKING - BẢN CHẤT CỦA MẠNG MÁY TÍNH (PHẦN 1)
+1. Bản chất của IP Address và Port (Cổng)
+Hãy tưởng tượng một Server (máy tính) giống như một Tòa chung cư.
+- IP Address (Địa chỉ IP): Chính là Địa chỉ của tòa chung cư đó (Ví dụ: số 123 đường ABC). Nhờ có IP, các máy tính trên thế giới mới tìm thấy nhau.
+- Port (Cổng): Chính là Số phòng trong tòa chung cư đó. Một máy tính có thể chạy cùng lúc nhiều phần mềm (Nginx, MySQL, SSH). Làm sao gói tin internet biết phải chui vào phần mềm nào? Nhờ vào số Port!
+Ví dụ: Cổng 80 và 443 mặc định dành cho Web (Nginx). Cổng 22 dành cho kết nối từ xa (SSH). Cổng 5432 dành cho Database (PostgreSQL).
+2. Các câu lệnh "Bác sĩ khám mạng"
+Lệnh / cú pháp
+Ý nghĩa
+Ví dụ sử dụng
+Ghi chú
+ip a
+Xem card mạng và IP.
+ip a
+Viết đầy đủ: ip address.
+ping <domain>
+Kiểm tra máy đích có phản hồi không.
+ping google.com
+Ctrl + C để dừng.
+ss -tuln
+Xem các port đang listen.
+ss -tuln
+-t TCP, -u UDP, -l listening, -n numeric.
+ss -tulpn | grep :3000
+Xem process chiếm port 3000.
+ss -tulpn | grep :3000
+Cần sudo trên một số hệ thống để thấy process.
+curl <url>
+Gửi request HTTP nhanh.
+curl http://localhost:3000
+Dùng để test API/app.
+nslookup <domain>
+Kiểm tra domain trỏ về IP nào.
+nslookup app.trongdev.me
+Hữu ích khi cấu hình DNS.
+Command 3: ss (Socket Statistics - Thay thế cho lệnh netstat cũ)
+- Dùng để làm gì: Kiểm tra xem trên máy em đang có những Port (Số phòng) nào đang mở và phần mềm nào đang chiếm giữ cổng đó.
+- Syntax thần chú của DevOps: ss -tuln
+-t (TCP): Lọc các kết nối dạng TCP (mạng web, database thường dùng).
+-u (UDP): Lọc các kết nối dạng UDP.
+-l (Listening): Chỉ hiện các Port đang mở và ngồi đợi kết nối.
+-n (Numeric): Hiện thị dạng số (ví dụ hiện :80 thay vì hiện chữ http).
+3. Quy trình cách hoạt động
++ Xem IP hiện tại bằng ip a hoặc ip address.
++ Kiểm tra kết nối tới domain/IP bằng ping.
++ Kiểm tra port đang mở bằng ss.
++ Nếu app không vào được, kiểm tra app có listen đúng port không.
++ Sau đó kiểm tra firewall hoặc Security Group nếu chạy trên cloud.
+BÀI 7 : SSH - "CHÌA KHÓA VẠN NĂNG" ĐIỀU KHIỂN SERVER TỪ XA
+Tưởng tượng sau này đi làm, công ty em thuê một cái Server vật lý đặt tại trung tâm dữ liệu ở Mỹ, hoặc mua Cloud của AWS. Em ngồi ở Việt Nam (hoặc đang ngồi quán cafe), làm sao em gõ được lệnh mkdir, nano, systemctl lên cái máy tính bên Mỹ đó?
+1. Bản chất của SSH
+- SSH là một giao thức mạng cho phép em mở một cửa sổ Terminal trên máy của em, nhưng mọi câu lệnh em gõ đều được mã hóa, truyền qua Internet, và chạy trên cái Server đích.
+- SSH hoạt động theo mô hình Client - Server. Trên server đích phải chạy một Service tên là sshd (SSH Daemon), mặc định nó sẽ túc trực ở Cổng 22 (Port 22) để chờ kết nối vào.
+2. Cú pháp kết nối SSH
+Để chui vào một server khác, em cần biết 3 thứ: Tên User của server đó, Địa chỉ IP của nó, và Mật khẩu.
+Syntax: ssh [tên_user_đích]@[địa_chỉ_IP_đích]
+Ví dụ: ssh admin@192.168.1.100
+Trên hệ thống Server thực tế, DevOps KHÔNG BAO GIỜ dùng mật khẩu để đăng nhập SSH. Mật khẩu có thể bị đoán mò (Brute-force attack) hoặc bị nhìn trộm. Chúng ta dùng SSH Keys (Chìa khóa mã hóa).
+3. Bản chất của SSH Key (Ổ khóa và Chìa khóa)
+Em sẽ tạo ra một cặp khóa đi liền với nhau:
+- Private Key (Chìa khóa bí mật): File này em cất kỹ trong máy tính của em, không cho ai biết.
+- Public Key (Ổ khóa công khai): File này em đem đi sao chép, ném lên mọi Server mà em muốn điều khiển (hoặc ném lên GitHub).
+Cách hoạt động: Khi em gõ lệnh ssh kết nối vào Server, Server sẽ lấy cái Ổ khóa (Public Key) ra test. Nếu em có Chìa khóa (Private Key) khớp với ổ khóa đó, Server tự động mở cửa cho em vào ngay lập tức mà không cần hỏi mật khẩu. Cực kỳ an toàn và tiện lợi cho tự động hóa (Automation).
+4. Các lệnh tạo và quản lý Key
+Command 1: ssh-keygen
+- Dùng để làm gì: Chế tạo ra cặp khóa (Public & Private Key).
+- Cách dùng cơ bản: Gõ ssh-keygen rồi cứ thế ấn Enter liên tục cho đến khi xong (chấp nhận các giá trị mặc định).
+- Kết quả: Nó sẽ sinh ra 2 file nằm giấu kỹ trong thư mục ẩn ~/.ssh/:
+- id_rsa (Đây là Private Key - Tuyệt đối không gửi cho ai).
+- id_rsa.pub (Đây là Public Key - Sẽ đem copy đi nơi khác).
+Command 2: ssh-copy-id
+- Dùng để làm gì: Copy cái Public Key của em nhét vào Server đích một cách tự động và an toàn.
+- Syntax: ssh-copy-id [tên_user]@[đị_chỉ_IP_Server]
+ 
+BÀI 8 : DOCKER THỰC HÀNH - IMAGE, CONTAINER, DOCKERFILE, VOLUME, NETWORK VÀ DOCKER COMPOSE
+1. Mục tiêu bài học
+Sau bài này, người học cần hiểu được:
++ Docker dùng để đóng gói và chạy ứng dụng trong container.
++ Phân biệt được Dockerfile, Image, Container, Docker Hub, Volume và Network.
++ Biết các lệnh Docker quan trọng dùng trong thực tế.
++ Biết build image, chạy container, xem log, vào container để debug.
++ Biết vì sao cần port mapping khi chạy ứng dụng bằng Docker.
++ Biết dùng Docker Compose để quản lý nhiều container dễ hơn.
++ Biết các lỗi Docker thường gặp và cách kiểm tra.
+2. Bảng khái niệm Docker quan trọng
+Khái niệm
+Ý nghĩa
+Ví dụ
+Dockerfile
+File công thức dùng để tạo Docker Image
+Dockerfile
+Image
+Bản đóng gói read-only của ứng dụng và môi trường chạy
+nginx:alpine, ndt2k7/trong-website:v2
+Container
+Phiên bản đang chạy được tạo ra từ Image
+my_web_container
+Docker Hub
+Nơi lưu trữ và chia sẻ Docker Image trên Internet
+hub.docker.com
+Registry
+Kho lưu image. Docker Hub là một loại registry phổ biến
+Docker Hub, GitHub Container Registry
+Volume
+Nơi lưu dữ liệu bền vững, không mất khi container bị xóa
+mysql_data:/var/lib/mysql
+Network
+Mạng riêng để các container giao tiếp với nhau
+app-network
+Port Mapping
+Ánh xạ cổng từ máy host vào container
+-p 8080:80
+Docker Compose
+Công cụ quản lý nhiều container bằng file .yml
+docker-compose.yml
+3. Công thức cốt lõi cần nhớ
+Dockerfile → Image → Container
+Ý nghĩa:
+Dockerfile
+↓
+docker build
+↓
+Docker Image
+↓
+docker run
+↓
+Docker Container
+Ví dụ với website:
+Code HTML/CSS/JS
+↓
+Dockerfile
+↓
+Image: ndt2k7/trong-website:v2
+↓
+Container: my_web_container
+↓
+Website chạy trên server
+4. Phân biệt Image và Container
+Tiêu Chí
+Image
+Container
+Bản chất
+Bản đóng gói , khuôn mẫu
+Phiên bản đang chạy từ image
+Trạng thái
+Không chạy
+Đang chạy hoặc đã dừng
+Có thể sửa trực tiếp không ? 
+Không nên sửa trực tiếp
+Có thể thao tác tạm thời
+Ví dụ
+nginx:alpine
+my_web_container
+Lệnh xóa
+docker rmi <image>
+docker rm <container>
+Lệnh xem
+docker images
+docker ps
+Cách nhớ:
+Image giống như bản thiết kế.
+Container giống như căn nhà được xây từ bản thiết kế đó.
+Hoặc:
+Image = Class
+Container = Object
+5. Các lệnh Docker quan trọng
+5.1. Kiểm tra Docker
+docker --version
+Dùng để xem Docker đã được cài chưa và đang dùng phiên bản nào.
+5.2. Xem danh sách image
+docker images
+Dùng để xem các Docker Image đang có trên máy.
+Ví dụ kết quả:
+REPOSITORY              TAG       IMAGE ID       CREATED        SIZE
+nginx                              latest         abc123            2 weeks ago      190MB
+ndt2k7/trong-website     v2             def456         2 days ago       48MB
+5.3. Tải image từ Docker Hub
+docker pull nginx
+Hoặc chỉ định tag cụ thể:
+docker pull nginx:alpine
+Ý nghĩa:
+Docker Hub
+↓
+docker pull
+↓
+Máy local hoặc server
+5.4. Chạy container
+docker run -d --name my_web -p 8080:80 nginx
+Giải thích:
+Thành phần
+Ý nghĩa
+docker run
+Tạo và chạy container mới
+-d
+Chạy nền
+--name my_web
+Đặt tên container là my_web
+-p 8080:80
+Map port 8080 của máy host vào port 80 trong container
+nginx
+Image dùng để tạo container
+5.5. Xem container đang chạy
+docker ps
+Xem tất cả container, kể cả container đã dừng:
+docker ps -a
+5.6. Dừng container
+docker stop my_web
+Hoặc dùng Container ID:
+docker stop <container_id>
+5.7. Xóa container
+docker rm my_web
+Lưu ý:
+docker rm chỉ xóa container.
+Nó không xóa image.
+Nếu container đang chạy, cần dừng trước:
+docker stop my_web
+docker rm my_web
+5.8. Xóa image
+docker rmi nginx
+Hoặc:
+docker rmi ndt2k7/trong-website:v2
+Lưu ý: Không xóa được image nếu vẫn còn container đang dùng image đó. Cần xóa container trước.
+5.9. Xem log container
+docker logs my_web
+Xem log realtime:
+docker logs -f my_web
+Xem 100 dòng cuối:
+docker logs --tail 100 my_web
+Đây là lệnh rất quan trọng khi debug lỗi container.
+5.10. Vào bên trong container
+docker exec -it my_web /bin/sh
+Hoặc nếu container có Bash:
+docker exec -it my_web /bin/bash
+Dùng khi cần kiểm tra file, thư mục, package hoặc cấu hình bên trong container.
+Ví dụ:
+docker exec -it my_web /bin/sh
+ls
+pwd
+cat /etc/nginx/nginx.conf
+5.11. Kiểm tra chi tiết container hoặc image
+docker inspect my_web
+Lệnh này hiển thị rất nhiều thông tin như:
++ IP nội bộ của container.
++ Network container đang dùng.
++ Volume đang mount.
++ Port mapping.
++ Environment variables.
++ Image ID.
+5.12. Đăng nhập Docker Hub
+docker login
+Sau đó nhập username và password/token của Docker Hub.
+Dùng khi muốn push image lên Docker Hub.
+5.13. Build image từ Dockerfile
+docker build -t my-website:v1 .
+Giải thích:
+Thành phần
+Ý nghĩa
+docker build
+Build image
+-t my-website:v1
+Đặt tên và tag cho image
+.
+Build từ thư mục hiện tại
+Ví dụ thực tế:
+docker build -t ndt2k7/trong-website:v2 .
+5.14. Push image lên Docker Hub
+docker push ndt2k7/trong-website:v2
+Quy trình:
+Local/GitHub Actions
+↓
+docker build
+↓
+Docker Image
+↓
+docker push
+↓
+Docker Hub
+6. Dockerfile cơ bản
+Dockerfile là file hướng dẫn Docker cách tạo ra image.
+Ví dụ website tĩnh dùng Nginx:
+FROM nginx:alpin
+COPY . /usr/share/nginx/html
+EXPOSE 80
+Giải thích:
+Dòng
+Ý nghĩa
+FROM nginx:alpine
+Lấy image nền là Nginx bản nhẹ
+COPY . /usr/share/nginx/html
+Copy toàn bộ code website vào thư mục web của Nginx
+EXPOSE 80
+Khai báo container dùng port 80
+Build image:
+docker build -t ndt2k7/trong-website:v2 .
+Chạy container:
+docker run -d \
+  --name my_web_container \
+  -p 8080:80 \
+  ndt2k7/trong-website:v2
+Kiểm tra:
+curl http://localhost:8080
+7. Port Mapping trong Docker
+Container có mạng riêng. Ứng dụng bên trong container có thể chạy ở port 80, nhưng bên ngoài chưa truy cập được nếu không map port.
+Cú pháp:
+-p <port_may_host>:<port_trong_container>
+Ví dụ:
+docker run -d -p 8080:80 nginx
+Ý nghĩa:
+Máy host port 8080
+↓
+Container port 80
+↓
+Nginx trong container
+Trong dự án thực tế:
+-p 8080:80
+Nghĩa là:
+AWS EC2 port 8080
+↓
+Container port 80
+↓
+Website
+8. Vì sao không nên để Docker chiếm port 80 khi dùng Nginx ngoài server?
+Nếu chạy:
+docker run -d -p 80:80 nginx
+Docker sẽ chiếm port 80 của server.
+Khi đó Nginx ngoài server hoặc Certbot có thể bị lỗi vì port 80 đã bị Docker dùng.
+Mô hình nên dùng trong production nhỏ:
+Internet
+↓
+Nginx trên EC2 giữ port 80/443
+↓
+Docker Container chạy nội bộ qua port 8080
+Container nên chạy:
+docker run -d \
+  --name my_web_container \
+  -p 8080:80 \
+  ndt2k7/trong-website:v2
+Nginx proxy vào:
+location / {
+    proxy_pass http://127.0.0.1:8080;
+}
+Sơ đồ:
+User
+↓
+https://app.trongdev.me
+↓
+Nginx 443
+↓
+localhost:8080
+↓
+Docker Container 80
+9. Docker Volume
+9.1. Volume là gì?
+Volume là nơi lưu dữ liệu bền vững cho container.
+Mặc định, nếu dữ liệu nằm trong container và container bị xóa, dữ liệu có thể mất.
+Volume giúp tách dữ liệu ra khỏi vòng đời container.
+Ví dụ với MySQL:
+docker volume create mysql_data
+Chạy MySQL với volume:
+docker run -d \
+  --name mysql_db \
+  -e MYSQL_ROOT_PASSWORD=123456 \
+  -v mysql_data:/var/lib/mysql \
+  mysql:8
+Ý nghĩa:
+Dữ liệu MySQL
+↓
+/var/lib/mysql trong container
+↓
+mysql_data volume trên Docker host
+Container có thể bị xóa, nhưng volume vẫn còn.
+9.2. Các lệnh volume quan trọng
+Xem danh sách volume:
+docker volume ls
+Tạo volume:
+docker volume create my_data
+Xem chi tiết volume:
+docker volume inspect my_data
+Xóa volume:
+docker volume rm my_data
+Cảnh báo: Không xóa volume database nếu chưa backup.
+10. Docker Network
+10.1. Network là gì?
+Docker Network giúp các container giao tiếp với nhau.
+Ví dụ có 3 container:
+frontend
+backend
+database
+Nếu cùng nằm trong một Docker network, backend có thể gọi database bằng tên container:
+database:3306
+Không cần nhớ IP nội bộ của container.
+10.2. Các lệnh network quan trọng
+Xem danh sách network:
+docker network ls
+Tạo network:
+docker network create app-network
+Chạy container trong network:
+docker run -d \
+  --name backend \
+  --network app-network \
+  backend-image
+Chạy database trong cùng network:
+docker run -d \
+  --name database \
+  --network app-network \
+  mysql:8
+Backend có thể kết nối database bằng:
+database:3306
+11. Docker Compose
+11.1. Docker Compose là gì?
+Docker Compose là công cụ giúp quản lý nhiều container bằng một file cấu hình .yml.
+Thay vì gõ nhiều lệnh docker run, ta viết vào file:
+docker-compose.yml
+Sau đó chạy:
+docker compose up -d
+Dừng toàn bộ:
+docker compose down
+11.2. Ví dụ Docker Compose cho website tĩnh
+File docker-compose.yml:
+services:
+  web:
+    image: ndt2k7/trong-website:v2
+    container_name: my_web_container
+    ports:
+      - "8080:80"
+    restart: unless-stopped
+Chạy:
+docker compose up -d
+Kiểm tra:
+docker ps
+curl http://localhost:8080
+Dừng:
+docker compose down
+11.3. Ví dụ Docker Compose có network và volume
+services:
+  web:
+    image: nginx:alpine
+    container_name: web
+    ports:
+      - "8080:80"
+    networks:
+      - app-network
+  mysql:
+    image: mysql:8
+    container_name: mysql_db
+    environment:
+      MYSQL_ROOT_PASSWORD: 123456
+      MYSQL_DATABASE: app_db
+    volumes:
+      - mysql_data:/var/lib/mysql
+    networks:
+      - app-network
+volumes:
+  mysql_data:
+networks:
+  app-network:
+Ý nghĩa:
+web và mysql cùng nằm trong app-network.
+mysql lưu dữ liệu vào mysql_data volume.
+12. Quy trình Docker trong CI/CD
+Quy trình thực tế:
+Developer viết code
+↓
+git push
+↓
+GitHub Actions chạy
+↓
+docker build
+↓
+docker push lên Docker Hub
+↓
+SSH vào AWS EC2
+↓
+docker pull image mới
+↓
+docker stop container cũ
+↓
+docker rm container cũ
+↓
+docker run container mới
+↓
+Nginx reverse proxy ra domain HTTPS
+Ví dụ lệnh deploy trên server:
+docker pull ndt2k7/trong-website:v2
+docker stop my_web_container || true
+docker rm my_web_container || true
+docker run -d \
+  --name my_web_container \
+  -p 8080:80 \
+  --restart unless-stopped \
+  ndt2k7/trong-website:v2
+Giải thích:
+Lệnh
+Ý nghĩa
+docker pull
+Tải image mới từ Docker Hub
+docker stop
+Dừng container cũ
+docker rm
+Xóa container cũ
+docker run
+Chạy container mới
+--restart unless-stopped
+Tự chạy lại container nếu server restart
+13. Bảng lệnh Docker ôn nhanh
+Lệnh
+Chức năng
+docker --version
+Xem phiên bản Docker
+docker images
+Xem danh sách image
+docker pull <image>
+Tải image
+docker build -t <name>:<tag> .
+Build image từ Dockerfile
+docker push <image>
+Push image lên registry
+docker ps
+Xem container đang chạy
+docker ps -a
+Xem tất cả container
+docker run -d --name <name> -p 8080:80 <image>
+Chạy container
+docker stop <container>
+Dừng container
+docker rm <container>
+Xóa container
+docker rmi <image>
+Xóa image
+docker logs <container>
+Xem log container
+docker logs -f <container>
+Xem log realtime
+docker exec -it <container> /bin/sh
+Vào trong container
+docker inspect <container>
+Xem chi tiết container
+docker volume ls
+Xem volume
+docker network ls
+Xem network
+docker compose up -d
+Chạy các service trong Compose
+docker compose down
+Dừng và xóa các service Compose
+14. Lỗi Docker thường gặp
+Lỗi
+Nguyên nhân
+Cách kiểm tra / sửa
+permission denied while trying to connect to Docker daemon
+User chưa có quyền dùng Docker
+Dùng sudo docker ... hoặc thêm user vào group docker
+pull access denied
+Sai tên image hoặc image private
+Kiểm tra lại tên image, tag, Docker Hub login
+port is already allocated
+Port đã bị service khác chiếm
+Chạy `sudo ss -tulpn
+Container vừa chạy đã tắt
+App lỗi hoặc command sai
+Xem docker logs <container>
+Không truy cập được website
+Sai port mapping hoặc app chưa listen
+Kiểm tra docker ps, curl localhost:8080
+Xóa container mất dữ liệu
+Dữ liệu nằm trong container, không dùng volume
+Dùng Docker Volume cho database
+docker compose không chạy
+Chưa cài Compose hoặc sai file YAML
+Kiểm tra docker compose version, sửa indent YAML
+Image quá nặng
+Dockerfile copy nhiều file rác
+Dùng .dockerignore, base image nhẹ như alpine
+GitHub Actions build fail
+Sai Dockerfile hoặc thiếu secret
+Xem log GitHub Actions
+Server pull image cũ
+Tag không đổi hoặc cache
+Dùng tag version rõ ràng như v1, v2, latest cẩn thận
+15. Bài tập thực hành
+Bài tập 1: Chạy Nginx bằng Docker
+docker run -d \
+  --name test_nginx \
+  -p 8080:80 \
+  nginx:alpine
+Kiểm tra:
+curl http://localhost:8080
+docker ps
+docker logs test_nginx
+Dọn dẹp:
+docker stop test_nginx
+docker rm test_nginx
+Bài tập 2: Build website tĩnh thành Docker Image
+Tạo file index.html:
+<h1>Hello Docker</h1>
+<p>Website này đang chạy trong container.</p>
+Tạo Dockerfile:
+FROM nginx:alpine
+COPY . /usr/share/nginx/html
+EXPOSE 80
+Build image:
+docker build -t my-static-web:v1 .
+Run container:
+docker run -d \
+  --name my_static_web \
+  -p 8080:80 \
+  my-static-web:v1
+Kiểm tra:
+curl http://localhost:8080
+Bài tập 3: Đẩy image lên Docker Hub
+Đổi tên image theo Docker Hub username:
+docker tag my-static-web:v1 username/my-static-web:v1
+Đăng nhập:
+docker login
+Push:
+docker push username/my-static-web:v1
+Bài tập 4: Chạy bằng Docker Compose
+Tạo file docker-compose.yml:
+services:
+  web:
+    image: my-static-web:v1
+    container_name: my_static_web
+    ports:
+      - "8080:80"
+    restart: unless-stopped
+Chạy:
+docker compose up -d
+Kiểm tra:
+docker ps
+curl http://localhost:8080
+Dừng:
+docker compose down
+16. Tóm tắt cần nhớ
+Docker giúp đóng gói ứng dụng và môi trường chạy thành container để app chạy nhất quán ở nhiều nơi.
+Công thức quan trọng:
+Dockerfile → Image → Container
+Quy trình deploy thực tế:
+Code
+↓
+Build Docker Image
+↓
+Push Docker Hub
+↓
+Pull về AWS EC2
+↓
+Run Container
+↓
+Nginx HTTPS
+↓
+User truy cập domain
+Các lệnh phải nhớ:
+docker images
+docker ps
+docker ps -a
+docker build -t name:tag .
+docker run -d --name container -p 8080:80 image
+docker logs -f container
+docker exec -it container /bin/sh
+docker stop container
+docker rm container
+docker pull image
+docker push image
+docker compose up -d
+docker compose down
+Trong dự án hiện tại, mô hình đúng là:
+Internet
+↓
+Nginx 80/443
+↓
+localhost:8080
+↓
+Docker Container 80
+↓
+Website
+Điều quan trọng nhất: trước khi xóa hoặc chạy lại container lỗi, luôn xem log trước bằng:
+docker logs <container>
+BÀI 9 : NGINX VÀ REVERSE PROXY
+1. Nginx là gì?
+Nginx (đọc là Engine-X) là một Web Server và Reverse Proxy Server hiệu năng cao, được sử dụng rộng rãi trong môi trường Production, DevOps và Cloud.
+Nginx đóng vai trò là "người gác cổng" đứng trước ứng dụng, tiếp nhận các request từ người dùng và chuyển tiếp tới ứng dụng thực tế.
+2. Kiến trúc không sử dụng Nginx
+Internet
+    ↓
+Docker Container
+    ↓
+Website
+Container phải mở trực tiếp cổng 80 ra Internet.
+Nhược điểm:
++ Khó cấu hình HTTPS.
++ Khó mở rộng hệ thống.
++ Khó chạy nhiều ứng dụng trên cùng một máy chủ.
++ Không phù hợp với môi trường Production.
+3. Kiến trúc sử dụng Nginx
+Internet
+    ↓
+Nginx
+    ↓
+Docker Container
+    ↓
+Website
+Nginx tiếp nhận request từ Internet và chuyển tiếp tới ứng dụng.
+4. Reverse Proxy là gì?
+Reverse Proxy là cơ chế trong đó Nginx đứng giữa người dùng và ứng dụng.
+Ví dụ:
+Người dùng truy cập:
+https://app.trongdev.me
+Nginx chuyển tiếp request tới:
+http://127.0.0.1:8080
+Người dùng chỉ biết đến domain mà không biết ứng dụng thực sự đang chạy ở đâu.
+5. Vai trò của Nginx
+Reverse Proxy
+Internet
+    ↓
+Nginx
+    ↓
+Application
+HTTPS (SSL)
+Nginx kết hợp với Let's Encrypt để tạo kết nối an toàn:
+https://app.trongdev.me
+Chạy nhiều ứng dụng trên cùng một máy chủ
+Ví dụ:
+app.trongdev.me
+↓
+Frontend
+api.trongdev.me
+↓
+Backend
+grafana.trongdev.me
+↓
+Grafana
+jenkins.trongdev.me
+↓
+Jenkins
+Tất cả đều đi qua Nginx.
+Load Balancing
+Nginx có khả năng phân phối tải:
+Internet
+    ↓
+Nginx
+ ┌────┼────┐
+ ↓    ↓    ↓
+Server1 Server2 Server3
+Phục vụ Static Files
+Nginx xử lý rất nhanh:
++ HTML
++ CSS
++ JavaScript
++ Hình ảnh
+Chuyển hướng HTTP sang HTTPS
+Ví dụ:
+http://app.trongdev.me
+được chuyển thành:
+https://app.trongdev.me
+6. Ví dụ cấu hình Reverse Proxy
+server {
+    listen 443 ssl;
+    server_name app.trongdev.me;
+    ssl_certificate /etc/letsencrypt/live/app.trongdev.me/fullchain.pem;
+    ssl_certificate_key /etc/letsencrypt/live/app.trongdev.me/privkey.pem;
+    location / {
+        proxy_pass http://127.0.0.1:8080;
+    }
+}
+Ý nghĩa:
+Internet
+↓
+https://app.trongdev.me
+↓
+Nginx
+↓
+localhost:8080
+↓
+Docker Container
+↓
+Website
+7. Cách ghi nhớ
+Có thể xem:
+Internet
+↓
+Nginx (Lễ tân)
+↓
+Docker Container (Phòng làm việc)
+↓
+Ứng dụng
+Người dùng chỉ giao tiếp với Nginx, còn ứng dụng thật nằm phía sau và được bảo vệ khỏi Internet.
+Bài 10 : CI/CD Production Mini Project
+GitHub Actions + Docker + AWS EC2 + Nginx + Domain + HTTPS
+Mục tiêu cuối cùng
+Tạo một quy trình deploy tự động: git push -> GitHub Actions -> Docker Hub -> AWS EC2 -> Docker Container -> Nginx -> HTTPS domain app.trongdev.me
+1. Mục tiêu bài học
+Bài này giúp hiểu cách triển khai một website theo quy trình DevOps cơ bản, từ lúc push code lên GitHub cho đến khi website chạy bằng HTTPS trên domain thật.
+Code được lưu trên GitHub.
+GitHub Actions tự động build Docker Image.
+Docker Image được push lên Docker Hub.
+AWS EC2 pull image mới và chạy container.
+Nginx làm Reverse Proxy.
+Domain trỏ về EC2.
+HTTPS được cấu hình bằng Let’s Encrypt và Certbot.
+Mục tiêu cuối cùng là truy cập website bằng domain bảo mật:
+https://app.trongdev.me
+2. Kiến trúc tổng thể
+Developer
+↓
+git push
+↓
+GitHub Repository
+↓
+GitHub Actions
+↓
+Docker build
+↓
+Docker Hub
+↓
+AWS EC2
+↓
+Docker Container chạy ở port 8080
+↓
+Nginx Reverse Proxy 80/443
+↓
+Domain + HTTPS
+↓
+User
+Giải thích ngắn:
+Thành phần
+Vai trò
+GitHub
+Lưu source code của website.
+GitHub Actions
+Tự động build và deploy khi push code.
+Docker Hub
+Lưu Docker Image sau khi build.
+AWS EC2
+Server thật để chạy website trên Internet.
+Docker Container
+Môi trường chạy ứng dụng.
+Nginx
+Nhận request từ người dùng và chuyển vào container.
+Domain
+Tên dễ nhớ thay cho địa chỉ IP.
+HTTPS
+Mã hóa kết nối và hiển thị ổ khóa bảo mật.
+3. Các thành phần cần chuẩn bị
+3.1. GitHub Repository
+Source code website phải được lưu trên GitHub.
+github.com/dinhtron027/devops-website
+3.2. Dockerfile
+Project cần có file Dockerfile. Ví dụ website tĩnh chạy bằng Nginx:
+FROM nginx:alpine
+COPY . /usr/share/nginx/html
+EXPOSE 80
+Dòng lệnh
+Ý nghĩa
+FROM nginx:alpine
+Dùng image Nginx bản nhẹ.
+COPY . /usr/share/nginx/html
+Copy source code vào thư mục web của Nginx trong container.
+EXPOSE 80
+Container phục vụ web ở port 80.
+3.3. Docker Hub Repository
+Docker Hub dùng để lưu image sau khi build.
+ndt2k7/trong-website:latest
+Cấu trúc tên image:
+dockerhub_username/repository_name:tag
+3.4. AWS EC2
+EC2 là máy chủ ảo trên cloud. Có thể hiểu đơn giản:
+EC2 = một máy Linux thật nằm trên Internet
+Trên EC2 cần cài Docker, Nginx và Certbot.
+3.5. Security Group
+Security Group là tường lửa của EC2, quyết định port nào được phép truy cập từ Internet.
+Port
+Mục đích
+22
+SSH vào server.
+80
+HTTP và dùng để cấp SSL.
+443
+HTTPS.
+8080
+Port chạy Docker nội bộ.
+Lưu ý bảo mật
+Khi đã dùng Nginx, port 8080 không nhất thiết phải mở public. Nginx có thể gọi container qua localhost:8080.
+4. Domain, DNS và Elastic IP
+Domain là tên dễ nhớ thay cho IP, ví dụ app.trongdev.me. DNS giúp chuyển domain thành IP của server.
+app.trongdev.me
+↓
+52.74.103.175
+↓
+AWS EC2
+Elastic IP là IP tĩnh của AWS. Nên dùng Elastic IP vì Public IP mặc định của EC2 có thể thay đổi khi stop/start server.
+Type
+Host
+Value
+A Record
+app
+Elastic IP của EC2
+Kiểm tra domain:
+nslookup app.trongdev.me
+dig app.trongdev.me
+5. Chạy website bằng Docker trên EC2
+Pull image từ Docker Hub:
+sudo docker pull ndt2k7/trong-website:latest
+Chạy container:
+sudo docker run -d \
+  --name my_web_container \
+  -p 8080:80 \
+  --restart unless-stopped \
+  ndt2k7/trong-website:latest
+Thành phần
+Ý nghĩa
+-d
+Chạy container ở chế độ nền.
+--name my_web_container
+Đặt tên container.
+-p 8080:80
+Map port 8080 của EC2 vào port 80 trong container.
+--restart unless-stopped
+Tự chạy lại khi server restart.
+Kiểm tra container:
+sudo docker ps
+curl http://localhost:8080
+Nếu curl trả về HTML thì container đã chạy đúng.
+6. Nginx Reverse Proxy và HTTPS
+6.1. Vì sao Docker chạy port 8080?
+Không nên để Docker chiếm port 80 vì Nginx cần dùng port 80 và 443 để nhận request HTTP/HTTPS từ người dùng.
+Internet
+↓
+Nginx 80/443
+↓
+localhost:8080
+↓
+Docker Container 80
+6.2. Cấu hình Nginx Reverse Proxy
+Tạo file cấu hình:
+sudo nano /etc/nginx/sites-available/app.trongdev.me
+Cấu hình HTTP:
+server {
+    listen 80;
+    server_name app.trongdev.me;
+    location / {
+        proxy_pass http://127.0.0.1:8080;
+        proxy_set_header Host $host;
+        proxy_set_header X-Real-IP $remote_addr;
+        proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+    }
+}
+Kích hoạt site và restart Nginx:
+sudo ln -sf /etc/nginx/sites-available/app.trongdev.me /etc/nginx/sites-enabled/app.trongdev.me
+sudo rm -f /etc/nginx/sites-enabled/default
+sudo nginx -t
+sudo systemctl restart nginx
+6.3. Cấu hình HTTPS bằng Certbot
+HTTPS giúp mã hóa dữ liệu giữa trình duyệt và server. Let’s Encrypt cấp SSL miễn phí, còn Certbot là công cụ xin và cài chứng chỉ SSL.
+Cài Certbot:
+sudo apt install certbot -y
+Xin chứng chỉ SSL:
+sudo certbot certonly --standalone -d app.trongdev.me
+Nếu thành công, Certbot sẽ tạo certificate tại:
+/etc/letsencrypt/live/app.trongdev.me/fullchain.pem
+/etc/letsencrypt/live/app.trongdev.me/privkey.pem
+Lưu ý quan trọng
+Certbot phải chạy trên EC2 thật, domain phải trỏ đúng về EC2, port 80 phải mở trong Security Group. Không chạy Certbot trong WSL local nếu domain đang trỏ về EC2.
+6.4. Cấu hình Nginx HTTPS hoàn chỉnh
+server {
+    listen 80;
+    server_name app.trongdev.me;
+    location / {
+        return 301 https://$host$request_uri;
+    }
+}
+server {
+    listen 443 ssl;
+    server_name app.trongdev.me;
+    ssl_certificate /etc/letsencrypt/live/app.trongdev.me/fullchain.pem;
+    ssl_certificate_key /etc/letsencrypt/live/app.trongdev.me/privkey.pem;
+    location / {
+        proxy_pass http://127.0.0.1:8080;
+        proxy_set_header Host $host;
+        proxy_set_header X-Real-IP $remote_addr;
+        proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+    }
+}
+Kiểm tra và restart Nginx:
+sudo nginx -t
+sudo systemctl restart nginx
+sudo ss -tulpn | grep -E ':80|:443|:8080' 
+7. GitHub Secrets và file ci.yml
+7.1. GitHub Secrets cần tạo
+Không được ghi password, token hoặc private key trực tiếp vào code. Cần tạo các GitHub Secrets sau:
+Secret name
+Ý nghĩa
+DOCKERHUB_USERNAME
+Username Docker Hub.
+DOCKERHUB_TOKEN
+Token Docker Hub.
+SERVER_HOST
+Domain hoặc IP của EC2.
+SERVER_USERNAME
+User SSH của EC2.
+SERVER_SSH_KEY
+Private key dùng để SSH.
+Nguyên tắc bảo mật
+Không commit password, Docker Hub token hoặc SSH private key lên GitHub. Tất cả thông tin nhạy cảm phải đưa vào GitHub Secrets.
+7.2. File GitHub Actions CI/CD
+Tạo file:
+.github/workflows/ci.yml
+Nội dung mẫu:
+name: Build and Deploy Docker App
+on:
+  push:
+    branches:
+      - main
+env:
+  IMAGE_NAME: ${{ secrets.DOCKERHUB_USERNAME }}/trong-website:latest
+  CONTAINER_NAME: my_web_container
+  HOST_PORT: 8080
+  CONTAINER_PORT: 80
+jobs:
+  build-and-deploy:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout source code
+        uses: actions/checkout@v4
+      - name: Login to Docker Hub
+        run: |
+          echo "${{ secrets.DOCKERHUB_TOKEN }}" | docker login \
+            -u "${{ secrets.DOCKERHUB_USERNAME }}" \
+            --password-stdin
+      - name: Build Docker image
+        run: |
+          docker build -t $IMAGE_NAME .
+      - name: Push Docker image to Docker Hub
+        run: |
+          docker push $IMAGE_NAME
+      - name: Prepare SSH key
+        run: |
+          mkdir -p ~/.ssh
+          echo "${{ secrets.SERVER_SSH_KEY }}" > ~/.ssh/id_rsa
+          chmod 600 ~/.ssh/id_rsa
+          ssh-keyscan -H "${{ secrets.SERVER_HOST }}" >> ~/.ssh/known_hosts
+      - name: Deploy to AWS EC2
+        run: |
+          ssh "${{ secrets.SERVER_USERNAME }}@${{ secrets.SERVER_HOST }}" << EOF
+            docker pull $IMAGE_NAME
+            docker stop $CONTAINER_NAME || true
+            docker rm $CONTAINER_NAME || true
+            docker run -d \
+              --name $CONTAINER_NAME \
+              -p $HOST_PORT:$CONTAINER_PORT \
+              --restart unless-stopped \
+              $IMAGE_NAME
+            docker ps
+          EOF
+8. Quy trình CI/CD hoạt động
+Khi push code lên nhánh main, GitHub Actions tự động chạy workflow.
+git push
+↓
+GitHub Actions chạy
+↓
+Checkout source code
+↓
+Login Docker Hub
+↓
+Build Docker Image
+↓
+Push image lên Docker Hub
+↓
+SSH vào EC2
+↓
+Pull image mới
+↓
+Stop container cũ
+↓
+Remove container cũ
+↓
+Run container mới
+Khái niệm
+Trong project này
+CI - Continuous Integration
+Build Docker Image + Push Docker Hub.
+CD - Continuous Deployment
+SSH vào EC2 + Pull image mới + Run container mới.
+9. Các lệnh kiểm tra quan trọng
+Nhóm kiểm tra
+Lệnh
+Docker
+sudo docker pssudo docker logs -f my_web_containercurl http://localhost:8080
+Nginx
+sudo nginx -tsudo systemctl status nginxsudo systemctl restart nginx
+Port
+sudo ss -tulpn | grep -E ':80|:443|:8080'
+Domain
+nslookup app.trongdev.medig app.trongdev.me
+HTTPS
+curl -I https://app.trongdev.me
+10. Lỗi thường gặp
+Lỗi
+Nguyên nhân thường gặp
+Cách kiểm tra
+Workflow không chạy
+File ci.yml đặt sai vị trí hoặc không push lên main.
+Kiểm tra .github/workflows/ci.yml.
+Docker login failed
+Sai Docker Hub username/token.
+Kiểm tra GitHub Secrets.
+Pull access denied
+Sai tên image hoặc image private.
+Kiểm tra IMAGE_NAME.
+SSH vào EC2 thất bại
+Sai host, user hoặc private key.
+Kiểm tra SERVER_HOST, SERVER_USERNAME, SERVER_SSH_KEY.
+Permission denied publickey
+Private key không khớp với public key trên EC2.
+Kiểm tra ~/.ssh/authorized_keys.
+Docker permission denied
+User chưa có quyền Docker.
+Dùng sudo docker hoặc thêm user vào group docker.
+Port is already allocated
+Port đang bị process khác chiếm.
+Kiểm tra sudo ss -tulpn.
+Website không vào được
+Nginx, Docker, DNS hoặc Security Group lỗi.
+Kiểm tra từng lớp.
+502 Bad Gateway
+Nginx không kết nối được container.
+Kiểm tra curl localhost:8080.
+HTTPS lỗi
+Sai certificate hoặc port 443 chưa mở.
+Kiểm tra Nginx config và Security Group.
+11. Tóm tắt cần nhớ
+Công thức production mini project:
+AWS EC2 + Docker + Nginx + Domain + HTTPS + GitHub Actions
+Luồng người dùng truy cập:
+User
+↓
+https://app.trongdev.me
+↓
+Nginx 443
+↓
+localhost:8080
+↓
+Docker Container 80
+↓
+Website
+Luồng CI/CD:
+git push
+↓
+GitHub Actions
+↓
+Docker Build
+↓
+Docker Push
+↓
+SSH EC2
+↓
+Docker Pull
+↓
+Run Container mới
+Nguyên tắc quan trọng:
+Domain không trỏ vào container, domain trỏ vào IP của EC2.
+Elastic IP giúp IP không đổi.
+Docker nên chạy ở port 8080 khi dùng Nginx ngoài server.
+Nginx giữ port 80 và 443.
+Certbot phải chạy trên server thật đang giữ domain.
+HTTPS cần certificate đúng domain.
+Trước khi restart Nginx luôn chạy sudo nginx -t.
+Trước khi xóa container lỗi nên xem docker logs.
+Không đưa password, token hoặc private key vào source code.
+Thông tin nhạy cảm phải lưu trong GitHub Secrets.

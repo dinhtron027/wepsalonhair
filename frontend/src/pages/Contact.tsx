@@ -2,7 +2,7 @@ import { Mail, MapPin, Phone, Instagram, Facebook } from "lucide-react";
 import SectionTitle from "../components/SectionTitle";
 import Button from "../components/Button";
 import { toast } from "react-hot-toast";
-
+import useSEO from "../hooks/useSEO";
 
 const Tiktok = ({ size = 20 }: { size?: number }) => (
   <svg
@@ -20,6 +20,13 @@ const Tiktok = ({ size = 20 }: { size?: number }) => (
 );
 
 const Contact = () => {
+  useSEO({
+    title: "Liên Hệ — Salon Dương Chi",
+    description:
+      "Liên hệ Salon Dương Chi tại 9 Hùng Vương, Lộc Ninh, Bình Phước. Đặt lịch hẹn, hợp tác hoặc tư vấn dịch vụ tóc. Hotline: 0988 046 664.",
+    canonical: "/contact",
+    ogUrl: "/contact",
+  });
   return (
     <div className="mx-auto max-w-5xl px-4 pb-20 space-y-12">
       <SectionTitle

@@ -12,6 +12,13 @@ import { fetchPublicServices, fetchPublicProducts, queryKeys } from "../services
 import { getApiErrorMessage } from "../services/api";
 import useCartStore from "../store/useCartStore";
 import useParallax from "../hooks/useParallax";
+import useSEO from "../hooks/useSEO";
+
+// Optimized Unsplash URLs (WebP, kích thước phù hợp)
+const HERO_IMG_MOBILE =
+  "https://images.unsplash.com/photo-1521590832167-7bcbfaa6381f?auto=format&fit=crop&w=800&q=75&fm=webp";
+const HERO_IMG_DESKTOP =
+  "https://images.unsplash.com/photo-1521590832167-7bcbfaa6381f?auto=format&fit=crop&w=1200&q=80&fm=webp";
 
 const formatCurrency = (value: number) =>
   new Intl.NumberFormat("vi-VN", {
@@ -23,6 +30,15 @@ const formatCurrency = (value: number) =>
 const Home = () => {
   const { ref: heroRef, y, opacity } = useParallax();
   const addToCart = useCartStore((state) => state.addToCart);
+
+  // SEO cho trang chủ
+  useSEO({
+    title: "Salon Dương Chi — Cắt, Uốn, Nhuộm & Chăm Sóc Tóc Chuyên Nghiệp",
+    description:
+      "Salon Dương Chi cung cấp dịch vụ cắt, uốn, nhuộm, duỗi, phục hồi tóc và gội đầu dưỡng sinh cao cấp tại Lộc Ninh, Bình Phước. Đặt lịch ngay hôm nay!",
+    canonical: "/",
+    ogUrl: "/",
+  });
 
   const {
     data: rawServices,
@@ -63,12 +79,17 @@ const Home = () => {
     <div className="space-y-24 pb-24">
       {/* Hero */}
       <section ref={heroRef} className="relative min-h-0 md:min-h-[85vh] flex items-center overflow-hidden pt-20 pb-16 md:py-0">
+        {/* Mobile hero background */}
         <div className="absolute inset-0 md:hidden">
           <motion.img
-            src="https://images.unsplash.com/photo-1521590832167-7bcbfaa6381f?auto=format&fit=crop&w=800&q=80"
-            alt="Salon hero"
+            src={HERO_IMG_MOBILE}
+            alt="Không gian Salon Dương Chi"
             className="h-full w-full object-cover"
             style={{ opacity }}
+            width={800}
+            height={600}
+            // fetchpriority="high" — không lazy, đây là LCP element
+            loading="eager"
           />
           <div className="absolute inset-0 bg-cream/90 backdrop-blur-md" />
         </div>
@@ -90,13 +111,19 @@ const Home = () => {
               </Button>
             </div>
           </div>
-          
+
+          {/* Desktop hero image — LCP element */}
           <div className="hidden md:block relative h-[50vh] w-full overflow-hidden rounded-2xl md:h-[70vh] md:w-1/2">
             <motion.img
-              src="https://images.unsplash.com/photo-1521590832167-7bcbfaa6381f?auto=format&fit=crop&w=1800&q=80"
-              alt="Salon hero"
+              src={HERO_IMG_DESKTOP}
+              alt="Không gian Salon Dương Chi — cắt uốn nhuộm tóc chuyên nghiệp"
               className="absolute inset-0 h-full w-full object-cover"
               style={{ y }}
+              width={1200}
+              height={900}
+              // fetchpriority="high" — LCP element, không lazy-load
+              loading="eager"
+              decoding="async"
             />
           </div>
         </div>
@@ -170,6 +197,8 @@ const Home = () => {
                             alt={product.name}
                             className="h-full w-full object-cover transition-transform duration-700 ease-out group-hover:scale-105"
                             loading="lazy"
+                            width={400}
+                            height={300}
                           />
                         ) : (
                           <div className="flex h-full w-full items-center justify-center">

@@ -6,6 +6,10 @@ import { motion } from "framer-motion";
 import { Clock, HelpCircle, Sparkles, ArrowLeft, MessageSquare } from "lucide-react";
 import Button from "../components/Button";
 import ServiceImage from "../components/ServiceImage";
+import useSEO from "../hooks/useSEO";
+
+// Số điện thoại Zalo chính thức của salon
+const ZALO_URL = "https://zalo.me/0988046664";
 
 type CategoryMeta = {
   name: string;
@@ -113,6 +117,16 @@ const ServiceCategoryPage = () => {
 
   // 2. Validate categorySlug
   const meta = categorySlug ? categoryMetadata[categorySlug] : null;
+
+  // SEO động theo danh mục
+  useSEO({
+    title: meta ? `${meta.title} — Salon Dương Chi` : "Dịch Vụ Salon Dương Chi",
+    description: meta
+      ? `${meta.description} Đặt lịch ngay tại Salon Dương Chi, Lộc Ninh, Bình Phước.`
+      : "Khám phá các danh mục dịch vụ tóc chuyên nghiệp tại Salon Dương Chi.",
+    canonical: categorySlug ? `/services/category/${categorySlug}` : "/services",
+    ogUrl: categorySlug ? `/services/category/${categorySlug}` : "/services",
+  });
 
   if (isLoading) {
     return (
@@ -261,7 +275,7 @@ const ServiceCategoryPage = () => {
 
                     <div className="flex gap-3.5 w-full sm:w-auto">
                       <Button
-                        to="https://zalo.me/your_number" // Hoặc sđt thực tế để chat tư vấn
+                        to={ZALO_URL}
                         variant="ghost"
                         className="px-4 py-2 text-xs flex-1 sm:flex-initial justify-center gap-1.5 rounded-full border border-neutral-200 text-slate-700 hover:bg-neutral-50"
                       >

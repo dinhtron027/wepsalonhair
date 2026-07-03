@@ -7,6 +7,8 @@ import { getApiErrorMessage } from "../services/api";
 import SectionTitle from "../components/SectionTitle";
 import Button from "../components/Button";
 import ServiceImage from "../components/ServiceImage";
+import useSEO from "../hooks/useSEO";
+
 
 const formatCurrency = (value: number) =>
   new Intl.NumberFormat("vi-VN", {
@@ -16,6 +18,14 @@ const formatCurrency = (value: number) =>
   }).format(value);
 
 const ServicesPage = () => {
+  useSEO({
+    title: "Dịch Vụ Tóc Chuyên Nghiệp — Salon Dương Chi",
+    description:
+      "Khám phá các dịch vụ cắt, uốn, nhuộm, duỗi, phục hồi tóc và gội đầu dưỡng sinh cao cấp tại Salon Dương Chi, Lộc Ninh, Bình Phước.",
+    canonical: "/services",
+    ogUrl: "/services",
+  });
+
   const { data: services, isLoading, error } = useQuery({
     queryKey: [...queryKeys.publicServices],
     queryFn: fetchPublicServices,

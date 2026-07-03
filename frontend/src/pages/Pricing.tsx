@@ -6,6 +6,7 @@ import LoadingSpinner from "../components/LoadingSpinner";
 import api, { extractApiData, getApiErrorMessage } from "../services/api";
 import Button from "../components/Button";
 import ServiceImage from "../components/ServiceImage";
+import useSEO from "../hooks/useSEO";
 
 type Service = {
   _id: string;
@@ -40,6 +41,13 @@ const CATEGORY_ORDER = [
 ];
 
 const Pricing = () => {
+  useSEO({
+    title: "Bảng Giá Dịch Vụ Tóc — Salon Dương Chi",
+    description:
+      "Bảng giá các dịch vụ cắt, uốn, nhuộm, duỗi, phục hồi tóc và gội đầu dưỡng sinh tại Salon Dương Chi, Lộc Ninh, Bình Phước. Giá tham khảo công khai rõ ràng.",
+    canonical: "/pricing",
+    ogUrl: "/pricing",
+  });
   const [services, setServices] = useState<Service[]>([]);
   const [isLoading, setIsLoading] = useState(true);
 

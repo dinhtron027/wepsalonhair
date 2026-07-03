@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import { useNavigate, useLocation } from "react-router-dom";
+import { Link, useNavigate, useLocation } from "react-router-dom";
 import { ShoppingBag, LogOut, LayoutDashboard } from "lucide-react";
 import useCartStore from "../store/useCartStore";
 import { useAuth } from "../hooks/useAuth";
@@ -31,6 +31,10 @@ import {
 /**
  * Navigation Bar Component
  * Áp dụng thiết kế UI/UX hiện đại, kết hợp OOP MenuManager và quản lý trạng thái đồng bộ.
+ *
+ * SEO note: Items không có dropdown dùng <Link> (có href) để Googlebot crawl được.
+ * Items có dropdown dùng <button type="button"> (semantic) — không cần href vì
+ * các link trong dropdown đã crawlable.
  */
 const Navbar: React.FC = () => {
   const navigate = useNavigate();
@@ -105,26 +109,25 @@ const Navbar: React.FC = () => {
     navigate("/login");
   };
 
-  const handleNavItemClick = (item: MenuItem, event: React.MouseEvent) => {
-    if (menuManager.hasDropdown(item)) {
-      event.preventDefault(); // Ngăn điều hướng lập tức trên cả Desktop để giữ dropdown mở rộng
-      const isTouch = checkIsTouch();
-      if (isTouch) {
-        setOpenDropdownId((prev) => (prev === item.id ? null : item.id));
-      } else {
-        // Trên Desktop: click sẽ chuyển đổi trạng thái click-lock giữ menu mở cố định
-        if (clickedDropdownId === item.id) {
-          setClickedDropdownId(null);
-          setOpenDropdownId(null);
-        } else {
-          setClickedDropdownId(item.id);
-          setOpenDropdownId(item.id);
-        }
-      }
+  /**
+   * Xử lý click trên dropdown trigger button.
+   * Item có dropdown: toggle dropdown open/close (không navigate).
+   * Item không có dropdown: không cần xử lý ở đây (dùng Link trực tiếp).
+   */
+  const handleDropdownToggle = (item: MenuItem, event: React.MouseEvent) => {
+    event.preventDefault();
+    const isTouch = checkIsTouch();
+    if (isTouch) {
+      setOpenDropdownId((prev) => (prev === item.id ? null : item.id));
     } else {
-      navigate(item.path);
-      setOpenDropdownId(null);
-      setClickedDropdownId(null);
+      // Trên Desktop: click sẽ chuyển đổi trạng thái click-lock giữ menu mở cố định
+      if (clickedDropdownId === item.id) {
+        setClickedDropdownId(null);
+        setOpenDropdownId(null);
+      } else {
+        setClickedDropdownId(item.id);
+        setOpenDropdownId(item.id);
+      }
     }
   };
 
@@ -134,7 +137,7 @@ const Navbar: React.FC = () => {
     <>
       <NavbarWrapper $scrolled={scrolled} ref={navRef}>
         <NavbarInner>
-          {/* Logo (Trang Chủ - Chỉ cần Logo/Text click để về Home) */}
+          {/* Logo (Trang Chủ) */}
           <LogoLink href="/">
             <span>Salon Dương Chi</span>
           </LogoLink>
@@ -168,16 +171,33 @@ const Navbar: React.FC = () => {
                     }
                   }}
                 >
-                  <NavLinkBase
-                    $active={isActive}
-                    onClick={(e) => handleNavItemClick(item, e)}
-                    data-has-dropdown={hasDropdown}
-                    data-dropdown-open={isDropdownOpen}
-                    aria-expanded={isDropdownOpen}
-                    aria-haspopup={hasDropdown ? "true" : "false"}
-                  >
-                    {item.title}
-                  </NavLinkBase>
+                  {hasDropdown ? (
+                    // Dropdown trigger: dùng button (semantic), không cần href
+                    // Googlebot crawl các link trong Dropdown component thay thế
+                    <NavLinkBase
+                      as="button"
+                      type="button"
+                      $active={isActive}
+                      onClick={(e: React.MouseEvent) => handleDropdownToggle(item, e)}
+                      data-has-dropdown={hasDropdown}
+                      data-dropdown-open={isDropdownOpen}
+                      aria-expanded={isDropdownOpen}
+                      aria-haspopup="true"
+                    >
+                      {item.title}
+                    </NavLinkBase>
+                  ) : (
+                    // Link thông thường: dùng React Router Link (có href) để crawlable
+                    <NavLinkBase
+                      as={Link}
+                      to={item.path}
+                      $active={isActive}
+                      data-has-dropdown={false}
+                      aria-haspopup="false"
+                    >
+                      {item.title}
+                    </NavLinkBase>
+                  )}
 
                   {hasDropdown && item.children && (
                     <Dropdown items={item.children} isOpen={isDropdownOpen} />
@@ -243,7 +263,8 @@ const Navbar: React.FC = () => {
 
                 {isAdmin() && (
                   <NavLinkBase
-                    onClick={() => navigate("/admin")}
+                    as={Link}
+                    to="/admin"
                     style={{ display: "inline-flex", gap: "0.25rem" }}
                   >
                     <LayoutDashboard size={16} />
@@ -260,13 +281,14 @@ const Navbar: React.FC = () => {
                 </button>
               </>
             ) : (
-              <NavLinkBase onClick={() => navigate("/login")}>
+              // Đăng nhập: dùng Link có href để crawlable
+              <NavLinkBase as={Link} to="/login">
                 Đăng Nhập
               </NavLinkBase>
             )}
 
-            {/* CTA ĐẶT LỊCH NGAY (Nổi bật nhất) */}
-            <CTAButton onClick={() => navigate("/booking")}>
+            {/* CTA ĐẶT LỊCH NGAY — dùng Link có href để crawlable */}
+            <CTAButton as={Link} to="/booking">
               <span className="hidden min-[1400px]:inline">ĐẶT LỊCH NGAY</span>
               <span className="inline min-[1400px]:hidden">Đặt lịch</span>
             </CTAButton>

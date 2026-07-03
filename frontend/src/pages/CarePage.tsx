@@ -1,6 +1,8 @@
 import { motion } from "framer-motion";
 import { Sparkles, ShieldAlert, Heart, CalendarRange, Droplets } from "lucide-react";
 import Button from "../components/Button";
+import useSEO from "../hooks/useSEO";
+
 
 const careSections = [
   {
@@ -66,8 +68,16 @@ const careSections = [
 ];
 
 const CarePage = () => {
+  useSEO({
+    title: "Chăm Dưỡng Tóc Chuyên Sâu — Salon Dương Chi",
+    description:
+      "Bí quyết chăm sóc tóc hư tổn và các liệu trình dưỡng tóc chuyên sâu tại Salon Dương Chi. Phục hồi tóc khô xơ, hư tổn, dưỡng màu và liệu trình định kỳ.",
+    canonical: "/services/care",
+    ogUrl: "/services/care",
+  });
   return (
     <div className="mx-auto max-w-5xl px-4 py-12 space-y-16">
+
       {/* Header Section */}
       <section className="text-center space-y-4">
         <motion.p

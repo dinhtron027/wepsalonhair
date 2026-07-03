@@ -2,14 +2,13 @@ import { lazy, Suspense } from "react";
 import { Navigate, Route, Routes, useLocation } from "react-router-dom";
 import { AnimatePresence, motion } from "framer-motion";
 import MainLayout from "./layouts/MainLayout";
-import AdminLayout from "./layouts/AdminLayout";
 import ProtectedRoute from "./components/ProtectedRoute";
 import LoadingSpinner from "./components/LoadingSpinner";
 import { publicRoutes } from "./routes";
-import { useRealtimeSync } from "./hooks/useRealtimeSync";
 import ScrollToTop from "./components/ScrollToTop";
 import "./App.css";
 
+const AdminLayout = lazy(() => import("./layouts/AdminLayout"));
 const DashboardPage = lazy(() => import("./pages/admin/Dashboard"));
 const BookingsPage = lazy(() => import("./pages/admin/Bookings"));
 const ServicesAdminPage = lazy(() => import("./pages/admin/Services"));
@@ -28,7 +27,6 @@ function App() {
   const location = useLocation();
   const isAdminPath = location.pathname.startsWith("/admin");
 
-  useRealtimeSync(isAdminPath);
 
   const routesElement = (
     <AnimatePresence mode="wait">

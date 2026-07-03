@@ -13,6 +13,7 @@ import {
   LogOut,
 } from "lucide-react";
 import { useAuth } from "../hooks/useAuth";
+import { useRealtimeSync } from "../hooks/useRealtimeSync";
 
 const navItems = [
   { to: "/admin", label: "Tổng quan", icon: BarChart3 },
@@ -30,6 +31,7 @@ const getPageTitle = (pathname: string) => {
 };
 
 const AdminLayout = () => {
+  useRealtimeSync(); // Bật realtime sync cho admin
   const navigate = useNavigate();
   const location = useLocation();
   const logout = useAuth((state) => state.logout);

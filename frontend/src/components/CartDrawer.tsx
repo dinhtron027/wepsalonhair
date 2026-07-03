@@ -40,14 +40,14 @@ const CartDrawer = ({ open, onClose }: CartDrawerProps) => {
           >
             <div className="flex items-center justify-between border-b border-rose-100 px-6 py-4">
               <div>
-                <p className="text-xs uppercase tracking-wide text-rose-500">Gio hang</p>
+                <p className="text-xs uppercase tracking-wide text-rose-500">Giỏ hàng</p>
                 <h3 className="text-lg font-semibold text-slate-900">
-                  {items.length > 0 ? `${items.length} san pham` : "Chua co san pham"}
+                  {items.length > 0 ? `${items.length} sản phẩm` : "Chưa có sản phẩm"}
                 </h3>
               </div>
               <button
                 onClick={onClose}
-                aria-label="Dong gio hang"
+                aria-label="Đóng giỏ hàng"
                 className="rounded-full border border-rose-100 bg-white p-2 text-slate-600 shadow-sm hover:text-rose-600"
               >
                 <X size={18} />
@@ -58,7 +58,7 @@ const CartDrawer = ({ open, onClose }: CartDrawerProps) => {
               {items.length === 0 ? (
                 <div className="rounded-2xl border border-dashed border-rose-100 bg-rose-50/60 p-6 text-center text-slate-600">
                   <ShoppingBag className="mx-auto mb-2 text-rose-400" />
-                  <p>Gio hang dang trong.</p>
+                  <p>Giỏ hàng đang trống.</p>
                 </div>
               ) : (
                 items.map((item) => {
@@ -136,15 +136,15 @@ const CartDrawer = ({ open, onClose }: CartDrawerProps) => {
 
             <div className="space-y-3 border-t border-rose-100 px-6 py-4">
               <div className="flex items-center justify-between text-slate-700">
-                <span>Tam tinh</span>
+                <span>Tạm tính</span>
                 <span className="text-lg font-semibold text-slate-900">{formatCurrency(total)}</span>
               </div>
               <div className="flex gap-3">
                 <Button to="/products" variant="ghost" fullWidth onClick={onClose}>
-                  Tiep tuc mua sam
+                  Tiếp tục mua sắm
                 </Button>
                 <Button to="/cart" variant="primary" fullWidth onClick={onClose}>
-                  Xem gio hang
+                  Xem giỏ hàng
                 </Button>
               </div>
             </div>

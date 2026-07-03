@@ -87,7 +87,7 @@ export const publicRoutes = [
     name: "Chi tiet tin tuc",
   },
   { path: "/contact", element: withSuspense(Contact), name: "Lien he" },
-  { path: "/cart", element: withSuspense(CartPage), name: "Gio hang" },
+  { path: "/cart", element: withSuspense(CartPage), name: "Giỏ hàng" },
   { path: "/login", element: withSuspense(LoginPage), name: "Dang nhap" },
   {
     path: "/register",

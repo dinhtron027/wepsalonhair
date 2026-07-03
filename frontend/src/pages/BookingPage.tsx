@@ -234,7 +234,7 @@ const BookingPage = () => {
                     {new Intl.NumberFormat("vi-VN", { maximumFractionDigits: 0 }).format(selectedService.price)} VND
                   </span>
                 </div>
-                <p className="text-xs text-slate-400 font-light line-clamp-2 leading-relaxed">
+                <p className="text-xs text-slate-500 font-light line-clamp-2 leading-relaxed">
                   {selectedService.description || "Liệu trình chăm sóc tóc tận tâm chuyên nghiệp bởi đội ngũ stylist Dương Chi."}
                 </p>
               </div>

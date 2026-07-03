@@ -74,7 +74,7 @@ const ServicesPage = () => {
                 <h2 className="mb-2 text-xl font-display text-charcoal font-normal group-hover:text-taupe transition-colors duration-300">
                   {service.name}
                 </h2>
-                <p className="mb-5 text-xs text-slate-400 font-light leading-relaxed min-h-[50px]">
+                <p className="mb-5 text-xs text-slate-500 font-light leading-relaxed min-h-[50px]">
                   {service.description || "Liệu trình chăm sóc tóc tận tâm chuyên nghiệp bởi đội ngũ stylist Dương Chi."}
                 </p>
               </div>

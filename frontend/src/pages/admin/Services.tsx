@@ -12,6 +12,8 @@ import {
   uploadImage,
 } from "../../services/adminApi";
 import { getApiErrorMessage } from "../../services/api";
+import { optimizeCloudinaryUrl } from "../../utils/cloudinary";
+
 
 type ServiceForm = {
   name: string;
@@ -491,7 +493,7 @@ const ServicesPage = () => {
                     {form.image ? (
                       <div className="relative group w-16 h-16 flex-shrink-0">
                         <img
-                          src={form.image}
+                          src={optimizeCloudinaryUrl(form.image, 160)}
                           alt="Xem trước ảnh dịch vụ"
                           className="w-16 h-16 rounded-lg object-cover border border-slate-200 shadow-sm"
                         />
@@ -745,7 +747,7 @@ const ServicesPage = () => {
                         <div className="flex items-center gap-3">
                           {service.imageUrl || service.image ? (
                             <img
-                              src={service.imageUrl || service.image}
+                              src={optimizeCloudinaryUrl(service.imageUrl || service.image, 100)}
                               alt={service.name}
                               className="w-8 h-8 rounded object-cover flex-shrink-0 border border-slate-100"
                             />
@@ -813,7 +815,7 @@ const ServicesPage = () => {
                   <div className="flex items-start gap-3">
                     {service.imageUrl || service.image ? (
                       <img
-                        src={service.imageUrl || service.image}
+                        src={optimizeCloudinaryUrl(service.imageUrl || service.image, 160)}
                         alt={service.name}
                         className="w-14 h-14 rounded-lg object-cover flex-shrink-0 border border-slate-200/50"
                       />

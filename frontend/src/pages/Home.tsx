@@ -13,6 +13,7 @@ import { getApiErrorMessage } from "../services/api";
 import useCartStore from "../store/useCartStore";
 import useParallax from "../hooks/useParallax";
 import useSEO from "../hooks/useSEO";
+import { optimizeCloudinaryUrl } from "../utils/cloudinary";
 
 // Optimized Unsplash URLs (WebP, kích thước phù hợp)
 const HERO_IMG_MOBILE =
@@ -193,7 +194,7 @@ const Home = () => {
                       <Link to={`/products/${product._id}`} className="relative block aspect-[4/3] overflow-hidden bg-slate-50">
                         {product.image ? (
                           <img
-                            src={product.image}
+                            src={optimizeCloudinaryUrl(product.image, 400)}
                             alt={product.name}
                             className="h-full w-full object-cover transition-transform duration-700 ease-out group-hover:scale-105"
                             loading="lazy"
@@ -212,7 +213,7 @@ const Home = () => {
                         )}
                       </Link>
                       <div className="flex flex-1 flex-col p-5">
-                        <p className="mb-2 text-[11px] font-semibold uppercase tracking-wider text-slate-400">
+                        <p className="mb-2 text-[11px] font-semibold uppercase tracking-wider text-slate-500">
                           {product.category || "Chăm sóc tóc"}
                         </p>
                         <Link

@@ -5,6 +5,8 @@ import { getApiErrorMessage } from "../services/api";
 import { createOrder } from "../services/adminApi";
 import useCartStore from "../store/useCartStore";
 import LoadingSpinner from "../components/LoadingSpinner";
+import { optimizeCloudinaryUrl } from "../utils/cloudinary";
+
 
 const formatCurrency = (value: number) =>
   new Intl.NumberFormat("vi-VN", { style: "currency", currency: "VND" }).format(value);
@@ -50,7 +52,7 @@ const CartPage = () => {
           {items.map((item) => (
             <div key={item.product._id} className="flex items-center justify-between rounded-xl border border-slate-200 bg-white p-4 shadow-sm">
               <div className="flex items-center gap-4">
-                {item.product.image && <img src={item.product.image} alt={item.product.name} className="h-16 w-16 rounded-md object-cover" />}
+                {item.product.image && <img src={optimizeCloudinaryUrl(item.product.image, 160)} alt={item.product.name} className="h-16 w-16 rounded-md object-cover" />}
                 <div>
                   <h3 className="font-semibold text-slate-800">{item.product.name}</h3>
                   <p className="font-medium text-rose-500">{formatCurrency(item.product.price)}</p>

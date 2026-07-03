@@ -232,7 +232,7 @@ const ServiceCategoryPage = () => {
                           {formatCurrency(service.price)}
                         </span>
                       </div>
-                      <p className="text-[9px] text-slate-400 font-medium tracking-widest uppercase">Giá tham khảo</p>
+                      <p className="text-[9px] text-slate-500 font-medium tracking-widest uppercase">Giá tham khảo</p>
                     </div>
 
                     <p className="text-slate-500 text-xs md:text-sm leading-relaxed font-light">
@@ -299,7 +299,7 @@ const ServiceCategoryPage = () => {
       </section>
 
       {/* General Note */}
-      <section className="rounded-xl border border-neutral-200/50 bg-neutral-50/20 p-5 text-center text-[11px] text-slate-400 font-light leading-relaxed">
+      <section className="rounded-xl border border-neutral-200/50 bg-neutral-50/20 p-5 text-center text-[11px] text-slate-500 font-light leading-relaxed">
         * Lưu ý: Mức giá nêu trên là **giá tham khảo cơ bản**. Chi phí dịch vụ thực tế có thể thay đổi nhẹ tùy thuộc vào độ dài, độ dày thực tế và tình trạng hư tổn của tóc quý khách. Quý khách sẽ được kiểm tra chất tóc và nhận báo giá chính xác trực tiếp tại quầy từ Stylist trước khi thực hiện dịch vụ.
       </section>
     </div>

@@ -71,7 +71,7 @@ const About = () => {
           <AnimatedContainer className="rounded-2xl border border-neutral-200/60 bg-white p-6 shadow-sm">
             <h4 className="font-semibold text-charcoal text-sm">Anh Kiệt</h4>
             <p className="text-[10px] uppercase tracking-wider text-taupe font-medium mt-1 mb-2">Senior Stylist</p>
-            <p className="text-xs text-slate-400 leading-relaxed font-light">
+            <p className="text-xs text-slate-500 leading-relaxed font-light">
               Chuyên về cắt tóc layer, tạo kiểu tóc nữ hiện đại và thiết kế kiểu tóc
               phù hợp với gương mặt.
             </p>
@@ -80,7 +80,7 @@ const About = () => {
           <AnimatedContainer className="rounded-2xl border border-neutral-200/60 bg-white p-6 shadow-sm">
             <h4 className="font-semibold text-charcoal text-sm">Anh Tâm</h4>
             <p className="text-[10px] uppercase tracking-wider text-taupe font-medium mt-1 mb-2">Color Specialist</p>
-            <p className="text-xs text-slate-400 leading-relaxed font-light">
+            <p className="text-xs text-slate-500 leading-relaxed font-light">
               Chuyên gia nhuộm màu thời trang, balayage và các kỹ thuật nhuộm
               tạo hiệu ứng tự nhiên.
             </p>
@@ -89,7 +89,7 @@ const About = () => {
           <AnimatedContainer className="rounded-2xl border border-neutral-200/60 bg-white p-6 shadow-sm">
             <h4 className="font-semibold text-charcoal text-sm">Anh Hậu</h4>
             <p className="text-[10px] uppercase tracking-wider text-taupe font-medium mt-1 mb-2">Hair Designer</p>
-            <p className="text-xs text-slate-400 leading-relaxed font-light">
+            <p className="text-xs text-slate-500 leading-relaxed font-light">
               Chuyên tạo kiểu tóc uốn, duỗi và phục hồi tóc hư tổn bằng các
               phương pháp chăm sóc hiện đại.
             </p>

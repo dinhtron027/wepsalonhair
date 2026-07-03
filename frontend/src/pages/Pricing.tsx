@@ -131,9 +131,9 @@ const Pricing = () => {
                           <div className="flex items-center gap-2 flex-wrap">
                             <p className="text-sm font-medium text-charcoal">{service.name}</p>
                             <span className="text-slate-300 text-xs font-light hidden sm:inline">•</span>
-                            <span className="text-xs text-slate-400 font-normal">{durationValue} phút</span>
+                            <span className="text-xs text-slate-500 font-normal">{durationValue} phút</span>
                           </div>
-                          <p className="text-xs text-slate-400 max-w-xl leading-relaxed font-light line-clamp-2">
+                          <p className="text-xs text-slate-500 max-w-xl leading-relaxed font-light line-clamp-2">
                             {service.description || "Liệu trình chăm sóc tóc tận tâm chuyên nghiệp bởi đội ngũ stylist Dương Chi."}
                           </p>
                         </div>
@@ -162,7 +162,7 @@ const Pricing = () => {
               Danh sách dịch vụ hiện chưa có dữ liệu. Vui lòng quay lại sau.
             </div>
           ) : (
-            <section className="rounded-xl border border-neutral-200/50 bg-neutral-50/20 p-5 text-center text-[11px] text-slate-400 leading-relaxed font-light">
+            <section className="rounded-xl border border-neutral-200/50 bg-neutral-50/20 p-5 text-center text-[11px] text-slate-500 leading-relaxed font-light">
               * Ghi chú: Mức giá hiển thị ở trên là **giá tham khảo**. Chi phí thực tế có thể thay đổi tùy thuộc vào độ dài, độ dày và tình trạng sức khỏe thực tế của mái tóc quý khách.
             </section>
           )}

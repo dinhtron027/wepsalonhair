@@ -6,6 +6,8 @@ import toast from "react-hot-toast";
 import LoadingSpinner from "../components/LoadingSpinner";
 import useCartStore, { ProductEntity } from "../store/useCartStore";
 import api, { extractApiData, getApiErrorMessage } from "../services/api";
+import { optimizeCloudinaryUrl } from "../utils/cloudinary";
+
 
 type ProductResponse = {
   _id: string;
@@ -155,12 +157,12 @@ const ProductDetailPage = () => {
             {/* Price & Stock */}
             <div className="flex items-center gap-6 rounded-xl border border-slate-200 bg-slate-50/50 px-5 py-4">
               <div>
-                <p className="text-[10px] font-semibold uppercase tracking-wider text-slate-400">Giá bán</p>
+                <p className="text-[10px] font-semibold uppercase tracking-wider text-slate-500">Giá bán</p>
                 <p className="text-2xl font-semibold text-charcoal">{formatCurrency(product.price)}</p>
               </div>
               <div className="h-12 w-px bg-slate-200" />
               <div>
-                <p className="text-[10px] font-semibold uppercase tracking-wider text-slate-400">Tồn kho</p>
+                <p className="text-[10px] font-semibold uppercase tracking-wider text-slate-500">Tồn kho</p>
                 <p
                   className={`text-sm font-semibold ${
                     isOutOfStock ? "text-red-500" : "text-emerald-600"
@@ -239,7 +241,7 @@ const ProductDetailPage = () => {
             <div className="relative h-full w-full overflow-hidden rounded-xl border border-slate-200/60 bg-white shadow-sm aspect-[4/3]">
               {product.image ? (
                 <img
-                  src={product.image}
+                  src={optimizeCloudinaryUrl(product.image, 800)}
                   alt={product.name}
                   className="h-full w-full object-cover"
                 />

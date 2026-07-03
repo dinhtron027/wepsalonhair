@@ -4,6 +4,7 @@ import AnimatedContainer from "../components/AnimatedContainer";
 import Button from "../components/Button";
 import { newsPosts } from "../data/newsPosts";
 import useSEO from "../hooks/useSEO";
+import { optimizeCloudinaryUrl } from "../utils/cloudinary";
 
 
 // Sub-component to handle image load errors gracefully
@@ -36,7 +37,7 @@ const BlogImage = ({ src, alt }: { src: string; alt: string }) => {
 
   return (
     <img
-      src={src}
+      src={optimizeCloudinaryUrl(src, 600)}
       alt={alt}
       onError={() => setError(true)}
       className="h-48 w-full object-cover group-hover:scale-105 transition duration-700 ease-out"

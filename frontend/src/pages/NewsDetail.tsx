@@ -3,6 +3,8 @@ import { useParams, Link } from "react-router-dom";
 import { ArrowLeft, Calendar, Tag } from "lucide-react";
 import { newsPosts } from "../data/newsPosts";
 import SectionTitle from "../components/SectionTitle";
+import { optimizeCloudinaryUrl } from "../utils/cloudinary";
+
 
 const NewsDetail = () => {
   const { slug } = useParams<{ slug: string }>();
@@ -84,7 +86,7 @@ const NewsDetail = () => {
           </div>
         ) : (
           <img
-            src={post.image}
+            src={optimizeCloudinaryUrl(post.image, 1200)}
             alt={post.title}
             onError={() => setImageError(true)}
             className="h-full w-full object-cover transition-transform duration-700 ease-out"

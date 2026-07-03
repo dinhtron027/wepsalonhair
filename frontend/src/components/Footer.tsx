@@ -121,7 +121,7 @@ const Footer = () => {
         </div>
       </div>
 
-      <div className="border-t border-rose-100 py-4 text-center text-xs text-slate-500">
+      <div className="border-t border-rose-100 py-4 text-center text-xs text-slate-600">
         © {new Date().getFullYear()} Salon Dương Chi. Tôn vinh vẻ đẹp độc bản.
       </div>
     </footer>

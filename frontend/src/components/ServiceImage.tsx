@@ -1,17 +1,20 @@
 import { useState } from "react";
+import { optimizeCloudinaryUrl } from "../utils/cloudinary";
 
 type ServiceImageProps = {
   src?: string;
   alt: string;
   className?: string;
   aspectRatio?: string;
+  width?: number;
 };
 
 export const ServiceImage = ({
   src,
   alt,
   className = "",
-  aspectRatio = "aspect-[16/10]"
+  aspectRatio = "aspect-[16/10]",
+  width = 600
 }: ServiceImageProps) => {
   const [error, setError] = useState(false);
 
@@ -48,7 +51,7 @@ export const ServiceImage = ({
 
   return (
     <img
-      src={src}
+      src={optimizeCloudinaryUrl(src, width)}
       alt={alt}
       onError={() => setError(true)}
       className={`w-full h-full object-cover transition-transform duration-500 ease-out ${aspectRatio} ${className}`}

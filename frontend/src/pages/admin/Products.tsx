@@ -12,6 +12,8 @@ import {
   uploadImage,
 } from "../../services/adminApi";
 import { getApiErrorMessage } from "../../services/api";
+import { optimizeCloudinaryUrl } from "../../utils/cloudinary";
+
 
 type ProductForm = {
   name: string;
@@ -216,7 +218,7 @@ const ProductsPage = () => {
                     {form.image ? (
                       <div className="relative group w-20 h-20 flex-shrink-0">
                         <img
-                          src={form.image}
+                          src={optimizeCloudinaryUrl(form.image, 200)}
                           alt="Xem trước ảnh sản phẩm"
                           className="w-20 h-20 rounded-xl object-cover border border-slate-200 shadow-sm"
                         />
@@ -413,7 +415,7 @@ const ProductsPage = () => {
                           <div className="flex items-center gap-3">
                             {product.image ? (
                               <img
-                                src={product.image}
+                                src={optimizeCloudinaryUrl(product.image, 100)}
                                 alt={product.name}
                                 className="w-10 h-10 rounded-lg object-cover flex-shrink-0"
                               />
@@ -476,7 +478,7 @@ const ProductsPage = () => {
                     <div className="flex items-start gap-3">
                       {product.image ? (
                         <img
-                          src={product.image}
+                          src={optimizeCloudinaryUrl(product.image, 160)}
                           alt={product.name}
                           className="w-16 h-16 rounded-xl object-cover flex-shrink-0 border border-slate-200"
                         />

@@ -1,4 +1,5 @@
 const ApiError = require('../utils/ApiError');
+const env = require('../config/env');
 
 const notFoundHandler = (req, res) => {
   res.status(404).json({
@@ -32,7 +33,9 @@ const errorHandler = (error, req, res, next) => {
   } else if (error?.name === 'CastError') {
     normalizedError = new ApiError(400, 'ID khong hop le');
   } else if (!(error instanceof ApiError)) {
-    normalizedError = new ApiError(500, error.message || 'Internal server error');
+    const isProduction = env.NODE_ENV === 'production';
+    const message = isProduction ? 'Internal server error' : (error.message || 'Internal server error');
+    normalizedError = new ApiError(500, message);
   }
 
   const statusCode = normalizedError.statusCode || 500;

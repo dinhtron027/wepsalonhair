@@ -29,7 +29,7 @@ jobs:
           command_timeout: 15m
           script: |
             set -e
-            cd /home/dinh_trong/salon
+            cd /home/ubuntu/salon-root
             
             echo "=== KIỂM TRA DUNG LƯỢNG ĐĨA TRƯỚC DEPLOY ==="
             df -h /

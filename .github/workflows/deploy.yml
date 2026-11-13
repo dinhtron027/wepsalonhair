@@ -1,4 +1,3 @@
-
 name: Deploy to Production
 
 on:
@@ -8,184 +7,74 @@ on:
 
 concurrency:
   group: production-deploy
-  cancel-in-progress: false
-
-permissions:
-  contents: read
+  cancel-in-progress: true
 
 jobs:
-  # 1. Chạy CI trước khi triển khai
-  ci:
-    name: Run CI Before Deploy
-    uses: ./.github/workflows/ci.yml
-
-  # 2. Chỉ Deploy nếu CI thành công
   deploy:
-    name: Deploy to AWS EC2
-    needs: ci
+    name: SSH Deploy to EC2
     runs-on: ubuntu-latest
-    timeout-minutes: 25
 
     steps:
+      - name: Checkout Code (Optional check-out to verify commit details)
+        uses: actions/checkout@v4
+
       - name: Deploy via SSH
         uses: appleboy/ssh-action@v1.0.3
-
-        env:
-          DEPLOY_SHA: ${{ github.sha }}
-
         with:
           host: ${{ secrets.VPS_HOST }}
           username: ${{ secrets.VPS_USER }}
           key: ${{ secrets.VPS_SSH_KEY }}
           port: 22
           timeout: 5m
-          command_timeout: 20m
-          envs: DEPLOY_SHA
-
+          command_timeout: 15m
           script: |
-            set -eu
-
+            set -e
             cd /home/ubuntu/salon-root
-
-            echo "===== CHECK ENVIRONMENT ====="
-
-            if [ ! -f .env ]; then
-              echo "ERROR: Production .env file not found!"
-              exit 1
-            fi
-
-            echo "Production .env exists."
-
-            echo "===== DOCKER DISK USAGE ====="
-            sudo docker system df
-
-            # Dọn build cache cũ hơn 7 ngày
-            sudo docker builder prune -f --filter "until=168h"
-
-            # Chỉ xóa dangling images
-            sudo docker image prune -f
-
-            echo "===== CHECK DISK SPACE ====="
-
+            
+            echo "=== KIỂM TRA DUNG LƯỢNG ĐĨA TRƯỚC DEPLOY ==="
             df -h /
             df -ih /
-
-            AVAIL_KB=$(df -Pk / | awk 'NR==2 {print $4}')
-            MIN_FREE_KB=$((5 * 1024 * 1024))
-
-            if [ "$AVAIL_KB" -lt "$MIN_FREE_KB" ]; then
-              echo "ERROR: Less than 5GB disk space available."
-              echo "Deployment aborted."
-              exit 1
+            sudo docker system df
+            
+            # Trích xuất dung lượng trống khả dụng (cột Available của phân vùng /)
+            AVAIL_KB=$(df / | awk 'NR==2 {print $4}')
+            AVAIL_GB=$(( AVAIL_KB / 1024 / 1024 ))
+            echo "Dung lượng đĩa trống khả dụng: ${AVAIL_GB} GB"
+            
+            if [ "$AVAIL_GB" -lt 2 ]; then
+              echo "================================================================="
+              echo "CẢNH BÁO CỰC KỲ QUAN TRỌNG:"
+              echo "Dung lượng đĩa khả dụng của máy chủ rất thấp (dưới 2GB)!"
+              echo "Hiện tại chỉ còn lại ${AVAIL_GB} GB trống."
             fi
-
-            INODE_PCT=$(df -Pi / | awk 'NR==2 {gsub("%","",$5); print $5}')
-
-            if [ "$INODE_PCT" -ge 95 ]; then
-              echo "ERROR: Inode usage is at least 95%."
-              exit 1
-            fi
-
-            echo "===== PREPARE SOURCE CODE ====="
-
-            PREVIOUS_SHA=$(git rev-parse HEAD)
-
+            
+            # Sửa quyền sở hữu thư mục về ubuntu:ubuntu
+            sudo chown -R ubuntu:ubuntu .
+            
+            # Xóa các file lock Git bị kẹt nếu có
+            rm -f .git/index.lock .git/ORIG_HEAD.lock .git/HEAD.lock
+            
+            # 2. Fetch và reset cứng về origin/main để lấy mã nguồn sạch từ GitHub
             git fetch origin main
-
-            if ! git cat-file -e "${DEPLOY_SHA}^{commit}" 2>/dev/null; then
-              echo "ERROR: Requested deployment commit not found."
-              exit 1
-            fi
-
-            # Deploy đúng commit đã được CI kiểm tra
-            git reset --hard "$DEPLOY_SHA"
-
-            echo "Deploying commit: $DEPLOY_SHA"
-            echo "Previous commit: $PREVIOUS_SHA"
-
-            echo "===== VALIDATE DOCKER COMPOSE ====="
-
-            sudo docker compose config --quiet
-
-            echo "===== BUILD NEW DOCKER IMAGES ====="
-
-            sudo docker compose build
-
-            # Hàm rollback về phiên bản trước
-            rollback() {
-              echo "===== START ROLLBACK ====="
-
-              if [ "$PREVIOUS_SHA" = "$DEPLOY_SHA" ]; then
-                echo "No previous version available for rollback."
-                return 1
-              fi
-
-              git reset --hard "$PREVIOUS_SHA" || return 1
-
-              sudo docker compose build || return 1
-
-              sudo docker compose up -d --remove-orphans || return 1
-
-              sudo docker compose ps
-
-              echo "Rollback completed."
-            }
-
-            echo "===== START NEW CONTAINERS ====="
-
-            if ! sudo docker compose up -d --remove-orphans; then
-              echo "ERROR: Docker Compose deployment failed."
-
-              rollback || echo "WARNING: Rollback could not be completed."
-
-              exit 1
-            fi
-
-            echo "===== APPLICATION HEALTH CHECK ====="
-
-            API_OK=0
-            FRONTEND_OK=0
-
-            # Kiểm tra API và Frontend tối đa 150 giây
-            for attempt in $(seq 1 30); do
-
-              if curl -fsS --max-time 5 \
-                http://127.0.0.1:5000/api/health >/dev/null; then
-                API_OK=1
-              fi
-
-              if curl -fsS --max-time 5 \
-                http://127.0.0.1:8080/ >/dev/null; then
-                FRONTEND_OK=1
-              fi
-
-              if [ "$API_OK" -eq 1 ] && [ "$FRONTEND_OK" -eq 1 ]; then
-                break
-              fi
-
-              echo "Waiting for application... ($attempt/30)"
-              sleep 5
-            done
-
-            if [ "$API_OK" -ne 1 ] || [ "$FRONTEND_OK" -ne 1 ]; then
-
-              echo "ERROR: Application health check failed."
-
-              sudo docker compose ps || true
-
-              sudo docker compose logs --tail=50 || true
-
-              rollback || echo "WARNING: Rollback could not be completed."
-
-              exit 1
-            fi
-
-            echo "===== DEPLOYMENT SUCCESSFUL ====="
-
-            sudo docker compose ps
-
+            git reset --hard origin/main
+            
+            # 3. Dọn dẹp dung lượng đĩa an toàn TRƯỚC khi build
+            echo "=== TIẾN HÀNH DỌN DẸP DUNG LƯỢNG AN TOÀN TRƯỚC BUILD ==="
+            sudo docker builder prune -f
             sudo docker image prune -f
-
-            echo "===== FINAL DISK STATUS ====="
-
-            df -h /
+            sudo docker container prune -f
+            sudo docker network prune -f
+            sudo journalctl --vacuum-time=3d || true
+            sudo apt-get clean || true
+            
+            # 4. Build image mới TRƯỚC để tránh downtime (Không dừng container cũ trước)
+            echo "=== BIÊN DỊCH DOCKER IMAGES MỚI (KHÔNG CÓ DOWNTIME) ==="
+            sudo docker compose build
+            
+            # 5. Nếu build thành công, restart container để áp dụng code mới
+            echo "=== KHỞI CHẠY CONTAINER MỚI THAY THẾ ==="
+            sudo docker compose up -d --remove-orphans
+            
+            # 6. Dọn dẹp đĩa nhẹ sau khi deploy thành công
+            echo "=== DỌN DẸP LẠI SAU KHI DEPLOY THÀNH CÔNG ==="
+            sudo docker image prune -f

@@ -50,6 +50,13 @@ const toAuthUser = (user: ReturnType<typeof authService.getCurrentUser>): AuthUs
   };
 };
 
+/**
+ * Hàm giải mã Payload của JWT Token ở phía Client:
+ * Cấu trúc JWT gồm 3 phần ngăn cách bởi dấu chấm: Header.Payload.Signature.
+ * Hàm này lấy phần Payload (phần thứ 2), chuẩn hóa định dạng Base64URL,
+ * dùng hàm atob() của trình duyệt để giải mã chuỗi Base64 sang chuỗi JSON,
+ * sau đó dùng JSON.parse() để chuyển thành đối tượng JavaScript chứa userId (sub) và role.
+ */
 const decodeJwtPayload = (token: string): TokenPayload | null => {
   try {
     const [, base64Payload] = token.split(".");
@@ -66,6 +73,10 @@ const decodeJwtPayload = (token: string): TokenPayload | null => {
   }
 };
 
+/**
+ * Tái tạo nhanh thông tin cơ bản của User từ token khi vừa tải lại trang (F5)
+ * giúp giao diện hiển thị ngay quyền hạn mà không cần chờ gọi API xác thực mạng.
+ */
 const buildUserFromToken = (token: string): AuthUser | null => {
   const payload = decodeJwtPayload(token);
   if (!payload?.sub || !payload?.role) {
@@ -83,11 +94,17 @@ const buildUserFromToken = (token: string): AuthUser | null => {
 const initialToken = authService.getToken();
 const initialUser = toAuthUser(authService.getCurrentUser()) || (initialToken ? buildUserFromToken(initialToken) : null);
 
+/**
+ * useAuth: Zustand Store quản lý toàn bộ phiên đăng nhập (Authentication) và phân quyền (Authorization)
+ */
 export const useAuth = create<AuthState>((set, get) => ({
   user: initialUser,
   token: initialToken,
   isLoading: false,
 
+  /**
+   * Đăng ký tài khoản người dùng mới (Họ tên, Email, Số điện thoại, Mật khẩu).
+   */
   register: async (payload) => {
     set({ isLoading: true });
     try {
@@ -110,6 +127,9 @@ export const useAuth = create<AuthState>((set, get) => ({
     }
   },
 
+  /**
+   * Đăng nhập bằng Email và Mật khẩu truyền thống.
+   */
   login: async (credentials) => {
     set({ isLoading: true });
     try {
@@ -132,6 +152,9 @@ export const useAuth = create<AuthState>((set, get) => ({
     }
   },
 
+  /**
+   * Đăng nhập thông qua Google OAuth 2.0 (gửi idToken từ Google SDK về Backend xác minh).
+   */
   loginWithGoogle: async (idToken) => {
     set({ isLoading: true });
     try {
@@ -154,6 +177,9 @@ export const useAuth = create<AuthState>((set, get) => ({
     }
   },
 
+  /**
+   * Đăng nhập thông qua Facebook SDK.
+   */
   loginWithFacebook: async (accessToken) => {
     set({ isLoading: true });
     try {
@@ -176,11 +202,17 @@ export const useAuth = create<AuthState>((set, get) => ({
     }
   },
 
+  /**
+   * Đăng xuất: Xóa token trong LocalStorage và reset state người dùng về null.
+   */
   logout: () => {
     authService.logout();
     set({ user: null, token: null });
   },
 
+  /**
+   * Lấy thông tin người dùng hiện tại (nếu chưa có thì giải mã từ token lưu trong storage).
+   */
   getCurrentUser: () => {
     const state = get();
     if (state.user) {
@@ -194,6 +226,10 @@ export const useAuth = create<AuthState>((set, get) => ({
     return buildUserFromToken(state.token);
   },
 
+  /**
+   * Kiểm tra quyền hạn người dùng (Role-Based Access Control):
+   * Nhận vào một role hoặc mảng roles, so sánh với vai trò hiện tại của người dùng.
+   */
   hasRole: (roles) => {
     const user = get().getCurrentUser();
     if (!user || !user.role) {
@@ -208,6 +244,7 @@ export const useAuth = create<AuthState>((set, get) => ({
     return userRole === String(roles).toLowerCase();
   },
 
+  // Các hàm tiện ích kiểm tra nhanh vai trò cụ thể
   isAdmin: () => get().hasRole("admin"),
   isStaff: () => get().hasRole("staff"),
   isCustomer: () => get().hasRole("customer"),

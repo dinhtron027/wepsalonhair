@@ -18,6 +18,7 @@ import {
   fetchAdminCustomers,
   queryKeys,
   rebookCustomer,
+  deleteAdminCustomer,
 } from "../../services/adminApi";
 import { getApiErrorMessage } from "../../services/api";
 
@@ -66,6 +67,30 @@ const CustomersPage = () => {
     onError: (error) =>
       toast.error(getApiErrorMessage(error, "Không thể tạo lịch hẹn lại")),
   });
+
+  const deleteMutation = useMutation({
+    mutationFn: deleteAdminCustomer,
+    onSuccess: (res) => {
+      const bookingsCount = res.relatedData?.bookings || 0;
+      const ordersCount = res.relatedData?.orders || 0;
+      toast.success(
+        `Đã xóa khách hàng thành công! (Giữ lại ${bookingsCount} lịch hẹn và ${ordersCount} đơn hàng).`
+      );
+      queryClient.invalidateQueries({ queryKey: [...queryKeys.adminCustomers] });
+    },
+    onError: (error) =>
+      toast.error(getApiErrorMessage(error, "Không thể xóa khách hàng")),
+  });
+
+  const handleDelete = (customer: CustomerEntity) => {
+    if (
+      window.confirm(
+        `Bạn có chắc chắn muốn xóa hồ sơ khách hàng "${customer.fullName}"? Hồ sơ sẽ bị ẩn đi, nhưng lịch sử doanh thu và lịch hẹn thực tế vẫn được bảo toàn.`
+      )
+    ) {
+      deleteMutation.mutate(customer.id);
+    }
+  };
 
   const openDetail = (customer: CustomerEntity, section: CustomerDetailSection) => {
     setSelectedCustomer(customer);
@@ -176,6 +201,7 @@ const CustomersPage = () => {
                 customer={customer}
                 onOpen={(section) => openDetail(customer, section)}
                 onRebook={() => openRebook(customer)}
+                onDelete={() => handleDelete(customer)}
               />
             ))}
           </div>

@@ -1,43 +1,22 @@
-import { useState } from "react";
 import { useNavigate } from "react-router-dom";
-import toast from "react-hot-toast";
-import { getApiErrorMessage } from "../services/api";
-import { createOrder } from "../services/adminApi";
 import useCartStore from "../store/useCartStore";
-import LoadingSpinner from "../components/LoadingSpinner";
 import { optimizeCloudinaryUrl } from "../utils/cloudinary";
-
+import { useAuth } from "../modules/auth/control/store/authStore";
 
 const formatCurrency = (value: number) =>
   new Intl.NumberFormat("vi-VN", { style: "currency", currency: "VND" }).format(value);
 
 const CartPage = () => {
   const navigate = useNavigate();
-  const { items, increaseQuantity, decreaseQuantity, removeFromCart, getTotalAmount, clearCart } = useCartStore();
-  const [isSubmitting, setIsSubmitting] = useState(false);
+  const token = useAuth((state) => state.token);
+  const { items, increaseQuantity, decreaseQuantity, removeFromCart, getTotalAmount } = useCartStore();
 
-  const handleCheckout = async () => {
-    if (items.length === 0) return;
-    setIsSubmitting(true);
-    try {
-      await createOrder({
-        products: items.map((item) => ({
-          productId: item.product._id,
-          name: item.product.name,
-          price: item.product.price,
-          quantity: item.quantity,
-        })),
-        totalPrice: getTotalAmount(),
-        payment: { provider: "cash" },
-      });
-      toast.success("Tạo đơn hàng thành công!");
-      clearCart();
-      navigate("/");
-    } catch (error) {
-      toast.error(getApiErrorMessage(error, "Đặt hàng thất bại, vui lòng thử lại."));
-    } finally {
-      setIsSubmitting(false);
+  const handleCheckout = () => {
+    if (!token) {
+      navigate(`/login?redirect=${encodeURIComponent("/checkout")}`);
+      return;
     }
+    navigate("/checkout");
   };
 
   return (
@@ -72,11 +51,9 @@ const CartPage = () => {
           </div>
           <button
             onClick={handleCheckout}
-            disabled={isSubmitting}
-            className="mt-4 flex w-full justify-center items-center gap-2 rounded-lg bg-rose-500 py-4 font-bold text-white transition hover:bg-rose-600 disabled:cursor-not-allowed disabled:opacity-70"
+            className="mt-4 flex w-full justify-center items-center gap-2 rounded-lg bg-rose-500 py-4 font-bold text-white transition hover:bg-rose-600 shadow-lg shadow-rose-100 hover:shadow-xl"
           >
-            {isSubmitting ? <LoadingSpinner size="sm" className="text-white" /> : null}
-            {isSubmitting ? "Đang xử lý..." : "Xác nhận Thanh toán"}
+            Thanh toán
           </button>
         </div>
       )}

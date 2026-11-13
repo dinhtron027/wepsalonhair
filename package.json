@@ -15,7 +15,8 @@
     "audit:ci": "npm audit --audit-level=moderate || true && npm audit --prefix frontend --audit-level=moderate || true",
     "dev:backend": "node --watch backend/server.js",
     "start": "node backend/server.js",
-    "seed": "node backend/utils/seed.js"
+    "seed": "node backend/utils/seed.js",
+    "cleanup-mock": "node backend/utils/cleanupMockData.js"
   },
   "dependencies": {
     "axios": "^1.17.0",

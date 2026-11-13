@@ -17,10 +17,17 @@ router.put(
   validateRequest(cartSchemas.updateItem),
   cartController.updateCartItem
 );
+router.patch(
+  '/items/:productId',
+  validateRequest(paramSchemas.productId, 'params'),
+  validateRequest(cartSchemas.updateItem),
+  cartController.updateCartItem
+);
 router.delete(
   '/items/:productId',
   validateRequest(paramSchemas.productId, 'params'),
   cartController.removeCartItem
 );
+router.delete('/clear', cartController.clearCart);
 
 module.exports = router;

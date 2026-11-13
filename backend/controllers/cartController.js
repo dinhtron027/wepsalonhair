@@ -38,9 +38,19 @@ const removeCartItem = asyncHandler(async (req, res) => {
   });
 });
 
+const clearCart = asyncHandler(async (req, res) => {
+  const cart = await cartService.clearCart(req.user._id);
+
+  return sendSuccess(res, {
+    message: 'Xóa giỏ hàng thành công',
+    data: cart
+  });
+});
+
 module.exports = {
   getCart,
   addCartItem,
   updateCartItem,
-  removeCartItem
+  removeCartItem,
+  clearCart
 };

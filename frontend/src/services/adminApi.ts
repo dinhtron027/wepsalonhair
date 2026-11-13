@@ -67,6 +67,14 @@ export type BookingEntity = {
     phone: string;
     role: UserRole;
   } | null;
+  customerId?: {
+    _id: string;
+    fullName: string;
+    phone: string;
+    email?: string;
+    customerSegment?: string;
+    segments?: string[];
+  } | null;
   customerName: string;
   phone: string;
   email: string;
@@ -94,31 +102,76 @@ export type BookingEntity = {
   updatedAt: string;
 };
 
+export type AddressEntity = {
+  _id: string;
+  userId: string;
+  fullName: string;
+  phone: string;
+  province: string;
+  district: string;
+  ward: string;
+  street: string;
+  detail: string;
+  fullAddress?: string;
+  lat?: number;
+  lng?: number;
+  type: "home" | "office";
+  isDefault: boolean;
+  createdAt?: string;
+  updatedAt?: string;
+};
+
 export type OrderEntity = {
   _id: string;
-  userId: {
+  orderCode: string;
+  userId?: {
     _id: string;
     name: string;
     email: string;
     phone: string;
     role: UserRole;
-  };
-  products: Array<{
+  } | null;
+  customerName?: string;
+  phone?: string;
+  email?: string;
+  items: Array<{
     productId: string;
     name: string;
     price: number;
     quantity: number;
     image?: string;
   }>;
-  totalPrice: number;
-  status: string;
-  payment: {
-    provider: "cash" | "momo" | "vnpay";
-    status: string;
-    checkoutUrl?: string;
+  subtotal?: number;
+  shippingFee?: number;
+  discount?: number;
+  totalAmount: number;
+  address?: {
+    fullName: string;
+    phone: string;
+    province: string;
+    district: string;
+    ward: string;
+    street: string;
+    detail: string;
+    fullAddress?: string;
   };
+  shippingMethod?: "pickup" | "delivery";
+  distanceKm?: number;
+  deliveryStatus?: "pending" | "processing" | "shipped" | "delivered" | "cancelled";
+  orderStatus: string;
+  paymentMethod: "cash" | "bank_transfer" | "cod";
+  paymentStatus: string;
+  transferContent?: string;
+  paymentExpiresAt?: string;
+  customerReportedPaidAt?: string;
+  customerPaymentNote?: string;
+  paidAt?: string;
+  confirmedPaymentBy?: string;
+  bankTransactionId?: string;
+  paymentFailureReason?: string;
   createdAt: string;
-  note?: string;
+  customerNote?: string;
+  adminNote?: string;
 };
 
 export type CustomerSegment =
@@ -361,6 +414,7 @@ export const queryKeys = {
   adminCustomerDetails: ["admin", "customers", "detail"] as const,
   adminInventory: ["admin", "inventory"] as const,
   adminStats: ["admin", "stats"] as const,
+  userAddresses: ["user", "addresses"] as const,
 };
 
 const asArray = <T>(payload: unknown): T[] => (Array.isArray(payload) ? (payload as T[]) : []);
@@ -466,8 +520,8 @@ export const deleteAdminService = async (serviceId: string) => {
   return extractApiData<ServiceEntity>(response);
 };
 
-export const fetchAdminProducts = async () => {
-  const response = await api.get("/api/admin/products");
+export const fetchAdminProducts = async (params?: { includeInactive?: boolean }) => {
+  const response = await api.get("/api/admin/products", { params });
   return asArray<ProductEntity>(extractApiData<unknown>(response));
 };
 
@@ -493,6 +547,47 @@ export const fetchAdminOrders = async () => {
   const response = await api.get("/api/admin/orders");
   return asArray<OrderEntity>(extractApiData<unknown>(response));
 };
+
+export const updateAdminOrder = async (
+  orderId: string,
+  payload: {
+    status?: string;
+    paymentStatus?: string;
+    adminNote?: string;
+  }
+) => {
+  const response = await api.patch(`/api/admin/orders/${orderId}`, payload);
+  return extractApiData<OrderEntity>(response);
+};
+
+export type GuestOrderPayload = {
+  customerName: string;
+  phone: string;
+  note?: string;
+  products: Array<{
+    productId: string;
+    name: string;
+    price: number;
+    quantity: number;
+    image?: string;
+  }>;
+  totalPrice: number;
+  paymentMethod: "bank_transfer" | "cash";
+  shippingMethod?: "pickup" | "delivery";
+  address?: {
+    province: string;
+    district: string;
+    ward: string;
+    street: string;
+    detail: string;
+  };
+};
+
+export const createGuestOrder = async (payload: GuestOrderPayload) => {
+  const response = await api.post("/api/orders/checkout", payload);
+  return extractApiData<OrderEntity>(response);
+};
+
 
 export const fetchAdminCustomers = async (params: CustomerFilterParams = {}) => {
   const response = await api.get("/api/admin/customers", { params });
@@ -587,3 +682,93 @@ export const uploadImage = async (file: File, folder: string) => {
   });
   return extractApiData<{ imageUrl: string; publicId: string }>(response);
 };
+
+export const deleteAdminCustomer = async (customerId: string) => {
+  const response = await api.delete(`/api/admin/customers/${customerId}`);
+  return extractApiData<{
+    customer: CustomerEntity;
+    relatedData: { bookings: number; orders: number };
+  }>(response);
+};
+
+// Address CRUD APIs
+export const fetchAddresses = async () => {
+  const response = await api.get("/api/addresses");
+  return extractApiData<AddressEntity[]>(response);
+};
+
+export const createAddress = async (payload: Omit<AddressEntity, "_id" | "userId">) => {
+  const response = await api.post("/api/addresses", payload);
+  return extractApiData<AddressEntity>(response);
+};
+
+export const updateAddress = async (id: string, payload: Partial<Omit<AddressEntity, "_id" | "userId">>) => {
+  const response = await api.patch(`/api/addresses/${id}`, payload);
+  return extractApiData<AddressEntity>(response);
+};
+
+export const deleteAddress = async (id: string) => {
+  const response = await api.delete(`/api/addresses/${id}`);
+  return extractApiData<{ success: boolean }>(response);
+};
+
+export const setDefaultAddress = async (id: string) => {
+  const response = await api.patch(`/api/addresses/${id}/default`);
+  return extractApiData<AddressEntity>(response);
+};
+
+export const calculateShippingFee = async (addressId: string) => {
+  const response = await api.get(`/api/shipping/calculate`, {
+    params: { addressId }
+  });
+  return extractApiData<{
+    fee: number;
+    distanceKm: number;
+    policy: unknown;
+    origin: unknown;
+    destination: unknown;
+  }>(response);
+};
+
+export const fetchOrderPaymentDetail = async (orderId: string) => {
+  const response = await api.get(`/api/orders/${orderId}/payment`);
+  return extractApiData<{
+    orderId: string;
+    orderCode: string;
+    amount: number;
+    paymentMethod: string;
+    paymentStatus: string;
+    orderStatus: string;
+    bankInfo: {
+      bankCode: string;
+      accountNumber: string;
+      accountName: string;
+    };
+    transferContent: string;
+    qrUrl: string;
+    paymentExpiresAt: string;
+    customerPaymentNote?: string;
+    customerReportedPaidAt?: string;
+  }>(response);
+};
+
+export const reportOrderPaid = async (orderId: string) => {
+  const response = await api.patch(`/api/orders/${orderId}/report-paid`);
+  return extractApiData<OrderEntity>(response);
+};
+
+export const confirmAdminOrderPayment = async (orderId: string) => {
+  const response = await api.patch(`/api/admin/orders/${orderId}/confirm-payment`);
+  return extractApiData<OrderEntity>(response);
+};
+
+export const rejectAdminOrderPayment = async (orderId: string) => {
+  const response = await api.patch(`/api/admin/orders/${orderId}/reject-payment`);
+  return extractApiData<OrderEntity>(response);
+};
+
+export const cancelAdminOrder = async (orderId: string) => {
+  const response = await api.patch(`/api/admin/orders/${orderId}/cancel`);
+  return extractApiData<OrderEntity>(response);
+};
+

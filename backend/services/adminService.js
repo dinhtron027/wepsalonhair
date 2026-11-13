@@ -18,7 +18,10 @@ const getAdminBookings = async () =>
 
 const getAdminServices = async () => Service.find().sort({ createdAt: -1 });
 
-const getAdminProducts = async () => Product.find().sort({ createdAt: -1 });
+const getAdminProducts = async ({ includeInactive = false } = {}) => {
+  const query = includeInactive ? {} : { isActive: true };
+  return Product.find(query).sort({ createdAt: -1 });
+};
 
 const getAdminOrders = async () =>
   Order.find()
@@ -147,21 +150,20 @@ const adjustInventory = async (payload, performedBy) => {
 
 const getRevenueStatistics = async ({ from, to } = {}) => {
   const orderMatch = {
-    status: {
-      $in: ['paid', 'completed']
-    }
+    $or: [
+      { orderStatus: 'completed' },
+      { paymentStatus: 'paid' }
+    ]
   };
 
   if (from || to) {
     orderMatch.createdAt = {};
-  }
-
-  if (from) {
-    orderMatch.createdAt.$gte = new Date(from);
-  }
-
-  if (to) {
-    orderMatch.createdAt.$lte = new Date(to);
+    if (from) {
+      orderMatch.createdAt.$gte = new Date(from);
+    }
+    if (to) {
+      orderMatch.createdAt.$lte = new Date(to);
+    }
   }
 
   const [summaryRows, monthlyRevenue = [], bookingStatusSummary = [], counts = []] =
@@ -171,9 +173,9 @@ const getRevenueStatistics = async ({ from, to } = {}) => {
         {
           $group: {
             _id: null,
-            totalRevenue: { $sum: '$totalPrice' },
+            totalRevenue: { $sum: '$totalAmount' },
             totalOrders: { $sum: 1 },
-            averageOrderValue: { $avg: '$totalPrice' }
+            averageOrderValue: { $avg: '$totalAmount' }
           }
         }
       ]),
@@ -185,7 +187,7 @@ const getRevenueStatistics = async ({ from, to } = {}) => {
               year: { $year: '$createdAt' },
               month: { $month: '$createdAt' }
             },
-            revenue: { $sum: '$totalPrice' },
+            revenue: { $sum: '$totalAmount' },
             orders: { $sum: 1 }
           }
         },

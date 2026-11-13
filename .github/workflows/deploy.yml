@@ -29,10 +29,8 @@ jobs:
           command_timeout: 15m
           script: |
             set -e
-            # Di chuyển vào thư mục dự án trên EC2
             cd /home/ubuntu/salon-root
             
-            # 1. Kiểm tra dung lượng đĩa và in cảnh báo trước khi deploy
             echo "=== KIỂM TRA DUNG LƯỢNG ĐĨA TRƯỚC DEPLOY ==="
             df -h /
             df -ih /
@@ -45,12 +43,9 @@ jobs:
             
             if [ "$AVAIL_GB" -lt 2 ]; then
               echo "================================================================="
-              echo "⚠️ CẢNH BÁO CỰC KỲ QUAN TRỌNG:"
+              echo "CẢNH BÁO CỰC KỲ QUAN TRỌNG:"
               echo "Dung lượng đĩa khả dụng của máy chủ rất thấp (dưới 2GB)!"
               echo "Hiện tại chỉ còn lại ${AVAIL_GB} GB trống."
-              echo "Có nguy cơ cao Docker build sẽ thất bại do thiếu bộ nhớ đĩa (ENOSPC)."
-              echo "Khuyến nghị tăng dung lượng EBS Volume của EC2 lên tối thiểu 20GB hoặc 30GB."
-              echo "================================================================="
             fi
             
             # Sửa quyền sở hữu thư mục về ubuntu:ubuntu

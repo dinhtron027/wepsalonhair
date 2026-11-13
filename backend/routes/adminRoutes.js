@@ -57,6 +57,26 @@ router.delete(
 );
 
 router.get('/orders', adminController.getAdminOrders);
+router.patch(
+  '/orders/:id',
+  validateRequest(paramSchemas.mongoId, 'params'),
+  adminController.updateAdminOrder
+);
+router.patch(
+  '/orders/:id/confirm-payment',
+  validateRequest(paramSchemas.mongoId, 'params'),
+  adminController.confirmAdminOrderPayment
+);
+router.patch(
+  '/orders/:id/reject-payment',
+  validateRequest(paramSchemas.mongoId, 'params'),
+  adminController.rejectAdminOrderPayment
+);
+router.patch(
+  '/orders/:id/cancel',
+  validateRequest(paramSchemas.mongoId, 'params'),
+  adminController.cancelAdminOrder
+);
 router.get(
   '/customers',
   validateRequest(customerSchemas.query, 'query'),
@@ -80,6 +100,11 @@ router.post(
   '/customers/:id/rebook',
   validateRequest(customerSchemas.rebook),
   adminController.rebookAdminCustomer
+);
+router.delete(
+  '/customers/:id',
+  validateRequest(paramSchemas.mongoId, 'params'),
+  adminController.deleteAdminCustomer
 );
 router.get('/inventory', adminController.getInventoryOverview);
 router.post(

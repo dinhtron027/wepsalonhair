@@ -9,6 +9,7 @@ import {
   Phone,
   Scissors,
   Sparkles,
+  Trash2,
   UserRound,
 } from "lucide-react";
 import toast from "react-hot-toast";
@@ -27,9 +28,10 @@ type CustomerCardProps = {
   customer: CustomerEntity;
   onOpen: (section: CustomerDetailSection) => void;
   onRebook: () => void;
+  onDelete: () => void;
 };
 
-const CustomerCard = ({ customer, onOpen, onRebook }: CustomerCardProps) => {
+const CustomerCard = ({ customer, onOpen, onRebook, onDelete }: CustomerCardProps) => {
   const copyPhone = async () => {
     if (!customer.phone) return;
     await navigator.clipboard.writeText(customer.phone);
@@ -199,6 +201,14 @@ const CustomerCard = ({ customer, onOpen, onRebook }: CustomerCardProps) => {
           <FileClock size={15} />
           Xem lịch sử
         </button>
+        <button
+          type="button"
+          onClick={onDelete}
+          className="inline-flex items-center gap-2 rounded-xl border border-rose-205 text-rose-600 hover:bg-rose-50 hover:border-rose-300 px-3.5 py-2 text-xs font-semibold ml-auto"
+        >
+          <Trash2 size={15} />
+          Xóa khách hàng
+        </button>
       </div>
 
       {/* Mobile Action Buttons (Optimized touch targets & layout) */}
@@ -253,6 +263,15 @@ const CustomerCard = ({ customer, onOpen, onRebook }: CustomerCardProps) => {
             Lịch sử
           </button>
         </div>
+        <button
+          type="button"
+          onClick={onDelete}
+          className="w-full inline-flex items-center justify-center gap-2 rounded-xl border border-rose-200 bg-white px-3.5 py-3 text-xs font-bold text-rose-600 hover:bg-rose-50"
+          style={{ minHeight: "44px" }}
+        >
+          <Trash2 size={15} />
+          Xóa khách hàng
+        </button>
       </div>
     </article>
   );

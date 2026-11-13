@@ -1,3 +1,10 @@
+/* 
+  Hiệu ứng kính mờ (Glassmorphism):
+  - backdrop-filter: Làm mờ nền phía sau 16px tạo chiều sâu thị giác.
+  - background: Màu trắng bán trong suốt (độ đục 65%).
+  - border: Viền hồng phấn tinh tế.
+  - box-shadow: Đổ bóng màu Rose tạo cảm giác phần tử nổi nhẹ trên bề mặt.
+*/
 .glass {
   backdrop-filter: blur(16px);
   background: rgba(255, 255, 255, 0.65);
@@ -5,11 +12,13 @@
   box-shadow: 0 20px 60px -40px rgba(244, 63, 94, 0.35);
 }
 
+/* Tùy chỉnh màu sắc cho các chấm phân trang (bullet) của slider Swiper */
 .swiper-pagination-bullet {
   background: rgba(244, 63, 94, 0.4);
   opacity: 1;
 }
 
+/* Chấm phân trang đang hoạt động (active) - hiển thị màu hồng đậm chủ đạo */
 .swiper-pagination-bullet-active {
   background: #f43f5e;
 }

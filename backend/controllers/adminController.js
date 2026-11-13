@@ -12,6 +12,8 @@ const {
 const asyncHandler = require('../utils/asyncHandler');
 const ApiError = require('../utils/ApiError');
 const { sendSuccess } = require('../utils/response');
+const Order = require('../models/Order');
+const orderService = require('../services/orderService');
 
 const getAdminBookings = asyncHandler(async (req, res) => {
   const bookings = await adminService.getAdminBookings();
@@ -77,7 +79,8 @@ const deleteAdminService = asyncHandler(async (req, res) => {
 });
 
 const getAdminProducts = asyncHandler(async (req, res) => {
-  const products = await adminService.getAdminProducts();
+  const includeInactive = req.query.includeInactive === 'true';
+  const products = await adminService.getAdminProducts({ includeInactive });
 
   return sendSuccess(res, {
     message: 'Lay danh sach san pham thanh cong',
@@ -236,6 +239,162 @@ const uploadImage = asyncHandler(async (req, res) => {
   });
 });
 
+const deleteAdminCustomer = asyncHandler(async (req, res) => {
+  const result = await customerService.softDeleteCustomer(req.params.id);
+  emitRealtimeEvent('customer_deleted', {
+    customerId: req.params.id
+  }, { room: 'admins' });
+  broadcastSystemNotification('Khach hang vua bi xoa', 'customer');
+
+  return sendSuccess(res, {
+    message: 'Xóa khách hàng thành công',
+    data: result
+  });
+});
+
+const updateAdminOrder = asyncHandler(async (req, res) => {
+  const { id } = req.params;
+  const { status, paymentStatus, adminNote } = req.body;
+
+  const order = await Order.findById(id);
+  if (!order) {
+    throw new ApiError(404, 'Không tìm thấy đơn hàng');
+  }
+
+  if (status) {
+    if (status === 'paid') {
+      order.orderStatus = 'confirmed';
+    } else {
+      order.orderStatus = status;
+    }
+  }
+
+  if (paymentStatus) {
+    order.paymentStatus = paymentStatus;
+    if (paymentStatus === 'paid' && order.orderStatus === 'pending') {
+      order.orderStatus = 'confirmed';
+    }
+  }
+
+  if (adminNote !== undefined) {
+    order.adminNote = adminNote;
+  }
+
+  await order.save();
+
+  const populated = await Order.findById(order._id)
+    .populate('userId', 'name email phone role');
+
+  emitRealtimeEvent('order_updated', populated.toObject(), { room: 'admins' });
+  broadcastSystemNotification('Đơn hàng vừa được cập nhật', 'order');
+
+  return sendSuccess(res, {
+    message: 'Cập nhật trạng thái đơn hàng thành công',
+    data: populated
+  });
+});
+
+const confirmAdminOrderPayment = asyncHandler(async (req, res) => {
+  const { id } = req.params;
+  const order = await Order.findById(id);
+  if (!order) {
+    throw new ApiError(404, 'Không tìm thấy đơn hàng');
+  }
+
+  if (order.paymentMethod !== 'bank_transfer') {
+    throw new ApiError(400, 'Đơn hàng không sử dụng phương thức chuyển khoản');
+  }
+
+  if (order.paymentStatus === 'paid') {
+    throw new ApiError(400, 'Đơn hàng đã được thanh toán trước đó');
+  }
+
+  if (order.paymentStatus === 'cancelled' || order.orderStatus === 'cancelled') {
+    throw new ApiError(400, 'Không thể xác nhận thanh toán cho đơn hàng đã hủy');
+  }
+
+  if (order.paymentStatus === 'expired' || order.orderStatus === 'payment_expired') {
+    throw new ApiError(400, 'Không thể xác nhận thanh toán cho đơn hàng đã hết hạn');
+  }
+
+  order.paymentStatus = 'paid';
+  order.orderStatus = 'confirmed';
+  order.paidAt = new Date();
+  order.confirmedPaymentBy = req.user._id;
+
+  await order.save();
+
+  const populated = await Order.findById(order._id).populate('userId', 'name email phone role');
+  emitRealtimeEvent('order_updated', populated.toObject(), { room: 'admins' });
+  broadcastSystemNotification(`Đơn hàng ${order.orderCode} đã được xác nhận thanh toán thành công`, 'order');
+
+  return sendSuccess(res, {
+    message: 'Xác nhận thanh toán đơn hàng thành công',
+    data: populated
+  });
+});
+
+const rejectAdminOrderPayment = asyncHandler(async (req, res) => {
+  const { id } = req.params;
+  const order = await Order.findById(id);
+  if (!order) {
+    throw new ApiError(404, 'Không tìm thấy đơn hàng');
+  }
+
+  if (order.paymentMethod !== 'bank_transfer') {
+    throw new ApiError(400, 'Đơn hàng không sử dụng phương thức chuyển khoản');
+  }
+
+  order.paymentStatus = 'failed';
+  order.customerPaymentNote = 'payment_rejected';
+
+  await order.save();
+
+  const populated = await Order.findById(order._id).populate('userId', 'name email phone role');
+  emitRealtimeEvent('order_updated', populated.toObject(), { room: 'admins' });
+  broadcastSystemNotification(`Thanh toán đơn hàng ${order.orderCode} đã bị admin từ chối`, 'order');
+
+  return sendSuccess(res, {
+    message: 'Đã từ chối nhận tiền cho đơn hàng này',
+    data: populated
+  });
+});
+
+const cancelAdminOrder = asyncHandler(async (req, res) => {
+  const { id } = req.params;
+  const order = await Order.findById(id);
+  if (!order) {
+    throw new ApiError(404, 'Không tìm thấy đơn hàng');
+  }
+
+  if (order.orderStatus === 'completed' || order.deliveryStatus === 'delivered') {
+    throw new ApiError(400, 'Không thể hủy đơn hàng đã hoàn thành hoặc đã giao');
+  }
+
+  if (order.orderStatus === 'cancelled' || order.orderStatus === 'payment_expired') {
+    return sendSuccess(res, {
+      message: 'Đơn hàng đã được hủy hoặc hết hạn trước đó',
+      data: order
+    });
+  }
+
+  order.orderStatus = 'cancelled';
+  order.paymentStatus = 'cancelled';
+  await order.save();
+
+  // Restore inventory stock
+  await orderService.restoreStockForOrder(order);
+
+  const populated = await Order.findById(order._id).populate('userId', 'name email phone role');
+  emitRealtimeEvent('order_updated', populated.toObject(), { room: 'admins' });
+  broadcastSystemNotification(`Đơn hàng ${order.orderCode} đã bị hủy bởi admin`, 'order');
+
+  return sendSuccess(res, {
+    message: 'Hủy đơn hàng thành công',
+    data: populated
+  });
+});
+
 module.exports = {
   uploadImage,
   getAdminBookings,
@@ -249,11 +408,16 @@ module.exports = {
   updateAdminProduct,
   deleteAdminProduct,
   getAdminOrders,
+  updateAdminOrder,
+  confirmAdminOrderPayment,
+  rejectAdminOrderPayment,
+  cancelAdminOrder,
   getAdminCustomers,
   getAdminCustomerDetail,
   addAdminCustomerNote,
   addAdminCustomerHairFormula,
   rebookAdminCustomer,
+  deleteAdminCustomer,
   getInventoryOverview,
   adjustInventory,
   getRevenueStatistics

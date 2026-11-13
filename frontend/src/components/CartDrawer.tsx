@@ -1,8 +1,9 @@
 import { AnimatePresence, motion } from "framer-motion";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { Minus, Plus, ShoppingBag, Trash2, X } from "lucide-react";
 import useCartStore from "../store/useCartStore";
 import Button from "./Button";
+import { useAuth } from "../modules/auth/control/store/authStore";
 
 type CartDrawerProps = {
   open: boolean;
@@ -17,8 +18,19 @@ const formatCurrency = (value: number) =>
   }).format(value);
 
 const CartDrawer = ({ open, onClose }: CartDrawerProps) => {
+  const navigate = useNavigate();
+  const token = useAuth((state) => state.token);
   const { items, removeFromCart, increaseQuantity, decreaseQuantity } = useCartStore();
   const total = items.reduce((sum, item) => sum + item.product.price * item.quantity, 0);
+
+  const handleCheckout = () => {
+    onClose();
+    if (!token) {
+      navigate(`/login?redirect=${encodeURIComponent("/checkout")}`);
+      return;
+    }
+    navigate("/checkout");
+  };
 
   return (
     <AnimatePresence>
@@ -143,8 +155,8 @@ const CartDrawer = ({ open, onClose }: CartDrawerProps) => {
                 <Button to="/products" variant="ghost" fullWidth onClick={onClose}>
                   Tiếp tục mua sắm
                 </Button>
-                <Button to="/cart" variant="primary" fullWidth onClick={onClose}>
-                  Xem giỏ hàng
+                <Button variant="primary" fullWidth onClick={handleCheckout}>
+                  Thanh toán
                 </Button>
               </div>
             </div>

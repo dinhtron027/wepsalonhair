@@ -1,4 +1,4 @@
-import { lazy, Suspense } from "react";
+import { lazy, Suspense, useEffect } from "react";
 import { Navigate, Route, Routes, useLocation } from "react-router-dom";
 import { AnimatePresence, motion } from "framer-motion";
 import MainLayout from "./layouts/MainLayout";
@@ -23,9 +23,23 @@ const pageVariants = {
   exit: { opacity: 0, y: -16 },
 };
 
+import { useAuth } from "./modules/auth/control/store/authStore";
+import useCartStore from "./store/useCartStore";
+
 function App() {
   const location = useLocation();
   const isAdminPath = location.pathname.startsWith("/admin");
+
+  const token = useAuth((state) => state.token);
+  const fetchCart = useCartStore((state) => state.fetchCart);
+  const handlePendingItem = useCartStore((state) => state.handlePendingItem);
+
+  useEffect(() => {
+    if (token) {
+      fetchCart();
+      handlePendingItem();
+    }
+  }, [token, fetchCart, handlePendingItem]);
 
 
   const routesElement = (

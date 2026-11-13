@@ -88,6 +88,14 @@ const customerSchema = new mongoose.Schema(
       type: String,
       trim: true,
       default: ''
+    },
+    isDeleted: {
+      type: Boolean,
+      default: false
+    },
+    deletedAt: {
+      type: Date,
+      default: null
     }
   },
   {

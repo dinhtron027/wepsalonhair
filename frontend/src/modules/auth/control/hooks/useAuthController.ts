@@ -52,8 +52,15 @@ export const useAuthController = () => {
       return;
     }
 
-    navigate("/", { replace: true });
-  }, [token, getCurrentUser, navigate]);
+    const queryParams = new URLSearchParams(location.search);
+    const redirectUrl = queryParams.get("redirect");
+
+    if (redirectUrl) {
+      navigate(redirectUrl, { replace: true });
+    } else {
+      navigate("/", { replace: true });
+    }
+  }, [token, getCurrentUser, navigate, location.search]);
 
   const submitLogin = async (credentials: LoginCredentials): Promise<boolean> => {
     try {

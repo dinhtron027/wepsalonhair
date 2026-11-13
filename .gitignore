@@ -13,3 +13,5 @@ npm-debug.log*
 *.log
 *.zip
 .agents/skills
+backups/
+*.tar.gz

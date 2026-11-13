@@ -1,8 +1,12 @@
 import React, { useEffect, useState } from "react";
-import { BookingEntity, BookingStatus } from "../../../services/adminApi";
+import { BookingEntity, BookingStatus, queryKeys } from "../../../services/adminApi";
 import BookingStatusBadge from "./BookingStatusBadge";
 import { formatInVi, statusLabelMap } from "./dateUtils";
-import { X, User, Phone, Mail, Clock, Calendar, Scissors, Sparkles, Paintbrush, BookOpen } from "lucide-react";
+import { X, User, Phone, Mail, Clock, Calendar, Scissors, Sparkles, Paintbrush, BookOpen, AlertTriangle } from "lucide-react";
+import api, { extractApiData, getApiErrorMessage } from "../../../services/api";
+import { useQueryClient } from "@tanstack/react-query";
+import { useAuth } from "../../../modules/auth/control/store/authStore";
+import toast from "react-hot-toast";
 
 type BookingDetailModalProps = {
   booking: BookingEntity | null;
@@ -33,6 +37,58 @@ const BookingDetailModal: React.FC<BookingDetailModalProps> = ({
   const [stylist, setStylist] = useState("");
   const [hairColorUsed, setHairColorUsed] = useState("");
   const [note, setNote] = useState("");
+
+  const queryClient = useQueryClient();
+  const authIsAdmin = useAuth((state) => state.isAdmin());
+  
+  const [showDeleteConfirm, setShowDeleteConfirm] = useState(false);
+  const [deleteStats, setDeleteStats] = useState<{ bookings: number; orders: number } | null>(null);
+  const [isFetchingStats, setIsFetchingStats] = useState(false);
+  const [isDeleting, setIsDeleting] = useState(false);
+
+  const handleInitDelete = async () => {
+    if (!booking) return;
+    const custId = typeof booking.customerId === "object" ? booking.customerId?._id : booking.customerId;
+    if (!custId) {
+      toast.error("Không tìm thấy hồ sơ khách hàng để xóa.");
+      return;
+    }
+
+    setIsFetchingStats(true);
+    try {
+      const res = await api.get(`/api/admin/customers/${custId}`);
+      const data = extractApiData<{ history?: Array<unknown>; orders?: Array<unknown> }>(res);
+      setDeleteStats({
+        bookings: data.history?.length || 0,
+        orders: data.orders?.length || 0,
+      });
+      setShowDeleteConfirm(true);
+    } catch {
+      toast.error("Không thể lấy thống kê dữ liệu khách hàng");
+    } finally {
+      setIsFetchingStats(false);
+    }
+  };
+
+  const handleDeleteCustomer = async () => {
+    if (!booking) return;
+    const custId = typeof booking.customerId === "object" ? booking.customerId?._id : booking.customerId;
+    if (!custId) return;
+
+    setIsDeleting(true);
+    try {
+      await api.delete(`/api/admin/customers/${custId}`);
+      toast.success("Đã xóa khách hàng thành công (Soft Delete)!");
+      setShowDeleteConfirm(false);
+      onClose();
+      queryClient.invalidateQueries({ queryKey: [...queryKeys.adminCustomers] });
+      queryClient.invalidateQueries({ queryKey: [...queryKeys.adminBookings] });
+    } catch (err) {
+      toast.error(getApiErrorMessage(err, "Không thể xóa khách hàng"));
+    } finally {
+      setIsDeleting(false);
+    }
+  };
 
   useEffect(() => {
     if (booking) {
@@ -209,12 +265,34 @@ const BookingDetailModal: React.FC<BookingDetailModalProps> = ({
               </label>
             </div>
 
+            {/* Danger Zone (Chỉ hiển thị cho admin nếu có hồ sơ khách hàng) */}
+            {authIsAdmin && booking.customerId && (
+              <div className="rounded-2xl border border-red-100 bg-red-50/20 p-4 space-y-2.5">
+                <div>
+                  <h4 className="text-xs font-bold text-red-600 flex items-center gap-1.5">
+                    <AlertTriangle size={13} /> Vùng nguy hiểm (Danger Zone)
+                  </h4>
+                  <p className="text-[10px] text-slate-500 mt-0.5 leading-relaxed">
+                    Xóa hồ sơ khách hàng này khỏi hệ thống quản lý. Lịch sử lịch hẹn và đơn hàng sẽ bị ẩn khỏi các danh sách lọc mặc định.
+                  </p>
+                </div>
+                <button
+                  type="button"
+                  onClick={handleInitDelete}
+                  disabled={isFetchingStats}
+                  className="w-full rounded-xl bg-red-500 text-white hover:bg-red-600 active:scale-98 transition text-xs font-bold py-2.5 flex items-center justify-center gap-1"
+                >
+                  {isFetchingStats ? "Đang truy vấn dữ liệu..." : "Xóa thông tin khách hàng"}
+                </button>
+              </div>
+            )}
+
             {/* Nút hành động */}
             <div className="flex gap-3 pt-3 border-t border-slate-100">
               <button
                 type="button"
                 onClick={onClose}
-                className="flex-1 rounded-xl border border-slate-200 bg-white py-3 text-sm font-bold text-slate-600 hover:bg-slate-50 transition active:scale-95"
+                className="flex-1 rounded-xl border border-slate-200 bg-white py-3 text-sm font-bold text-slate-650 hover:bg-slate-50 transition active:scale-95"
                 style={{ minHeight: "44px" }}
               >
                 Hủy bỏ
@@ -231,6 +309,53 @@ const BookingDetailModal: React.FC<BookingDetailModalProps> = ({
           </form>
         </div>
       </div>
+
+      {/* Confirm Modal Overlay */}
+      {showDeleteConfirm && deleteStats && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-slate-950/50 p-4 backdrop-blur-xs animate-fadeIn">
+          <div className="w-full max-w-sm rounded-2xl bg-white p-6 shadow-2xl space-y-4 animate-scaleUp">
+            <div className="text-center space-y-2">
+              <div className="mx-auto flex h-12 w-12 items-center justify-center rounded-full bg-red-50 text-red-500">
+                <AlertTriangle size={24} />
+              </div>
+              <h3 className="text-base font-black text-slate-900">Xác nhận xóa khách hàng?</h3>
+              <p className="text-xs text-slate-500 leading-relaxed">
+                Khách hàng <span className="font-bold text-slate-800">"{booking.customerName}"</span> hiện có:
+              </p>
+              <div className="grid grid-cols-2 gap-3 py-1.5">
+                <div className="rounded-xl border border-slate-150 p-2 bg-slate-50">
+                  <p className="text-lg font-black text-slate-800">{deleteStats.bookings}</p>
+                  <p className="text-[9px] text-slate-400 font-bold uppercase tracking-wider">Lịch hẹn</p>
+                </div>
+                <div className="rounded-xl border border-slate-150 p-2 bg-slate-50">
+                  <p className="text-lg font-black text-slate-800">{deleteStats.orders}</p>
+                  <p className="text-[9px] text-slate-400 font-bold uppercase tracking-wider">Đơn hàng</p>
+                </div>
+              </div>
+              <p className="text-[11px] text-red-500 font-medium leading-relaxed mt-1">
+                * Hành động này sẽ ẩn khách hàng khỏi tất cả danh sách quản trị CRM, bộ lọc và lịch hẹn. Bạn có chắc chắn muốn tiếp tục không?
+              </p>
+            </div>
+            <div className="flex gap-3">
+              <button
+                type="button"
+                onClick={() => setShowDeleteConfirm(false)}
+                className="flex-1 rounded-xl border border-slate-200 bg-white py-2.5 text-xs font-bold text-slate-600 hover:bg-slate-50 transition"
+              >
+                Hủy bỏ
+              </button>
+              <button
+                type="button"
+                onClick={handleDeleteCustomer}
+                disabled={isDeleting}
+                className="flex-1 rounded-xl bg-red-600 text-white hover:bg-red-700 font-bold text-xs py-2.5 transition flex items-center justify-center disabled:opacity-50"
+              >
+                {isDeleting ? "Đang xóa..." : "Xác nhận xóa"}
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 };

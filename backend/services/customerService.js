@@ -426,7 +426,7 @@ const getCustomerFilterOptions = async () => {
 const getAdminCustomers = async (query = {}) => {
   await syncLegacyCustomerProfiles();
 
-  const customers = await Customer.find().sort({ createdAt: -1 }).lean();
+  const customers = await Customer.find({ isDeleted: { $ne: true } }).sort({ createdAt: -1 }).lean();
   const customerIds = customers.map((customer) => customer._id);
   const relations = await loadCustomerRelations(customerIds);
   const staffFilter = await resolveStaffFilter(query.staffId);
@@ -583,19 +583,19 @@ const getCustomerDetail = async (customerId) => {
 
   const orders = customer.userId
     ? await Order.find({ userId: customer.userId })
-        .select('products totalPrice status createdAt note payment')
+        .select('items totalAmount orderStatus createdAt customerNote paymentMethod paymentStatus')
         .sort({ createdAt: -1 })
         .lean()
     : [];
 
   const purchasedProducts = orders.flatMap((order) =>
-    order.products.map((product) => ({
+    (order.items || []).map((product) => ({
       orderId: order._id.toString(),
       productId: product.productId?.toString() || '',
       name: product.name,
       quantity: product.quantity,
       price: product.price,
-      orderStatus: order.status,
+      orderStatus: order.orderStatus,
       purchasedAt: order.createdAt
     }))
   );
@@ -672,6 +672,35 @@ const addHairFormula = async (customerId, payload, createdBy) => {
     .lean();
 };
 
+const softDeleteCustomer = async (customerId) => {
+  const customer = await Customer.findById(customerId);
+  if (!customer) {
+    throw new ApiError(404, 'Không tìm thấy khách hàng');
+  }
+
+  if (customer.isDeleted) {
+    throw new ApiError(400, 'Khách hàng đã được xóa trước đó');
+  }
+
+  // Kiểm tra dữ liệu liên quan
+  const [bookingCount, orderCount] = await Promise.all([
+    Booking.countDocuments({ customerId: customer._id }),
+    customer.userId ? Order.countDocuments({ userId: customer.userId }) : Promise.resolve(0)
+  ]);
+
+  customer.isDeleted = true;
+  customer.deletedAt = new Date();
+  await customer.save();
+
+  return {
+    customer,
+    relatedData: {
+      bookings: bookingCount,
+      orders: orderCount
+    }
+  };
+};
+
 module.exports = {
   HIGH_VALUE_SPEND_THRESHOLD,
   INACTIVE_DAYS,
@@ -683,5 +712,6 @@ module.exports = {
   getAdminCustomers,
   getCustomerDetail,
   refreshCustomerStats,
+  softDeleteCustomer,
   syncLegacyCustomerProfiles
 };

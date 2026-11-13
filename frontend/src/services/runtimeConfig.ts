@@ -14,6 +14,10 @@ const getBrowserOrigin = () => {
 };
 
 const resolveApiBaseUrl = () => {
+  if (typeof window !== "undefined" && ["localhost", "127.0.0.1"].includes(window.location.hostname)) {
+    return "http://localhost:5000";
+  }
+
   const envApiUrl = import.meta.env.VITE_API_URL?.trim();
   if (envApiUrl) {
     return trimTrailingSlash(envApiUrl);

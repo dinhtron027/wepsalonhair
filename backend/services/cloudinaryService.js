@@ -26,7 +26,12 @@ const uploadBuffer = (fileBuffer, folder = 'salon') => {
   return new Promise((resolve, reject) => {
     const stream = cloudinary.uploader.upload_stream(
       {
-        folder
+        folder,
+        transformation: [
+          { angle: 'exif' },
+          { quality: 'auto', fetch_format: 'auto' }
+        ],
+        resource_type: 'image'
       },
       (error, result) => {
         if (error) {

@@ -147,17 +147,60 @@ const cartSchemas = {
 
 const orderSchemas = {
   create: Joi.object({
-    items: Joi.array()
+    shippingMethod: Joi.string().valid('pickup', 'delivery').default('delivery'),
+    addressId: objectId.when('shippingMethod', {
+      is: 'delivery',
+      then: Joi.required(),
+      otherwise: Joi.optional().allow('', null)
+    }),
+    paymentMethod: Joi.string().valid('cash', 'bank_transfer', 'cod').default('bank_transfer'),
+    paymentProvider: Joi.string().valid('cash', 'momo', 'vnpay', 'bank_transfer', 'cod').optional(),
+    note: Joi.string().trim().allow('', null).default('')
+  }),
+  guestCheckout: Joi.object({
+    customerName: Joi.string().trim().min(2).max(120).required(),
+    phone: Joi.string().trim().min(8).max(20).required(),
+    note: Joi.string().trim().allow('', null).default(''),
+    products: Joi.array()
       .items(
         Joi.object({
           productId: objectId.required(),
-          quantity: Joi.number().integer().min(1).required()
+          name: Joi.string().trim().required(),
+          price: Joi.number().min(0).required(),
+          quantity: Joi.number().integer().min(1).required(),
+          image: Joi.string().trim().allow('', null).default('')
         })
       )
-      .default([]),
-    paymentProvider: Joi.string().valid('cash', 'momo', 'vnpay').default('cash'),
-    note: Joi.string().trim().allow('', null)
+      .min(1)
+      .required(),
+    totalPrice: Joi.number().min(0).required(),
+    paymentMethod: Joi.string().valid('bank_transfer', 'cash', 'cod').default('bank_transfer')
   })
+};
+
+const addressSchemas = {
+  create: Joi.object({
+    fullName: Joi.string().trim().min(2).max(120).required(),
+    phone: Joi.string().trim().min(8).max(20).required(),
+    province: Joi.string().trim().required(),
+    district: Joi.string().trim().required(),
+    ward: Joi.string().trim().required(),
+    street: Joi.string().trim().required(),
+    detail: Joi.string().trim().allow('', null).default(''),
+    type: Joi.string().valid('home', 'office').default('home'),
+    isDefault: Joi.boolean().default(false)
+  }),
+  update: Joi.object({
+    fullName: Joi.string().trim().min(2).max(120),
+    phone: Joi.string().trim().min(8).max(20),
+    province: Joi.string().trim(),
+    district: Joi.string().trim(),
+    ward: Joi.string().trim(),
+    street: Joi.string().trim(),
+    detail: Joi.string().trim().allow('', null),
+    type: Joi.string().valid('home', 'office'),
+    isDefault: Joi.boolean()
+  }).min(1)
 };
 
 const adminSchemas = {
@@ -242,5 +285,6 @@ module.exports = {
   cartSchemas,
   orderSchemas,
   paramSchemas,
-  customerSchemas
+  customerSchemas,
+  addressSchemas
 };

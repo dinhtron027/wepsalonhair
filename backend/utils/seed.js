@@ -726,25 +726,23 @@ const seedCrmCustomers = async ({ adminUser }) => {
         }));
 
       if (orderProducts.length) {
-        const totalPrice = orderProducts.reduce((sum, product) => sum + product.price, 0);
+        const totalAmount = orderProducts.reduce((sum, product) => sum + product.price, 0);
         const seedKey = `crm-order-${customerSeed.key}`;
+        const orderCode = require('crypto').randomBytes(3).toString('hex').toUpperCase();
         await Order.findOneAndUpdate(
           { seedKey },
           {
             $set: {
+              orderCode,
               userId: user._id,
-              products: orderProducts,
-              totalPrice,
-              status: 'completed',
-              note: 'Đơn hàng mẫu CRM',
-              payment: {
-                provider: 'cash',
-                status: 'paid',
-                checkoutUrl: '',
-                metadata: {
-                  seeded: true
-                }
-              },
+              items: orderProducts,
+              totalAmount,
+              orderStatus: 'completed',
+              paymentMethod: 'cash',
+              paymentStatus: 'paid',
+              customerNote: 'Đơn hàng mẫu CRM',
+              adminNote: '',
+              email: user.email || '',
               seedKey
             }
           },

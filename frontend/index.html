@@ -1,21 +1,29 @@
 <!DOCTYPE html>
+<!-- 
+  Tệp index.html: Điểm khởi đầu (Entry Point) của ứng dụng Single Page Application (SPA).
+  Trình duyệt tải file này đầu tiên, sau đó nạp file /src/main.tsx để React render toàn bộ giao diện.
+-->
 <html lang="vi">
   <head>
+    <!-- Thiết lập bảng mã UTF-8 hỗ trợ đầy đủ tiếng Việt có dấu -->
     <meta charset="UTF-8" />
+    <!-- Viewport responsive: Đảm bảo tỷ lệ co giãn 1:1 chuẩn xác trên màn hình di động, máy tính bảng -->
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
 
-    <!-- Primary SEO -->
+    <!-- ================= THẺ META PHỤC VỤ SEO TÌM KIẾM ================= -->
     <title>Salon Dương Chi — Cắt, Uốn, Nhuộm & Chăm Sóc Tóc Chuyên Nghiệp tại Lộc Ninh</title>
+    <!-- Thẻ meta description tóm tắt nội dung khi tìm kiếm trên Google -->
     <meta
       name="description"
       content="Salon Dương Chi cung cấp dịch vụ cắt, uốn, nhuộm, duỗi, phục hồi tóc và gội đầu dưỡng sinh cao cấp tại Lộc Ninh, Bình Phước. Đặt lịch ngay hôm nay!"
     />
+    <!-- Cho phép bot tìm kiếm index (đánh chỉ mục) và follow (thu thập các liên kết trong trang) -->
     <meta name="robots" content="index, follow" />
 
-    <!-- Canonical (trang chủ) -->
+    <!-- Canonical URL: Định danh đường dẫn gốc của website, tránh bị Google phạt lỗi trùng lặp nội dung -->
     <link rel="canonical" href="https://salonduongchi.website/" />
 
-    <!-- Open Graph -->
+    <!-- ================= OPEN GRAPH PROTOCOL (CHIA SẺ LÊN FACEBOOK/ZALO) ================= -->
     <meta property="og:type" content="website" />
     <meta property="og:url" content="https://salonduongchi.website/" />
     <meta property="og:site_name" content="Salon Dương Chi" />
@@ -27,7 +35,7 @@
     <meta property="og:image" content="https://salonduongchi.website/og-image.jpg" />
     <meta property="og:locale" content="vi_VN" />
 
-    <!-- Twitter Card -->
+    <!-- ================= TWITTER CARD METADATA ================= -->
     <meta name="twitter:card" content="summary_large_image" />
     <meta name="twitter:title" content="Salon Dương Chi — Cắt, Uốn, Nhuộm & Chăm Sóc Tóc Chuyên Nghiệp" />
     <meta
@@ -35,7 +43,7 @@
       content="Salon Dương Chi cung cấp dịch vụ cắt, uốn, nhuộm, duỗi, phục hồi tóc và gội đầu dưỡng sinh cao cấp tại Lộc Ninh, Bình Phước."
     />
 
-    <!-- Favicon -->
+    <!-- ================= BIỂU TƯỢNG (FAVICON & PWA MANIFEST) ================= -->
     <link rel="icon" type="image/x-icon" href="/favicon-v2.ico" />
     <link rel="icon" type="image/png" sizes="32x32" href="/favicon-v2-32x32.png" />
     <link rel="icon" type="image/png" sizes="16x16" href="/favicon-v2-16x16.png" />
@@ -43,7 +51,11 @@
     <link rel="manifest" href="/site.webmanifest" />
     <meta name="theme-color" content="#ffffff" />
 
-    <!-- Google Fonts: preconnect trước, sau đó mới load stylesheet (tránh render-blocking) -->
+    <!-- 
+      Tối ưu hiệu năng tải Font (Web Vitals):
+      - preconnect: Kết nối sớm bắt tay SSL với máy chủ font Google trước khi yêu cầu font cụ thể.
+      - rel="preload": Tải trước file CSS font để tránh hiện tượng chặn render (render-blocking).
+    -->
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
     <link
@@ -52,6 +64,7 @@
       as="style"
       onload="this.onload=null;this.rel='stylesheet'"
     />
+    <!-- Fallback cho trình duyệt tắt Javascript vẫn nạp được font bình thường -->
     <noscript>
       <link
         rel="stylesheet"
@@ -59,6 +72,11 @@
       />
     </noscript>
 
+    <!-- 
+      Tối ưu chỉ số LCP (Largest Contentful Paint):
+      Tải trước hình ảnh Banner chính của trang chủ với mức ưu tiên cao (fetchpriority="high")
+      theo media query (ảnh nhỏ cho mobile, ảnh lớn cho desktop).
+    -->
     <!-- Preload LCP hero image (mobile) -->
     <link
       rel="preload"
@@ -77,7 +95,14 @@
     />
   </head>
   <body>
+    <!-- 
+      Phần tử DOM gốc: Nơi thư viện React DOM mount (gắn) toàn bộ cây component của ứng dụng.
+    -->
     <div id="root"></div>
+
+    <!-- 
+      Nạp mã nguồn TypeScript/React bằng cơ chế ES Modules chuẩn hiện đại do Vite hỗ trợ.
+    -->
     <script type="module" src="/src/main.tsx"></script>
   </body>
 </html>

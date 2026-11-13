@@ -47,6 +47,10 @@ const buildTimeSlots = () => {
 
 const timeSlots = buildTimeSlots();
 
+/**
+ * BookingPage: Trang đặt lịch dịch vụ làm tóc trực tuyến cho khách hàng.
+ * Tích hợp TanStack React Query để quản lý cache dữ liệu và tương tác API bất đồng bộ.
+ */
 const BookingPage = () => {
   useSEO({
     title: "Đặt Lịch Dịch Vụ Tóc — Salon Dương Chi",
@@ -55,9 +59,17 @@ const BookingPage = () => {
     canonical: "/booking",
     ogUrl: "/booking",
   });
+
+  // useSearchParams: Đọc các tham số truyền trên thanh địa chỉ URL (ví dụ: /booking?service=uon-toc-nu)
   const [searchParams] = useSearchParams();
+
+  // State cục bộ lưu trữ dữ liệu form đặt lịch khách hàng nhập vào
   const [bookingData, setBookingData] = useState<BookingFormData>(defaultFormState);
 
+  /**
+   * useQuery tải danh sách dịch vụ công khai:
+   * Tự động cache kết quả dưới queryKey 'publicServices'.
+   */
   const {
     data: services,
     isLoading: isLoadingServices,
@@ -67,12 +79,22 @@ const BookingPage = () => {
     queryFn: fetchPublicServices,
   });
 
+  /**
+   * useQuery tải các khung giờ đã kín (Booked Slots) theo ngày được chọn:
+   * Thuộc tính `enabled: Boolean(bookingData.date)` biến đây thành Dependent Query,
+   * nghĩa là chỉ kích hoạt gọi API khi người dùng đã chọn một ngày cụ thể trên lịch.
+   */
   const { data: bookedSlots } = useQuery({
     queryKey: [...queryKeys.bookingSlots, bookingData.date],
     queryFn: () => fetchBookedSlots(bookingData.date),
     enabled: Boolean(bookingData.date),
   });
 
+  /**
+   * useMutation xử lý gửi yêu cầu đặt lịch (POST /api/bookings):
+   * - onSuccess: Gọi khi server tạo lịch thành công, hiển thị toast và làm mới form.
+   * - onError: Hiển thị lỗi cụ thể nếu xảy ra sự cố (như trùng giờ hoặc dữ liệu không hợp lệ).
+   */
   const createBookingMutation = useMutation({
     mutationFn: createPublicBooking,
     onSuccess: () => {
@@ -87,6 +109,7 @@ const BookingPage = () => {
     },
   });
 
+  // Bắt lỗi nếu không tải được danh mục dịch vụ từ server
   useEffect(() => {
     if (!servicesError) {
       return;
@@ -95,6 +118,11 @@ const BookingPage = () => {
     toast.error(getApiErrorMessage(servicesError, "Ái chà, đường truyền vừa chợp mắt. Bạn thử lại nhé."));
   }, [servicesError]);
 
+  /**
+   * Hiệu ứng tự động chọn trước (Pre-select) dịch vụ:
+   * Nếu trên URL có tham số query `?service=...` (khách bấm Đặt lịch từ trang danh mục dịch vụ),
+   * hệ thống tự động tìm dịch vụ tương ứng và gán vào form mà không bắt khách chọn lại.
+   */
   useEffect(() => {
     if (!services || services.length === 0) {
       return;
@@ -115,6 +143,9 @@ const BookingPage = () => {
     }));
   }, [services, searchParams]);
 
+  /**
+   * Cảnh báo nếu khung giờ người dùng vừa chọn đã bị khách khác giữ trước trong database.
+   */
   useEffect(() => {
     if (!bookingData.time || !bookedSlots?.includes(bookingData.time)) {
       return;
@@ -124,6 +155,11 @@ const BookingPage = () => {
     toast("Khung giờ bạn chọn vừa có người giữ mất rồi. Bạn đổi giờ khác giúp Dương Chi nhé!");
   }, [bookedSlots, bookingData.time]);
 
+  /**
+   * Xử lý gửi Form:
+   * event.preventDefault() ngăn chặn hành vi mặc định của trình duyệt (tránh reload lại trang),
+   * sau đó kích hoạt mutation gửi dữ liệu qua API.
+   */
   const handleSubmit = (event: React.FormEvent) => {
     event.preventDefault();
     createBookingMutation.mutate(bookingData);

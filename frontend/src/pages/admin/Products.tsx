@@ -14,6 +14,59 @@ import {
 import { getApiErrorMessage } from "../../services/api";
 import { optimizeCloudinaryUrl } from "../../utils/cloudinary";
 
+const compressImage = (file: File, maxW = 1800, maxH = 1800, quality = 0.85): Promise<File> => {
+  return new Promise((resolve, reject) => {
+    const reader = new FileReader();
+    reader.readAsDataURL(file);
+    reader.onload = (event) => {
+      const img = new Image();
+      img.src = event.target?.result as string;
+      img.onload = () => {
+        let width = img.width;
+        let height = img.height;
+
+        if (width > maxW || height > maxH) {
+          if (width > height) {
+            height = Math.round((height * maxW) / width);
+            width = maxW;
+          } else {
+            width = Math.round((width * maxH) / height);
+            height = maxH;
+          }
+        }
+
+        const canvas = document.createElement("canvas");
+        canvas.width = width;
+        canvas.height = height;
+        const ctx = canvas.getContext("2d");
+        if (!ctx) {
+          resolve(file);
+          return;
+        }
+
+        ctx.drawImage(img, 0, 0, width, height);
+        canvas.toBlob(
+          (blob) => {
+            if (!blob) {
+              resolve(file);
+              return;
+            }
+            const compressedFile = new File([blob], file.name.replace(/\.[^/.]+$/, "") + ".jpg", {
+              type: "image/jpeg",
+              lastModified: Date.now(),
+            });
+            resolve(compressedFile);
+          },
+          "image/jpeg",
+          quality
+        );
+      };
+      img.onerror = (err) => reject(err);
+    };
+    reader.onerror = (err) => reject(err);
+  });
+};
+
 
 type ProductForm = {
   name: string;
@@ -61,29 +114,40 @@ const ProductsPage = () => {
   const [form, setForm] = useState<ProductForm>(defaultForm);
   const [editingProductId, setEditingProductId] = useState<string | null>(null);
   const [isUploadingImage, setIsUploadingImage] = useState(false);
+  const [activeTab, setActiveTab] = useState<"active" | "inactive">("active");
 
   const handleImageUpload = async (event: React.ChangeEvent<HTMLInputElement>) => {
     const file = event.target.files?.[0];
     if (!file) return;
 
-    if (file.size > 5 * 1024 * 1024) {
-      toast.error("Kích thước tệp vượt quá giới hạn (Tối đa 5MB)");
+    if (file.size > 20 * 1024 * 1024) {
+      toast.error("Kích thước ảnh gốc quá lớn (Tối đa 20MB)");
       return;
     }
 
-    const allowedTypes = ["image/jpeg", "image/jpg", "image/png", "image/webp"];
-    if (!allowedTypes.includes(file.type)) {
-      toast.error("Chỉ chấp nhận ảnh định dạng JPG, PNG hoặc WEBP");
+    const allowedTypes = ["image/jpeg", "image/jpg", "image/png", "image/webp", "image/heic", "image/heif"];
+    // Since some browsers don't identify HEIC file.type correctly, check extension as fallback
+    const extension = file.name.split(".").pop()?.toLowerCase();
+    const isHeic = extension === "heic" || extension === "heif" || file.type.includes("heic") || file.type.includes("heif");
+
+    if (!allowedTypes.includes(file.type) && !isHeic) {
+      toast.error("Chỉ chấp nhận ảnh định dạng JPG, PNG, WEBP hoặc HEIC");
       return;
     }
 
     try {
       setIsUploadingImage(true);
-      const res = await uploadImage(file, "products");
+      toast.loading("Đang tối ưu dung lượng ảnh...", { id: "img-upload" });
+
+      // Nén ảnh client-side
+      const compressedFile = await compressImage(file);
+
+      toast.loading("Đang tải ảnh lên server...", { id: "img-upload" });
+      const res = await uploadImage(compressedFile, "products");
       setForm((prev) => ({ ...prev, image: res.imageUrl }));
-      toast.success("Tải hình ảnh lên thành công!");
+      toast.success("Tải hình ảnh lên thành công!", { id: "img-upload" });
     } catch (err) {
-      toast.error(getApiErrorMessage(err, "Không thể tải hình ảnh lên server"));
+      toast.error(getApiErrorMessage(err, "Không thể tải hình ảnh lên server"), { id: "img-upload" });
     } finally {
       setIsUploadingImage(false);
       event.target.value = "";
@@ -92,7 +156,7 @@ const ProductsPage = () => {
 
   const { data: products, isLoading } = useQuery({
     queryKey: [...queryKeys.adminProducts],
-    queryFn: fetchAdminProducts,
+    queryFn: () => fetchAdminProducts({ includeInactive: true }),
   });
 
   const createMutation = useMutation({
@@ -132,10 +196,16 @@ const ProductsPage = () => {
     },
   });
 
+  const filteredProducts = useMemo(() => {
+    const list = products || [];
+    return list.filter((p) => (activeTab === "active" ? p.isActive : !p.isActive));
+  }, [products, activeTab]);
+
   const sortedProducts = useMemo(
-    () => [...(products || [])].sort((a, b) => a.name.localeCompare(b.name, "vi")),
-    [products]
+    () => [...filteredProducts].sort((a, b) => a.name.localeCompare(b.name, "vi")),
+    [filteredProducts]
   );
+
 
   const isSubmitting = createMutation.isPending || updateMutation.isPending;
   const isEditing = Boolean(editingProductId);
@@ -254,7 +324,7 @@ const ProductsPage = () => {
                         onChange={handleImageUpload}
                         className="hidden"
                       />
-                      <p className="text-[10px] text-slate-400">Hỗ trợ JPG, PNG, WEBP. Tối đa 5MB.</p>
+                      <p className="text-[10px] text-slate-400">Hỗ trợ JPG, PNG, WEBP, HEIC. Tối đa 20MB (tự động tối ưu dung lượng).</p>
                     </div>
                   </div>
 
@@ -385,7 +455,37 @@ const ProductsPage = () => {
       </section>
 
       <section className="rounded-2xl border border-slate-200 bg-white p-6 shadow-sm">
-        <h3 className="text-lg font-semibold">Danh sách sản phẩm ({sortedProducts.length})</h3>
+        <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between border-b border-slate-200 pb-4 mb-4">
+          <div>
+            <h3 className="text-lg font-semibold">Danh sách sản phẩm ({sortedProducts.length})</h3>
+            <p className="text-xs text-slate-400 font-light mt-0.5">Sử dụng các tab dưới đây để chuyển đổi danh sách.</p>
+          </div>
+          
+          <div className="flex gap-1.5 p-1 bg-slate-100 rounded-xl max-w-max">
+            <button
+              type="button"
+              onClick={() => setActiveTab("active")}
+              className={`rounded-lg px-4 py-1.5 text-xs font-semibold transition-all ${
+                activeTab === "active"
+                  ? "bg-white text-slate-800 shadow-sm"
+                  : "text-slate-500 hover:text-slate-850"
+              }`}
+            >
+              Đang bán ({products?.filter(p => p.isActive).length || 0})
+            </button>
+            <button
+              type="button"
+              onClick={() => setActiveTab("inactive")}
+              className={`rounded-lg px-4 py-1.5 text-xs font-semibold transition-all ${
+                activeTab === "inactive"
+                  ? "bg-white text-slate-800 shadow-sm"
+                  : "text-slate-500 hover:text-slate-850"
+              }`}
+            >
+              Ngừng bán ({products?.filter(p => !p.isActive).length || 0})
+            </button>
+          </div>
+        </div>
 
         {isLoading ? (
           <div className="mt-4">

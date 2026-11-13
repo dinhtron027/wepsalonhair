@@ -1,23 +1,22 @@
+
 name: CI
 
 on:
-  push:
-    branches: [main]
   pull_request:
     branches: [main]
 
+  workflow_call:
+
 jobs:
   verify:
-    runs-on: windows-latest
-    defaults:
-      run:
-        shell: pwsh
+    name: Verify Application
+    runs-on: ubuntu-latest
 
     steps:
       - name: Checkout
         uses: actions/checkout@v4
 
-      - name: Setup Node
+      - name: Setup Node.js
         uses: actions/setup-node@v4
         with:
           node-version: 22.13.0
@@ -26,14 +25,14 @@ jobs:
             package-lock.json
             frontend/package-lock.json
 
-      - name: Install root dependencies
+      - name: Install Backend Dependencies
         run: npm ci --legacy-peer-deps
 
-      - name: Install frontend dependencies
+      - name: Install Frontend Dependencies
         run: npm ci --prefix frontend --legacy-peer-deps
 
-      - name: Verify
+      - name: Run Tests, Lint, Typecheck and Build
         run: npm run test:ci
 
-      - name: Audit
+      - name: Security Audit
         run: npm run audit:ci

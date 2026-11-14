@@ -159,6 +159,13 @@ if (value.NODE_ENV === 'production') {
       'Environment validation error: JWT_SECRET must be changed and at least 32 characters in production'
     );
   }
+
+  // Cảnh báo nếu chạy production trong Docker nhưng MONGODB_URI vẫn trỏ vào localhost
+  if (value.MONGODB_URI.includes('127.0.0.1') || value.MONGODB_URI.includes('localhost')) {
+    console.warn(
+      '[Config Warning] MONGODB_URI dang tro vao localhost/127.0.0.1 trong production. Neu chay trong Docker network, hay doi sang hostname "mongodb:27017".'
+    );
+  }
 }
 
 // Log cảnh báo nếu Google OAuth chưa được cấu hình (không ném lỗi, chỉ cảnh báo)

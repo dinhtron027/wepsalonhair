@@ -19,8 +19,14 @@ const resolveApiBaseUrl = () => {
   }
 
   const envApiUrl = import.meta.env.VITE_API_URL?.trim();
-  if (envApiUrl) {
+  // Nếu envApiUrl là domain hợp lệ (không phải localhost khi chạy ngoài production)
+  if (envApiUrl && !envApiUrl.includes("localhost") && !envApiUrl.includes("127.0.0.1")) {
     return trimTrailingSlash(envApiUrl);
+  }
+
+  // Tự động nhận diện domain Production để gọi đúng API subdomain
+  if (typeof window !== "undefined" && window.location.hostname.includes("salonduongchi.website")) {
+    return "https://api.salonduongchi.website";
   }
 
   if (import.meta.env.DEV) {

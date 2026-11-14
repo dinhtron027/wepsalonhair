@@ -16,7 +16,10 @@
     "dev:backend": "node --watch backend/server.js",
     "start": "node backend/server.js",
     "seed": "node backend/utils/seed.js",
-    "cleanup-mock": "node backend/utils/cleanupMockData.js"
+    "cleanup-mock": "node backend/utils/cleanupMockData.js",
+    "deploy:sync": "bash scripts/sync-to-ec2.sh",
+    "deploy:ec2": "bash scripts/sync-to-ec2.sh --restart",
+    "deploy:seed": "bash scripts/sync-to-ec2.sh --seed"
   },
   "dependencies": {
     "axios": "^1.17.0",

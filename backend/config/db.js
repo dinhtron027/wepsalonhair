@@ -21,14 +21,18 @@ const connectDB = async () => {
 
   /**
    * mongoose.connect(): Tạo kết nối đến MongoDB.
-   * env.MONGODB_URI được đọc từ file .env (vd: "mongodb://127.0.0.1:27017/salon-duong-chi").
-   * Từ Mongoose 6+, không cần truyền các option như useNewUrlParser hay useUnifiedTopology
-   * vì chúng đã được bật mặc định.
+   * env.MONGODB_URI được đọc từ file .env.
    */
+  let safeUri = env.MONGODB_URI;
+  if (safeUri && safeUri.includes('@')) {
+    safeUri = safeUri.replace(/:\/\/([^:]+):([^@]+)@/, '://$1:***@');
+  }
+  console.log(`Connecting to MongoDB at: ${safeUri}`);
+
   await mongoose.connect(env.MONGODB_URI);
 
   // Log tên database đã kết nối để xác nhận kết nối đúng môi trường
-  console.log(`MongoDB connected: ${mongoose.connection.name}`);
+  console.log(`MongoDB connected successfully to database: ${mongoose.connection.name}`);
 };
 
 module.exports = { connectDB };

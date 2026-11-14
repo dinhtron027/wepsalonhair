@@ -26,9 +26,9 @@ const startServer = async () => {
     // 3. Khởi tạo dịch vụ Socket.IO thời gian thực gắn vào HTTP Server
     initSocket(httpServer);
 
-    // 4. Bắt đầu lắng nghe các kết nối từ Client trên cổng PORT (mặc định: 5000)
-    const server = httpServer.listen(env.PORT, () => {
-      console.log(`Salon Duong Chi API listening on port ${env.PORT}`);
+    // 4. Bắt đầu lắng nghe các kết nối từ Client trên cổng PORT (mặc định: 5000), bind vào 0.0.0.0 trong Docker
+    const server = httpServer.listen(env.PORT, '0.0.0.0', () => {
+      console.log(`Salon Duong Chi API listening on 0.0.0.0:${env.PORT}`);
     });
 
     /**

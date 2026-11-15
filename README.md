@@ -71,103 +71,124 @@ salon/
 
 ---
 
-## 🛠️ Yêu Cầu Môi Trường & Cài Đặt
+## ⚡ Khởi Chạy Nhanh Trong 3 Phút (Quick Start for Beginners)
 
-### 1. Yêu cầu môi trường
-- **Node.js:** Phiên bản 18+ (Khuyên dùng v22 hoặc v23)
-- **MongoDB:** Phiên bản Community Server chạy local hoặc tài khoản MongoDB Atlas Cloud
+Dành cho người mới tải dự án về muốn chạy và trải nghiệm ngay trên máy tính cá nhân (Local):
 
-### 2. Cài đặt các gói phụ thuộc
-Cần cài đặt thư viện tại thư mục gốc (Root) của Backend và thư mục `frontend/` của Client:
+### Bước 1: Cài đặt thư viện (Dependencies)
+Mở Terminal tại thư mục gốc của dự án (`salon/`) và chạy:
 
 ```bash
-# Cài đặt dependencies tại thư mục gốc (cho backend)
+# 1. Cài đặt dependencies cho backend tại thư mục gốc
 npm install
 
-# Di chuyên vào thư mục frontend và cài đặt dependencies
-cd frontend
-npm install --legacy-peer-deps
+# 2. Cài đặt dependencies cho frontend (bắt buộc cờ --legacy-peer-deps)
+cd frontend && npm install --legacy-peer-deps && cd ..
 ```
 
 > [!IMPORTANT]
 > Khi cài đặt dependencies cho frontend, bạn **bắt buộc** phải sử dụng flag `--legacy-peer-deps`. Điều này là do thư viện đăng nhập bằng Facebook (`react-facebook-login`) sử dụng phiên bản React cũ hơn, gây ra xung đột phiên bản khi npm phân tích cây phụ thuộc.
 
-### 3. Hướng dẫn chạy nhanh MongoDB local (Lựa chọn tiện lợi)
-Nếu máy bạn chưa cài đặt sẵn MongoDB, cách nhanh nhất là khởi chạy cơ sở dữ liệu qua Docker:
+---
+
+### Bước 2: Tạo tệp cấu hình môi trường (.env)
+Dự án đã cấu hình sẵn giá trị mặc định tối ưu cho môi trường chạy local, bạn chỉ cần tạo tệp `.env` bằng 2 lệnh copy:
 
 ```bash
-# Tạo và chạy một container MongoDB local trên cổng mặc định 27017
-docker run -d --name mongo-salon -p 27017:27017 mongo:latest
+# Tạo file .env cho Backend từ file mẫu
+cp .env.example .env
+
+# Tạo file .env cho Frontend từ file mẫu
+cp frontend/.env.example frontend/.env
 ```
 
----
-
-## ⚙️ Biến Môi Trường (.env)
-
-Tạo các tệp cấu hình `.env` dựa theo các tệp mẫu có sẵn trong dự án:
-
-### 1. Backend (Tạo tệp `.env` tại thư mục gốc `salon/`)
-Sao chép cấu trúc từ tệp [.env.example](file:///home/dinh_trong/salon/.env.example) và cấu hình các giá trị sau:
-
-| Tên biến | Kiểu dữ liệu | Mô tả / Giá trị mặc định |
-| :--- | :--- | :--- |
-| `NODE_ENV` | String | Chế độ chạy ứng dụng (`development` \| `production` \| `test`) |
-| `PORT` | Number | Cổng chạy backend API (Mặc định: `5000`) |
-| `MONGODB_URI` | String | Đường dẫn kết nối MongoDB (Mặc định: `mongodb://127.0.0.1:27017/salon-duong-chi`) |
-| `JWT_SECRET` | String | Khóa bí mật dùng để mã hóa mã JWT Token (Tối thiểu 16 ký tự) |
-| `JWT_EXPIRES_IN` | String | Thời gian hiệu lực của JWT token (Mặc định: `7d`) |
-| `RATE_LIMIT_WINDOW_MS`| Number | Khoảng thời gian giới hạn API Rate Limit (ms) (Ví dụ: `900000` = 15 phút) |
-| `RATE_LIMIT_MAX` | Number | Số request tối đa được gửi trong window đối với API thông thường (Ví dụ: `300`) |
-| `AUTH_RATE_LIMIT_MAX` | Number | Số request tối đa được gửi đối với API xác thực như Login/Register (Ví dụ: `20`) |
-| `FRONTEND_URL` | String | Danh sách URL Frontend được CORS cho phép (Ví dụ: `http://localhost:5173`) |
-| `SMTP_HOST` | String | Host máy xuất phát gửi email SMTP (Ví dụ: `smtp.gmail.com`) |
-| `SMTP_PORT` | Number | Port máy chủ gửi email (Thường là `587` cho TLS) |
-| `SMTP_USER` | String | Tài khoản gửi email của hệ thống |
-| `SMTP_PASS` | String | Mật khẩu ứng dụng gửi email (App Password) |
-| `EMAIL_FROM` | String | Nhãn và địa chỉ email gửi đi (Ví dụ: `Salon Duong Chi <no-reply@salon.local>`) |
-| `ZALO_WEBHOOK_URL` | String | URL Webhook liên kết với hệ thống Zalo |
-| `ZALO_ACCESS_TOKEN` | String | Access Token của Zalo Official Account |
-| `PAYMENT_PROVIDER` | String | Cổng thanh toán hoạt động (`cash` \| `momo` \| `vnpay`) |
-| `PAYMENT_MOCK_ENABLED`| Boolean | Cho phép giả lập kết quả thanh toán khi thử nghiệm (`true` \| `false`) |
-| `VNPAY_TMN_CODE` | String | Mã Terminal của đối tác VNPay |
-| `VNPAY_HASH_SECRET` | String | Khóa bảo mật băm dữ liệu của VNPay |
-| `MOMO_PARTNER_CODE` | String | Mã Partner của ứng dụng MoMo |
-| `MOMO_ACCESS_KEY` | String | Access Key được MoMo cấp |
-| `MOMO_SECRET_KEY` | String | Secret Key kết nối API của MoMo |
-| `DEFAULT_ADMIN_NAME` | String | Tên Admin mặc định khởi tạo khi seed dữ liệu |
-| `DEFAULT_ADMIN_EMAIL`| String | Email Admin dùng đăng nhập (Mặc định: `admin@duongchi.com`) |
-| `DEFAULT_ADMIN_PHONE`| String | Số điện thoại Admin dùng đăng nhập (Mặc định: `0900000000`) |
-| `DEFAULT_ADMIN_PASSWORD`| String| Mật khẩu của tài khoản Admin mặc định |
-| `DEFAULT_STAFF_...` | Mix | Thông tin tài khoản Nhân viên mẫu |
-| `DEFAULT_CUSTOMER_...`| Mix | Thông tin tài khoản Khách hàng chạy thử |
-| `GOOGLE_CLIENT_ID` | String | Google OAuth Client ID dùng để xác thực tại Backend |
-
-### 2. Frontend (Tạo tệp `.env` tại thư mục `frontend/`)
-Sao chép cấu trúc từ tệp [frontend/.env.example](file:///home/dinh_trong/salon/frontend/.env.example) và cấu hình các giá trị sau:
-
-| Tên biến | Kiểu dữ liệu | Mô tả |
-| :--- | :--- | :--- |
-| `VITE_API_URL` | String | URL của Backend API (Local: `http://localhost:5000`, Production: `https://api.salonduongchi.website`) |
-| `VITE_GOOGLE_CLIENT_ID`| String | Google OAuth Client ID để hiển thị nút Đăng nhập bằng Google |
+*(Các giá trị mặc định trong `.env.example` và `frontend/.env.example` đã trỏ sẵn vào `http://localhost:5000` và MongoDB local, bạn không cần phải thay đổi gì nếu chạy mặc định).*
 
 ---
 
-## 🏃 Hướng Dẫn Chạy Dự Án Ở Môi Trường Local (Development)
+### Bước 3: Khởi chạy Database MongoDB
+Bạn có thể chọn **1 trong 3 cách** sau để có cơ sở dữ liệu:
 
-Để phát triển dự án hoặc chạy thử nghiệm trực tiếp, hãy khởi chạy backend và frontend theo các bước sau:
+* **Cách A (Dễ nhất - Không cần cài MongoDB):** Dùng cụm [MongoDB Atlas Cloud](https://cloud.mongodb.com/) miễn phí. Mở file `.env` và dán chuỗi kết nối vào dòng `MONGODB_URI` (Ví dụ: `MONGODB_URI="mongodb+srv://user:pass@cluster.mongodb.net/salon-duong-chi?retryWrites=true&w=majority"`).
+* **Cách B (Dùng Docker nếu máy có Docker):**
+  ```bash
+  docker run -d --name mongo-salon -p 27017:27017 mongo:7-jammy
+  ```
+* **Cách C (Dùng MongoDB cài trực tiếp trên máy):** Khởi động dịch vụ MongoDB service trên máy tính của bạn (cổng mặc định `27017`).
 
-### Bước 1: Khởi chạy MongoDB
-Đảm bảo dịch vụ cơ sở dữ liệu MongoDB đang hoạt động tại máy của bạn (hoặc container Docker đang chạy).
+---
 
-### Bước 2: Nạp dữ liệu Seed ban đầu (Chỉ chạy ở lần khởi động đầu tiên)
-Tại thư mục gốc `salon/`, chạy lệnh sau để nạp dữ liệu mặc định (gồm 30 dịch vụ nữ, tài khoản admin, staff, và khách hàng mẫu):
+### Bước 4: Nạp dữ liệu mẫu ban đầu (Seed Data - Bắt buộc)
+Lần đầu tiên khởi chạy, database chưa có dữ liệu. Hãy chạy lệnh sau để tự động tạo 30 dịch vụ nữ, sản phẩm, các danh mục và tài khoản quản trị viên:
+
 ```bash
 npm run seed
 ```
 
-### Bước 3: Chạy ứng dụng
+---
 
-#### Cách 1: Chạy song song cả Frontend & Backend (Khuyên dùng)
+### Bước 5: Chạy ứng dụng song song
+Tại thư mục gốc `salon/`, chỉ cần gõ:
+
+```bash
+npm run dev
+```
+
+Hệ thống sẽ tự động khởi động đồng thời cả Backend và Frontend:
+* 🌐 **Giao diện Khách hàng (Frontend):** [http://localhost:5173](http://localhost:5173)
+* 🔌 **Backend API Health Check:** [http://localhost:5000/api/health](http://localhost:5000/api/health)
+
+---
+
+## 🔑 Tài Khoản Trải Nghiệm Mẫu (Demo Credentials)
+
+Sau khi chạy lệnh `npm run seed`, hệ thống đã sẵn sàng với 3 nhóm tài khoản phân quyền:
+
+| Vai trò (Role) | Email đăng nhập | Mật khẩu mặc định | Quyền hạn & Chức năng |
+| :--- | :--- | :--- | :--- |
+| **Quản trị viên (Admin)** | `admin@salonduongchi.vn` | `Admin@123456` | Toàn quyền quản trị Salon, xem Bảng điều khiển, Báo cáo doanh thu, CRM khách hàng, Quản lý kho, Quản lý dịch vụ/sản phẩm tại `/admin` |
+| **Nhân viên (Staff)** | `staff@salonduongchi.vn` | `Staff@123456` | Xem lịch hẹn salon, hỗ trợ khách hàng, cập nhật trạng thái làm tóc |
+| **Khách hàng (Customer)** | `customer@salonduongchi.vn`| `Customer@123456`| Xem danh mục, chọn dịch vụ, đặt lịch hẹn trực tuyến, lưu công thức chăm sóc tóc |
+
+> [!TIP]
+> Để đăng nhập quyền Admin: Truy cập [http://localhost:5173/login](http://localhost:5173/login) $\rightarrow$ Đăng nhập với tài khoản Admin ở trên $\rightarrow$ Menu trên cùng sẽ xuất hiện nút **Quản trị Salon** (hoặc bạn có thể truy cập thẳng [http://localhost:5173/admin](http://localhost:5173/admin)).
+
+---
+
+## ⚙️ Biến Môi Trường (.env) Chi Tiết
+
+### 1. Phân loại biến môi trường Backend (`.env` tại thư mục gốc)
+
+#### Nhóm A: Bắt buộc tối thiểu (Minimal Setup để chạy local)
+Chỉ cần cấu hình nhóm này là toàn bộ website đã chạy đầy đủ tính năng cốt lõi:
+| Tên biến | Kiểu dữ liệu | Giá trị mặc định (Local) | Mô tả |
+| :--- | :--- | :--- | :--- |
+| `NODE_ENV` | String | `development` | Chế độ chạy ứng dụng |
+| `PORT` | Number | `5000` | Cổng HTTP Server của Backend API |
+| `MONGODB_URI` | String | `mongodb://127.0.0.1:27017/salon-duong-chi` | Chuỗi kết nối MongoDB (Local hoặc Atlas) |
+| `JWT_SECRET` | String | `salon_secret_key_1234567890_dev` | Khóa bí mật ký mã token JWT (tối thiểu 16 ký tự) |
+| `FRONTEND_URL` | String | `http://localhost:5173` | Domain Frontend được phép gọi API (CORS whitelist) |
+
+#### Nhóm B: Tùy chọn nâng cao (Optional Services)
+Nếu không điền các biến này, hệ thống sẽ tự động tắt tính năng phụ tương ứng mà **không gây lỗi crash ứng dụng**:
+| Nhóm tính năng | Tên biến | Mô tả |
+| :--- | :--- | :--- |
+| **Google OAuth** | `GOOGLE_CLIENT_ID`<br>`GOOGLE_CLIENT_SECRET`<br>`GOOGLE_CALLBACK_URL` | Cho phép đăng nhập 1-chạm bằng tài khoản Google (Lấy từ Google Cloud Console) |
+| **Lưu trữ ảnh Cloud** | `CLOUDINARY_CLOUD_NAME`<br>`CLOUDINARY_API_KEY`<br>`CLOUDINARY_API_SECRET` | Upload ảnh dịch vụ / sản phẩm trực tiếp từ Admin lên Cloudinary |
+| **Cổng thanh toán** | `PAYMENT_PROVIDER`<br>`VNPAY_TMN_CODE`, `VNPAY_HASH_SECRET`<br>`MOMO_PARTNER_CODE`, `MOMO_ACCESS_KEY`, `MOMO_SECRET_KEY` | Tích hợp cổng thanh toán trực tuyến MoMo hoặc VNPay (Mặc định: `cash` tiền mặt) |
+| **Gửi Email SMTP** | `SMTP_HOST`, `SMTP_PORT`, `SMTP_USER`, `SMTP_PASS` | Gửi email xác nhận đặt lịch tự động cho khách hàng qua Gmail SMTP |
+
+### 2. Frontend (`frontend/.env`)
+| Tên biến | Giá trị Local | Giá trị Production | Mô tả |
+| :--- | :--- | :--- | :--- |
+| `VITE_API_URL` | `http://localhost:5000` | `https://api.salonduongchi.website` | Địa chỉ Backend API để trình duyệt gọi dữ liệu |
+| `VITE_GOOGLE_CLIENT_ID`| (Để trống hoặc điền ID) | (ID Google Console) | Hiển thị nút đăng nhập Google ở giao diện Client |
+
+---
+
+## 🏃 Các Chế Độ Chạy Dự Án (Development Modes)
+
+### Cách 1: Chạy song song cả Frontend & Backend (Khuyên dùng)
 Tại thư mục gốc `salon/`, chạy lệnh:
 ```bash
 npm run dev
@@ -176,47 +197,54 @@ Hệ thống sử dụng thư viện `concurrently` để tự động khởi ch
 - **Backend API:** Khởi động tại `http://localhost:5000`
 - **Frontend Web:** Khởi động tại `http://localhost:5173` (hoặc `http://localhost:5174` nếu cổng 5173 bị chiếm dụng)
 
-#### Cách 2: Chạy độc lập trong các Terminal riêng biệt (Thuận tiện khi debug)
-- **Chạy Backend:** Mở một Terminal tại thư mục gốc `salon/` và chạy:
+### Cách 2: Chạy độc lập trong các Terminal riêng biệt (Dễ debug)
+- **Terminal 1 - Chạy Backend:**
   ```bash
-  # Chạy backend ở chế độ nodemon tự động reload khi code thay đổi
-  npm run start:dev
+  # Chạy backend với chế độ watch tự động reload khi sửa code
+  npm run dev:backend
   ```
-- **Chạy Frontend:** Mở một Terminal khác, di chuyển vào thư mục `frontend/` và chạy:
+- **Terminal 2 - Chạy Frontend:**
   ```bash
-  npm run dev
+  # Chạy frontend Vite development server
+  npm run dev:frontend
   ```
 
 ---
 
-## 🐳 Khởi Chạy Với Docker / Docker Compose
+## 🐳 Khởi Chạy Toàn Bộ Bằng Docker Compose
 
-Dự án hỗ trợ đóng gói Docker toàn phần giúp bạn triển khai đồng bộ ở local hoặc production chỉ với một câu lệnh.
+Dự án hỗ trợ đóng gói Docker toàn phần giúp bạn chạy trọn gói Database, Backend và Frontend mà không cần cài Node.js hay MongoDB lên máy:
 
-### Khởi chạy môi trường:
-Tại thư mục gốc, tạo tệp `.env` phù hợp, sau đó chạy lệnh:
 ```bash
-# Khởi tạo và chạy ngầm các dịch vụ (Database, Backend, Frontend qua Nginx)
+# 1. Khởi tạo và chạy ngầm toàn bộ dịch vụ
 docker compose up -d --build
-```
-Hệ thống sẽ chạy 3 containers:
-1. `mongodb` (Port `27017`)
-2. `backend` (Port `5000`)
-3. `frontend` (Port `8080` thông qua Nginx)
 
-### Lệnh hữu ích với Docker:
-- **Xem logs của tất cả dịch vụ:**
-  ```bash
-  docker compose logs -f
-  ```
-- **Nạp seed dữ liệu mẫu bên trong Docker container:**
-  ```bash
-  docker compose exec backend npm run seed
-  ```
-- **Dừng và xóa các container:**
-  ```bash
-  docker compose down
-  ```
+# 2. Nạp dữ liệu mẫu vào database bên trong Docker container (Chạy 1 lần đầu)
+docker compose exec api npm run seed
+
+# 3. Theo dõi logs hoạt động
+docker compose logs -f
+
+# 4. Dừng hệ thống khi không sử dụng
+docker compose down
+```
+
+Hệ thống sẽ chạy 3 containers phối hợp:
+1. `mongodb` (Port `27017` nội bộ hoặc host)
+2. `api` (Port `5000:5000`)
+3. `frontend` (Port `8080:80` thông qua Nginx Alpine)
+
+---
+
+## 🚀 Tự Động Đồng Bộ & Deploy Lên AWS EC2 Qua SSH
+
+Dự án đã tích hợp kịch bản tự động hóa đồng bộ mã nguồn trực tiếp từ máy local lên máy chủ AWS EC2 qua `rsync` an toàn:
+
+| Lệnh | Ý nghĩa chức năng |
+| :--- | :--- |
+| `npm run deploy:sync` | **Chỉ đồng bộ file:** Đẩy các file vừa thay đổi sang EC2 qua SSH rsync trong 2 giây (loại trừ an toàn node_modules và bảo vệ file .env production). |
+| `npm run deploy:ec2` | **Đồng bộ + Rebuild:** Đẩy code mới sang EC2 và tự động rebuild Docker containers trên máy chủ. |
+| `npm run deploy:seed` | **Đồng bộ + Seed:** Đẩy code và nạp lại dữ liệu mẫu vào MongoDB trên EC2. |
 
 ---
 
@@ -240,7 +268,10 @@ npm run build
 
 ### 📱 Kiểm thử Giao diện Di động (Mobile Responsive UI Testing)
 
-Để kiểm tra giao diện Admin hiển thị và
+Để kiểm tra giao diện Admin hiển thị và hoạt động mượt mà trên thiết bị di động:
+1. Mở DevTools trên trình duyệt (`F12` hoặc `Ctrl + Shift + I`).
+2. Nhấn `Ctrl + Shift + M` để kích hoạt chế độ xem mô phỏng thiết bị di động (iPhone / Pixel / iPad).
+3. Kiểm tra thanh điều hướng Hamburger, Dropdown danh mục dịch vụ và các thao tác vuốt chọn lịch làm tóc.
 
 ## 🌐 Kiến Trúc & Hướng Dẫn Deploy Production (AWS EC2)
 
@@ -251,7 +282,7 @@ Hệ thống được thiết kế theo luồng xử lý như sau:
 ```text
 User 
  └──> Domain Namecheap (salonduongchi.website)
-       └──> AWS EC2 Elastic IP (3.1.105.97)
+       └──> AWS EC2 Elastic IP (54.251.145.138)
              └──> Host Nginx (Reverse Proxy & SSL)
                    ├──> Port 8080: Frontend Docker Container (Nginx serve static)
                    ├──> Port 5000: Backend API Docker Container (Node.js/Express)
@@ -327,7 +358,7 @@ Quy trình cập nhật mã nguồn hàng ngày được tự động hóa qua G
   [GitHub Actions Triggered (concurrency: production-deploy)]
                    │
                    ▼
-  [SSH Kết nối an toàn vào AWS EC2 (ubuntu@3.1.105.97)]
+  [SSH Kết nối an toàn vào AWS EC2 (ubuntu@54.251.145.138)]
                    │
                    ▼
   [Dọn dẹp Git locks & chown quyền sở hữu thư mục project]
@@ -414,16 +445,17 @@ CLOUDINARY_API_SECRET=secret-cloudinary-cua-ban
 ```
 
 #### GitHub Secrets (Cấu hình trong Settings -> Secrets của Repository):
-* `VPS_HOST`: Địa chỉ IP của máy chủ EC2 (`3.1.105.97`)
+* `VPS_HOST`: Địa chỉ IP của máy chủ EC2 (`54.251.145.138`)
 * `VPS_USER`: Tên tài khoản đăng nhập (`ubuntu`)
 * `VPS_SSH_KEY`: Nội dung file khóa Private Key (`.pem`) dùng để SSH không cần mật khẩu.
 
 ---
-y:
-1. **Xem trạng thái Docker containers:** `docker ps`
-2. **Xem nhật ký hoạt động:** `docker compose logs -f`
+
+### 9. Các bước kiểm tra nhanh sau triển khai (Verification Steps):
+1. **Xem trạng thái Docker containers:** `sudo docker compose ps`
+2. **Xem nhật ký hoạt động:** `sudo docker compose logs -f`
 3. **Kiểm tra trạng thái Nginx:** `sudo systemctl status nginx`
-4. **Kiểm tra phản hồi của API:**
+4. **Kiểm tra phản hồi của API (HTTPS):**
    `curl -i https://api.salonduongchi.website/api/health`
 5. **Truy cập web:** Vào địa chỉ `https://salonduongchi.website` trên trình duyệt để kiểm tra hoạt động thực tế.
 

@@ -15,3 +15,4 @@ npm-debug.log*
 .agents/skills
 backups/
 *.tar.gz
+docs_devops/
